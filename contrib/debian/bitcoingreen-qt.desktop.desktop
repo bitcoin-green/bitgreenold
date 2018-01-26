@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=BitcoinGreen
+Comment=BitcoinGreen P2P Cryptocurrency
+Exec=bitcoingreen-qt %u
+Terminal=false
+Type=Application
+Icon=bitcoingreen128
+MimeType=x-scheme-handler/bitcoingreen;
+Categories=Office;Finance;
+Name[en_US]=bitcoingreen-qt.desktop

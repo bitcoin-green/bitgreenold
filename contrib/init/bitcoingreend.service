@@ -1,0 +1,26 @@
+[Unit]
+Description=Bitcoin Green's distributed currency daemon
+After=network.target
+
+[Service]
+User=bitcoingreen
+Group=bitcoingreen
+
+Type=forking
+PIDFile=/var/lib/bitcoingreend/bitcoingreend.pid
+
+ExecStart=/usr/bin/bitcoingreend -daemon -pid=/var/lib/bitcoingreend/bitcoingreend.pid \
+          -conf=/etc/bitcoingreen/bitcoingreen.conf -datadir=/var/lib/bitcoingreend
+
+ExecStop=-/usr/bin/bitcoingreen-cli -conf=/etc/bitcoingreen/bitcoingreen.conf \
+         -datadir=/var/lib/bitcoingreend stop
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target

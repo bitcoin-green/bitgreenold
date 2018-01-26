@@ -1,0 +1,65 @@
+Source: bitcoingreen
+Section: utils
+Priority: optional
+Maintainer: Jonas Smedegaard <dr@jones.dk> ***TODO***
+Uploaders: Micah Anderson <micah@debian.org> ***TODO***
+Build-Depends: debhelper,
+ devscripts,
+ automake,
+ libtool,
+ bash-completion,
+ libboost-system-dev (>> 1.35) | libboost-system1.35-dev,
+ libdb4.8++-dev,
+ libssl-dev,
+ pkg-config,
+ libminiupnpc8-dev,
+ libboost-filesystem-dev (>> 1.35) | libboost-filesystem1.35-dev,
+ libboost-program-options-dev (>> 1.35) | libboost-program-options1.35-dev,
+ libboost-thread-dev (>> 1.35) | libboost-thread1.35-dev,
+ libboost-test-dev (>> 1.35) | libboost-test1.35-dev,
+ qt4-qmake,
+ libqt4-dev,
+ libqrencode-dev,
+ libprotobuf-dev, protobuf-compiler
+Standards-Version: 3.9.2
+Homepage: http://www.savebitcoin.io
+Vcs-Git: git://github.com/bitcoingreen/bitcoingreen.git
+Vcs-Browser: http://github.com/bitcoingreen/bitcoingreen
+
+Package: bitcoingreend
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: peer-to-peer network based digital currency - daemon
+ Bitcoin Green is a free open source peer-to-peer electronic cash system that
+ is completely decentralized, without the need for a central server or
+ trusted parties.  Users hold the crypto keys to their own money and
+ transact directly with each other, with the help of a P2P network to
+ check for double-spending.
+ .
+ Full transaction history is stored locally at each client.  This
+ requires 1+ GB of space, slowly growing.
+ .
+ This package provides the daemon, bitcoingreend, and the CLI tool
+ bitcoingreen-cli to interact with the daemon.
+
+Package: bitcoingreen-qt
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: peer-to-peer network based digital currency - Qt GUI
+ Bitcoin Green (BITG) is a sustainable cryptocurrency modeled after
+ Satoshi Nakamoto’s vision for Bitcoin. 
+ It is a decentralized, peer-to-peer transactional currency designed
+ to offer a solution to the problem posed by the exponential increase
+ in energy consumed by Bitcoin and other proof-of-work currencies.
+ Proof-of-work mining is environmentally unsustainable due to the
+ electricity used by high-powered mining hardware. Bitcoin Green
+ utilizes an en- ergy efficient proof-of-stake algorithm, can be
+ mined on any computer, and will never require specialized mining
+ equipment. The Green Protocol offers a simple solution to
+ Bitcoin sustainability issues and provides a faster, more scalable
+ blockchain that is better suited for daily transactional use.
+ .
+ Full transaction history is stored locally at each client.  This
+ requires 1+ GB of space, slowly growing.
+ .
+ This package provides BitcoinGreen-Qt, a GUI for Bitcoin Green based on Qt.
