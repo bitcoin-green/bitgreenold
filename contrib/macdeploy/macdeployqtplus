@@ -259,7 +259,10 @@ def copyFramework(framework, path, verbose):
         #standard place for Nokia Qt installer's frameworks
         fromPath = "/Library/Frameworks/" + framework.sourceFilePath
     else:
-        fromPath = framework.sourceFilePath
+        if not framework.frameworkDirectory:
+            fromPath = "/usr/local/lib/" + framework.sourceFilePath
+        else:
+            fromPath = framework.sourceFilePath
     toDir = os.path.join(path, framework.destinationDirectory)
     toPath = os.path.join(toDir, framework.binaryName)
 
@@ -340,7 +343,7 @@ def deployFrameworks(frameworks, bundlePath, binaryPath, strip, verbose, deploym
         # install_name_tool the new id into the binary
         changeInstallName(framework.installName, framework.deployedInstallName, binaryPath, verbose)
 
-        # Copy farmework to app bundle.
+        # Copy framework to app bundle.
         deployedBinaryPath = copyFramework(framework, bundlePath, verbose)
         # Skip the rest if already was deployed.
         if deployedBinaryPath is None:

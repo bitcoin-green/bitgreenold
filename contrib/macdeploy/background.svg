@@ -10,7 +10,7 @@
 	<style type="text/css"><![CDATA[
 		text {
 			font-family: "Tuffy";
-			font-size: 86px;
+			font-size: 40px;
 			fill: gray;
 			text-anchor: middle;
 		}
