@@ -243,12 +243,12 @@ bool CWallet::LoadMultiSig(const CScript& dest)
     return CCryptoKeyStore::AddMultiSig(dest);
 }
 
-bool CWallet::Unlock(const SecureString& strWalletPassphrase, bool anonymizeOnly)
+bool CWallet::Unlock(const SecureString& strWalletPassphrase, bool stakingOnly)
 {
     SecureString strWalletPassphraseFinal;
 
     if (!IsLocked()) {
-        fWalletUnlockAnonymizeOnly = anonymizeOnly;
+        fWalletUnlockStakingOnly = stakingOnly;
         return true;
     }
 
@@ -265,7 +265,7 @@ bool CWallet::Unlock(const SecureString& strWalletPassphrase, bool anonymizeOnly
             if (!crypter.Decrypt(pMasterKey.second.vchCryptedKey, vMasterKey))
                 continue; // try another master key
             if (CCryptoKeyStore::Unlock(vMasterKey)) {
-                fWalletUnlockAnonymizeOnly = anonymizeOnly;
+                fWalletUnlockStakingOnly = stakingOnly;
                 return true;
             }
         }
