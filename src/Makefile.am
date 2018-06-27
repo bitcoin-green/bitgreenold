@@ -82,7 +82,6 @@ endif
 .PHONY: FORCE
 # bitcoingreen core #
 BITCOIN_CORE_H = \
-  bignum.h \
   activemasternode.h \
   addrman.h \
   alert.h \

@@ -13,7 +13,6 @@
 #include "config/bitcoingreen-config.h"
 #endif
 
-#include "bignum.h"
 #include "amount.h"
 #include "chain.h"
 #include "chainparams.h"
