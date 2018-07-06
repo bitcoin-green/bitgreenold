@@ -74,12 +74,6 @@ UniValue getinfo(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("getinfo", "") + HelpExampleRpc("getinfo", ""));
 
-    // During inital block verification chainActive.Tip() might be not yet initialized
-    if (chainActive.Tip() == NULL) {
-        obj.push_back(Pair("status", "Blockchain information not yet available"));
-        return obj;
-    }
-
     proxyType proxy;
     GetProxy(NET_IPV4, proxy);
 
