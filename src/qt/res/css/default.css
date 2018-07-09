@@ -21,7 +21,8 @@
 /****************************************************************************************/
 
 WalletFrame {
-	border-image: url(':/images/walletFrame') 0 0 0 0 stretch stretch;
+	background-image: url(':/images/walletFrame') no-repeat fixed;
+	background-position: left bottom;
 	border-top: 0px solid #000;
 	margin: 0;
 	padding: 0;
@@ -232,6 +233,11 @@ QPushButton:hover {
 QPushButton:pressed {
 	background-color: #004000;
 	border:1px solid #000000;
+}
+
+QPushButton:disabled{
+  border:1px solid #aaaaaa;
+	background-color:#bbbbbb;
 }
 
 /* Special handling for statusbar-icons (which are partly QPushButtons) */

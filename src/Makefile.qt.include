@@ -182,6 +182,7 @@ BITCOIN_QT_H = \
 RES_ICONS = \
   qt/res/icons/add.png \
   qt/res/icons/address-book.png \
+  qt/res/icons/address-book_black.png \
   qt/res/icons/bitcoin.ico \
   qt/res/icons/bitcoin.png \
   qt/res/icons/bitcoin_testnet.ico \
@@ -200,8 +201,10 @@ RES_ICONS = \
   qt/res/icons/connect4_16.png \
   qt/res/icons/debugwindow.png \
   qt/res/icons/edit.png \
+  qt/res/icons/edit_black.png \
   qt/res/icons/editcopy.png \
   qt/res/icons/editpaste.png \
+  qt/res/icons/editpaste_black.png \
   qt/res/icons/explorer.png \
   qt/res/icons/export.png \
   qt/res/icons/eye.png \
@@ -222,6 +225,7 @@ RES_ICONS = \
   qt/res/icons/receive.png \
   qt/res/icons/receive_active.png \
   qt/res/icons/remove.png \
+  qt/res/icons/remove_black.png \
   qt/res/icons/send.png \
   qt/res/icons/send_active.png \
   qt/res/icons/staking_active.png \
@@ -229,6 +233,7 @@ RES_ICONS = \
   qt/res/icons/synced.png \
   qt/res/icons/transaction0.png \
   qt/res/icons/transaction2.png \
+  qt/res/icons/transaction_black.png \
   qt/res/icons/transaction_conflicted.png \
   qt/res/icons/tx_inout.png \
   qt/res/icons/tx_input.png \
