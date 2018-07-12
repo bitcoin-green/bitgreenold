@@ -13,6 +13,8 @@
 #define MASTERNODE_SYNC_BUDGET 4
 #define MASTERNODE_SYNC_BUDGET_PROP 10
 #define MASTERNODE_SYNC_BUDGET_FIN 11
+#define MASTERNODE_SYNC_COMMUNITYVOTE 5
+#define MASTERNODE_SYNC_COMMUNITYVOTE_PROP 20
 #define MASTERNODE_SYNC_FAILED 998
 #define MASTERNODE_SYNC_FINISHED 999
 
@@ -32,10 +34,12 @@ public:
     std::map<uint256, int> mapSeenSyncMNB;
     std::map<uint256, int> mapSeenSyncMNW;
     std::map<uint256, int> mapSeenSyncBudget;
+    std::map<uint256, int> mapSeenSyncCommunity;
 
     int64_t lastMasternodeList;
     int64_t lastMasternodeWinner;
     int64_t lastBudgetItem;
+    int64_t lastCommunityItem;
     int64_t lastFailure;
     int nCountFailures;
 
@@ -44,11 +48,13 @@ public:
     int sumMasternodeWinner;
     int sumBudgetItemProp;
     int sumBudgetItemFin;
+    int sumCommunityItemProp;
     // peers that reported counts
     int countMasternodeList;
     int countMasternodeWinner;
     int countBudgetItemProp;
     int countBudgetItemFin;
+    int countCommunityItemProp;
 
     // Count peers we've requested the list from
     int RequestedMasternodeAssets;
@@ -62,11 +68,13 @@ public:
     void AddedMasternodeList(uint256 hash);
     void AddedMasternodeWinner(uint256 hash);
     void AddedBudgetItem(uint256 hash);
+    void AddedCommunityItem(uint256 hash);
     void GetNextAsset();
     std::string GetSyncStatus();
     void ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
     bool IsBudgetFinEmpty();
     bool IsBudgetPropEmpty();
+    bool IsCommunityPropEmpty();
 
     void Reset();
     void Process();

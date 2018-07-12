@@ -17,6 +17,7 @@
 #include "kernel.h"
 #include "masternode-budget.h"
 #include "masternode-payments.h"
+#include "masternode-vote.h"
 #include "masternodeman.h"
 #include "merkleblock.h"
 #include "net.h"
@@ -3533,6 +3534,7 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
         if (masternodeSync.RequestedMasternodeAssets > MASTERNODE_SYNC_LIST) {
             masternodePayments.ProcessBlock(GetHeight() + 10);
             budget.NewBlock();
+            communityVote.NewBlock();
         }
     }
 
@@ -4335,6 +4337,12 @@ bool static AlreadyHave(const CInv& inv)
         return false;
     case MSG_MASTERNODE_PING:
         return mnodeman.mapSeenMasternodePing.count(inv.hash);
+    case MSG_COMMUNITY_PROPOSAL:
+        if (communityVote.mapSeenMasternodeCommunityProposals.count(inv.hash)) {
+            masternodeSync.AddedCommunityItem(inv.hash);
+            return true;
+        }
+        return false;
     }
     // Don't know what it is, just say we already got one
     return true;
@@ -4530,6 +4538,16 @@ void static ProcessGetData(CNode* pfrom)
                         ss.reserve(1000);
                         ss << mnodeman.mapSeenMasternodePing[inv.hash];
                         pfrom->PushMessage("mnp", ss);
+                        pushed = true;
+                    }
+                }
+
+                if (!pushed && inv.type == MSG_COMMUNITY_PROPOSAL) {
+                    if (communityVote.mapSeenMasternodeCommunityProposals.count(inv.hash)) {
+                        CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
+                        ss.reserve(1000);
+                        ss << communityVote.mapSeenMasternodeCommunityProposals[inv.hash];
+                        pfrom->PushMessage("mcprop", ss);
                         pushed = true;
                     }
                 }
@@ -5327,6 +5345,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         //probably one the extensions
         mnodeman.ProcessMessage(pfrom, strCommand, vRecv);
         budget.ProcessMessage(pfrom, strCommand, vRecv);
+        communityVote.ProcessMessage(pfrom, strCommand, vRecv);
         masternodePayments.ProcessMessageMasternodePayments(pfrom, strCommand, vRecv);
         ProcessMessageSwiftTX(pfrom, strCommand, vRecv);
         ProcessSpork(pfrom, strCommand, vRecv);

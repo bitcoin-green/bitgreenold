@@ -9,6 +9,7 @@
 #include "masternode-sync.h"
 #include "masternode-payments.h"
 #include "masternode-budget.h"
+#include "masternode-vote.h"
 #include "masternode.h"
 #include "masternodeman.h"
 #include "spork.h"
@@ -78,6 +79,8 @@ void CMasternodeSync::Reset()
     countMasternodeWinner = 0;
     countBudgetItemProp = 0;
     countBudgetItemFin = 0;
+    sumCommunityItemProp = 0;
+    countCommunityItemProp = 0;
     RequestedMasternodeAssets = MASTERNODE_SYNC_INITIAL;
     RequestedMasternodeAttempt = 0;
     nAssetSyncStarted = GetTime();
@@ -123,6 +126,19 @@ void CMasternodeSync::AddedBudgetItem(uint256 hash)
     }
 }
 
+void CMasternodeSync::AddedCommunityItem(uint256 hash)
+{
+    if (communityVote.mapSeenMasternodeCommunityProposals.count(hash) || communityVote.mapSeenMasternodeCommunityVotes.count(hash)) {
+        if (mapSeenSyncCommunity[hash] < MASTERNODE_SYNC_THRESHOLD) {
+            lastCommunityItem = GetTime();
+            mapSeenSyncCommunity[hash]++;
+        }
+    } else {
+        lastCommunityItem = GetTime();
+        mapSeenSyncCommunity.insert(make_pair(hash, 1));
+    }
+}
+
 bool CMasternodeSync::IsBudgetPropEmpty()
 {
     return sumBudgetItemProp == 0 && countBudgetItemProp > 0;
@@ -131,6 +147,11 @@ bool CMasternodeSync::IsBudgetPropEmpty()
 bool CMasternodeSync::IsBudgetFinEmpty()
 {
     return sumBudgetItemFin == 0 && countBudgetItemFin > 0;
+}
+
+bool CMasternodeSync::IsCommunityPropEmpty()
+{
+    return sumCommunityItemProp == 0 && countCommunityItemProp > 0;
 }
 
 void CMasternodeSync::GetNextAsset()
@@ -151,6 +172,9 @@ void CMasternodeSync::GetNextAsset()
         RequestedMasternodeAssets = MASTERNODE_SYNC_BUDGET;
         break;
     case (MASTERNODE_SYNC_BUDGET):
+        RequestedMasternodeAssets = MASTERNODE_SYNC_COMMUNITYVOTE;
+        break;
+    case (MASTERNODE_SYNC_COMMUNITYVOTE):
         LogPrintf("CMasternodeSync::GetNextAsset - Sync has finished\n");
         RequestedMasternodeAssets = MASTERNODE_SYNC_FINISHED;
         break;
@@ -172,6 +196,8 @@ std::string CMasternodeSync::GetSyncStatus()
         return _("Synchronizing masternode winners...");
     case MASTERNODE_SYNC_BUDGET:
         return _("Synchronizing budgets...");
+    case MASTERNODE_SYNC_COMMUNITYVOTE:
+        return _("Synchronizing community proposals...");
     case MASTERNODE_SYNC_FAILED:
         return _("Synchronization failed");
     case MASTERNODE_SYNC_FINISHED:
@@ -211,6 +237,11 @@ void CMasternodeSync::ProcessMessage(CNode* pfrom, std::string& strCommand, CDat
             sumBudgetItemFin += nCount;
             countBudgetItemFin++;
             break;
+        case (MASTERNODE_SYNC_COMMUNITYVOTE_PROP):
+            if (RequestedMasternodeAssets != MASTERNODE_SYNC_COMMUNITYVOTE) return;
+            sumCommunityItemProp += nCount;
+            countCommunityItemProp++;
+            break;
         }
 
         LogPrint("masternode", "CMasternodeSync:ProcessMessage - ssc - got inventory count %d %d\n", nItemID, nCount);
@@ -222,11 +253,12 @@ void CMasternodeSync::ClearFulfilledRequest()
     TRY_LOCK(cs_vNodes, lockRecv);
     if (!lockRecv) return;
 
-    BOOST_FOREACH (CNode* pnode, vNodes) {
+    for (CNode* pnode : vNodes) {
         pnode->ClearFulfilledRequest("getspork");
         pnode->ClearFulfilledRequest("mnsync");
         pnode->ClearFulfilledRequest("mnwsync");
         pnode->ClearFulfilledRequest("busync");
+        pnode->ClearFulfilledRequest("comsync");
     }
 }
 
@@ -237,7 +269,7 @@ void CMasternodeSync::Process()
     if (tick++ % MASTERNODE_SYNC_TIMEOUT != 0) return;
 
     if (IsSynced()) {
-        /* 
+        /*
             Resync if we lose all masternodes from sleep/wake or failure to sync originally
         */
         if (mnodeman.CountEnabled() == 0) {
@@ -366,10 +398,10 @@ void CMasternodeSync::Process()
 
         if (pnode->nVersion >= ActiveProtocol()) {
             if (RequestedMasternodeAssets == MASTERNODE_SYNC_BUDGET) {
-                
+
                 // We'll start rejecting votes if we accidentally get set as synced too soon
-                if (lastBudgetItem > 0 && lastBudgetItem < GetTime() - MASTERNODE_SYNC_TIMEOUT * 2 && RequestedMasternodeAttempt >= MASTERNODE_SYNC_THRESHOLD) { 
-                    
+                if (lastBudgetItem > 0 && lastBudgetItem < GetTime() - MASTERNODE_SYNC_TIMEOUT * 2 && RequestedMasternodeAttempt >= MASTERNODE_SYNC_THRESHOLD) {
+
                     // Hasn't received a new item in the last five seconds, so we'll move to the
                     GetNextAsset();
 
@@ -397,6 +429,48 @@ void CMasternodeSync::Process()
                 pnode->PushMessage("mnvs", n); //sync masternode votes
                 RequestedMasternodeAttempt++;
 
+                return;
+            }
+
+            if (pnode->nVersion >= COMMUNITY_PROPOSAL_VERSION) {
+                if (RequestedMasternodeAssets == MASTERNODE_SYNC_COMMUNITYVOTE) {
+
+                    // We'll start rejecting votes if we accidentally get set as synced too soon
+                    if (lastCommunityItem > 0 && lastCommunityItem < GetTime() - MASTERNODE_SYNC_TIMEOUT * 2 && RequestedMasternodeAttempt >= MASTERNODE_SYNC_THRESHOLD) {
+
+                        // Hasn't received a new item in the last five seconds, so we'll move to the
+                        GetNextAsset();
+
+                        // Try to activate our masternode if possible
+                        activeMasternode.ManageStatus();
+
+                        return;
+                    }
+
+                    // timeout
+                    if (lastCommunityItem == 0 &&
+                        (RequestedMasternodeAttempt >= MASTERNODE_SYNC_THRESHOLD * 3 || GetTime() - nAssetSyncStarted > MASTERNODE_SYNC_TIMEOUT * 5)) {
+                        // maybe there is are no community proposals at all, so just finish syncing
+                        GetNextAsset();
+                        activeMasternode.ManageStatus();
+                        return;
+                    }
+
+                    if (pnode->HasFulfilledRequest("comsync")) continue;
+                    pnode->FulfilledRequest("comsync");
+
+                    if (RequestedMasternodeAttempt >= MASTERNODE_SYNC_THRESHOLD * 3) return;
+
+                    uint256 n = 0;
+                    pnode->PushMessage("mncvs", n); //sync masternode community votes
+                    RequestedMasternodeAttempt++;
+
+                    return;
+                }
+            } else {
+                // Client does not supports community proposals.
+                GetNextAsset();
+                activeMasternode.ManageStatus();
                 return;
             }
         }

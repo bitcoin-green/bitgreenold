@@ -272,6 +272,13 @@ extern UniValue mnbudgetrawvote(const UniValue& params, bool fHelp);
 extern UniValue mnfinalbudget(const UniValue& params, bool fHelp);
 extern UniValue checkbudgets(const UniValue& params, bool fHelp);
 
+extern UniValue preparecommunityproposal(const UniValue& params, bool fHelp); // in rpcmasternode-vote.cpp
+extern UniValue submitcommunityproposal(const UniValue& params, bool fHelp);
+extern UniValue getcommunityinfo(const UniValue& params, bool fHelp);
+extern UniValue checkcommunityproposals(const UniValue& params, bool fHelp);
+extern UniValue getcommunityproposalvotes(const UniValue& params, bool fHelp);
+extern UniValue mncommunityvote(const UniValue& params, bool fHelp);
+
 extern UniValue getinfo(const UniValue& params, bool fHelp); // in rpcmisc.cpp
 extern UniValue mnsync(const UniValue& params, bool fHelp);
 extern UniValue spork(const UniValue& params, bool fHelp);

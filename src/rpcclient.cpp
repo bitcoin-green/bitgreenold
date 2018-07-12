@@ -119,7 +119,10 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"setstakesplitthreshold", 0},
         {"autocombinerewards", 0},
         {"autocombinerewards", 1},
-        {"getfeeinfo", 0}
+        {"getfeeinfo", 0},
+        {"preparecommunityproposal", 2},
+        {"submitcommunityproposal", 2},
+
     };
 
 class CRPCConvertTable

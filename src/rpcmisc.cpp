@@ -143,6 +143,8 @@ UniValue mnsync(const UniValue& params, bool fHelp)
             "  \"countMasternodeWinner\": n,    (numeric) Number of MN winner messages (local)\n"
             "  \"countBudgetItemProp\": n,      (numeric) Number of MN budget messages (local)\n"
             "  \"countBudgetItemFin\": n,       (numeric) Number of MN budget finalization messages (local)\n"
+            "  \"sumCommunityItemProp\": n,        (numeric) Number of MN community messages (total)\n"
+            "  \"countCommunityItemProp\": n,      (numeric) Number of MN community messages (local)\n"
             "  \"RequestedMasternodeAssets\": n, (numeric) Status code of last sync phase\n"
             "  \"RequestedMasternodeAttempt\": n, (numeric) Status code of last sync attempt\n"
             "}\n"
@@ -170,6 +172,8 @@ UniValue mnsync(const UniValue& params, bool fHelp)
         obj.push_back(Pair("countMasternodeWinner", masternodeSync.countMasternodeWinner));
         obj.push_back(Pair("countBudgetItemProp", masternodeSync.countBudgetItemProp));
         obj.push_back(Pair("countBudgetItemFin", masternodeSync.countBudgetItemFin));
+        obj.push_back(Pair("sumCommunityItemProp", masternodeSync.sumCommunityItemProp));
+        obj.push_back(Pair("countCommunityItemProp", masternodeSync.countCommunityItemProp));
         obj.push_back(Pair("RequestedMasternodeAssets", masternodeSync.RequestedMasternodeAssets));
         obj.push_back(Pair("RequestedMasternodeAttempt", masternodeSync.RequestedMasternodeAttempt));
 

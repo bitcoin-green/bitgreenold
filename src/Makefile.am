@@ -125,6 +125,7 @@ BITCOIN_CORE_H = \
   masternodeman.h \
   masternodeconfig.h \
   masternode-helpers.h \
+  masternode-vote.h \
   merkleblock.h \
   miner.h \
   mruset.h \
@@ -202,6 +203,7 @@ libbitcoin_server_a_SOURCES = \
   rpcblockchain.cpp \
   rpcmasternode.cpp \
   rpcmasternode-budget.cpp \
+  rpcmasternode-vote.cpp \
   rpcmining.cpp \
   rpcmisc.cpp \
   rpcnet.cpp \
@@ -245,6 +247,7 @@ libbitcoin_wallet_a_SOURCES = \
   masternodeconfig.cpp \
   masternodeman.cpp \
   masternode-helpers.cpp \
+  masternode-vote.cpp \
   rpcdump.cpp \
   rpcwallet.cpp \
   kernel.cpp \

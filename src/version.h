@@ -40,5 +40,7 @@ static const int MEMPOOL_GD_VERSION = 60002;
 //! "filter*" commands are disabled without NODE_BLOOM after and including this version
 static const int NO_BLOOM_VERSION = 70005;
 
+//! Community proposal starts with this version
+static const int COMMUNITY_PROPOSAL_VERSION = 70913;
 
 #endif // BITCOIN_VERSION_H

@@ -425,6 +425,9 @@ public:
     bool GetBudgetSystemCollateralTX(CTransaction& tx, uint256 hash, bool useIX);
     bool GetBudgetSystemCollateralTX(CWalletTx& tx, uint256 hash, bool useIX);
 
+    bool GetCommunityVoteSystemCollateralTX(CTransaction& tx, uint256 hash, bool useIX);
+    bool GetCommunityVoteSystemCollateralTX(CWalletTx& tx, uint256 hash, bool useIX);
+
     isminetype IsMine(const CTxIn& txin) const;
     CAmount GetDebit(const CTxIn& txin, const isminefilter& filter) const;
     isminetype IsMine(const CTxOut& txout) const
