@@ -1814,6 +1814,10 @@ bool CWallet::CreateTransaction(CScript scriptPubKey, const CAmount& nValue, CWa
 // ppcoin: create coin stake transaction
 bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int64_t nSearchInterval, CAmount nFees, CMutableTransaction& txNew, unsigned int& nTxNewTime)
 {
+    // We start paying the fees to stakers only after v1.2.0 fork.
+    if (Params().NetworkID() == CBaseChainParams::MAIN && chainActive.Height() < SOFT_FORK_VERSION_120)
+        nFees = 0;
+
     // The following split & combine thresholds are important to security
     // Should not be adjusted if you don't understand the consequences
     //int64_t nCombineThreshold = 0;
