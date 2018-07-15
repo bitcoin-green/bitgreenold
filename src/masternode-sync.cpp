@@ -432,45 +432,38 @@ void CMasternodeSync::Process()
                 return;
             }
 
-            if (pnode->nVersion >= COMMUNITY_PROPOSAL_VERSION) {
-                if (RequestedMasternodeAssets == MASTERNODE_SYNC_COMMUNITYVOTE) {
+            if (RequestedMasternodeAssets == MASTERNODE_SYNC_COMMUNITYVOTE) {
 
-                    // We'll start rejecting votes if we accidentally get set as synced too soon
-                    if (lastCommunityItem > 0 && lastCommunityItem < GetTime() - MASTERNODE_SYNC_TIMEOUT * 2 && RequestedMasternodeAttempt >= MASTERNODE_SYNC_THRESHOLD) {
+                // We'll start rejecting votes if we accidentally get set as synced too soon
+                if (lastCommunityItem > 0 && lastCommunityItem < GetTime() - MASTERNODE_SYNC_TIMEOUT * 2 && RequestedMasternodeAttempt >= MASTERNODE_SYNC_THRESHOLD) {
 
-                        // Hasn't received a new item in the last five seconds, so we'll move to the
-                        GetNextAsset();
+                    // Hasn't received a new item in the last five seconds, so we'll move to the
+                    GetNextAsset();
 
-                        // Try to activate our masternode if possible
-                        activeMasternode.ManageStatus();
-
-                        return;
-                    }
-
-                    // timeout
-                    if (lastCommunityItem == 0 &&
-                        (RequestedMasternodeAttempt >= MASTERNODE_SYNC_THRESHOLD * 3 || GetTime() - nAssetSyncStarted > MASTERNODE_SYNC_TIMEOUT * 5)) {
-                        // maybe there is are no community proposals at all, so just finish syncing
-                        GetNextAsset();
-                        activeMasternode.ManageStatus();
-                        return;
-                    }
-
-                    if (pnode->HasFulfilledRequest("comsync")) continue;
-                    pnode->FulfilledRequest("comsync");
-
-                    if (RequestedMasternodeAttempt >= MASTERNODE_SYNC_THRESHOLD * 3) return;
-
-                    uint256 n = 0;
-                    pnode->PushMessage("mncvs", n); //sync masternode community votes
-                    RequestedMasternodeAttempt++;
+                    // Try to activate our masternode if possible
+                    activeMasternode.ManageStatus();
 
                     return;
                 }
-            } else {
-                // Client does not supports community proposals.
-                GetNextAsset();
-                activeMasternode.ManageStatus();
+
+                // timeout
+                if (lastCommunityItem == 0 &&
+                    (RequestedMasternodeAttempt >= MASTERNODE_SYNC_THRESHOLD * 3 || GetTime() - nAssetSyncStarted > MASTERNODE_SYNC_TIMEOUT * 5)) {
+                    // maybe there is are no community proposals at all, so just finish syncing
+                    GetNextAsset();
+                    activeMasternode.ManageStatus();
+                    return;
+                }
+
+                if (pnode->HasFulfilledRequest("comsync")) continue;
+                pnode->FulfilledRequest("comsync");
+
+                if (RequestedMasternodeAttempt >= MASTERNODE_SYNC_THRESHOLD * 3) return;
+
+                uint256 n = 0;
+                pnode->PushMessage("mncvs", n); //sync masternode community votes
+                RequestedMasternodeAttempt++;
+
                 return;
             }
         }
