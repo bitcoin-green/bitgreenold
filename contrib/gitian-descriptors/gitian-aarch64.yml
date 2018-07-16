@@ -1,5 +1,5 @@
 ---
-name: "bitcoingreen-aarch64-1.0"
+name: "bitcoingreen-aarch64-1.2"
 enable_cache: true
 suites:
 - "xenial"

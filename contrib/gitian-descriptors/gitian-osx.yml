@@ -1,5 +1,5 @@
 ---
-name: "bitcoingreen-osx-1.0"
+name: "bitcoingreen-osx-1.2"
 enable_cache: true
 suites:
 - "xenial"
