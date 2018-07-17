@@ -136,6 +136,10 @@
         <translation>用于在操作系统帐户遭到破坏时禁用琐碎的sendmoney。没有真正的安全性。</translation>
     </message>
     <message>
+        <source>For staking only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Enter the new passphrase to the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
         <translation>输入一个新的钱包密码&lt;br/&gt;钱包密码&lt;b&gt;建议使用10位以上的随机字符&lt;/b&gt;，或者&lt;b&gt; 3个以上的单词&lt;/b&gt;。并建议有序使用大小写字母。</translation>
     </message>

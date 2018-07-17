@@ -136,6 +136,10 @@
         <translation>Serve per impedire invii accidentali nel caso in cui l'utenza del sistema operativo sia stata compromessa. Non garantisce alcuna reale sicurezza.</translation>
     </message>
     <message>
+        <source>For staking only</source>
+        <translation>Solo per staking</translation>
+    </message>
+    <message>
         <source>Enter the new passphrase to the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
         <translation>Inserisci la nuova parola d'ordine per il portafoglio.&lt;br/&gt;Si raccomanda di usare una parola d'ordine di &lt;b&gt;dieci o più caratteri casuali&lt;/b&gt;, oppure di &lt;b&gt;otto o più parole&lt;/b&gt;.</translation>
     </message>
@@ -712,7 +716,7 @@ Indirizzo: %4
     <message>
         <source>Staking is active
  MultiSend: %1</source>
-        <translation>Lo Stacking è attivo
+        <translation>Lo Staking è attivo
 MultiSend: %1</translation>
     </message>
     <message>

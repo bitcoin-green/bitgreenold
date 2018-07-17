@@ -136,6 +136,10 @@
         <translation>운영체제 계정이 손상되었을 때 일반적인 송금을 비활성화 합니다. 실질적인 보안을 제공하지 않습니다.</translation>
     </message>
     <message>
+        <source>For staking only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Enter the new passphrase to the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
         <translation>지갑에 새로운 암호를 입력해주세요. &lt;br/&gt;&lt;b&gt;10자리 이상의 임의의 문자&lt;/b&gt; 또는, &lt;b&gt;8개 이상의 단어&lt;/b&gt;로 구성된 암호를 입력해주세요.</translation>
     </message>

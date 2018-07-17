@@ -215,6 +215,10 @@
         <source>Warning: The Caps Lock key is on!</source>
         <translation>Внимание: Клавишът за главни букви е включен!</translation>
     </message>
+    <message>
+        <source>For staking only</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Bip38ToolDialog</name>

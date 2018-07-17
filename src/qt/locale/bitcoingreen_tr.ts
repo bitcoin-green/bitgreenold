@@ -136,6 +136,10 @@
         <translation>OS hesabı tehlikeye atıldığında önemsiz para göndermeyi devre dışı bırakır. Gerçek bir güvenlik sağlamaz.</translation>
     </message>
     <message>
+        <source>For staking only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Enter the new passphrase to the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
         <translation>Yeni şifre sözcüğünü cüzdana girinLütfen bir şifre söcüğü kullanın &lt;br/&gt;&lt;b&gt;10 veya daha fazla karakter içeren&lt;/b&gt;veya&lt;b&gt;8 veya daha fazla kelime içeren&lt;/b&gt;</translation>
     </message>

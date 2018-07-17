@@ -136,6 +136,10 @@
         <translation>Slår ligegyldige afsendelser fra, når operativsystemets konto er kompromitteret. Denne funktion giver ikke ægte sikkerhed</translation>
     </message>
     <message>
+        <source>For staking only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Enter the new passphrase to the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
         <translation>Indtast et password til tegnebogen. &lt;br/&gt; Brug mindst 10 karakterer&lt;b&gt;eller&lt;b&gt; mindst 8 ord&lt;b&gt;.</translation>
     </message>

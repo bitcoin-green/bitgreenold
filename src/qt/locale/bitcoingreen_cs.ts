@@ -136,6 +136,10 @@
         <translation>Slouží k neumožnění zaslání jednoduché platby, pokud je učet OS kompromitován. Neposkytuje tak reálné zabezpeční.</translation>
     </message>
     <message>
+        <source>For staking only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Enter the new passphrase to the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
         <translation>Zadejte nové frázové heslo pro Vaši peněženku &lt;br/&gt; Prosím, použijte frázové heslo z &lt;b&gt; nebo více náhodných znaků &lt;/b&gt;, nebo&lt;b&gt;z osmi nebo více slov&lt;/b&gt;  .</translation>
     </message>
