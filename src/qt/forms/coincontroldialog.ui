@@ -481,7 +481,7 @@
       </property>
      </column>
      <column>
-      <property name="text">	 
+      <property name="text">
        <string>Date</string>
       </property>
      </column>
