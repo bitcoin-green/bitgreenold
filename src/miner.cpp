@@ -377,12 +377,12 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
         pblock->nNonce = 0;
         pblocktemplate->vTxSigOps[0] = GetLegacySigOpCount(pblock->vtx[0]);
 
-        // CValidationState state;
-        // if (!TestBlockValidity(state, *pblock, pindexPrev, false, false)) {
-        //     LogPrintf("CreateNewBlock() : TestBlockValidity failed\n");
-        //     mempool.clear();
-        //     return NULL;
-        // }
+        CValidationState state;
+        if (!TestBlockValidity(state, *pblock, pindexPrev, false, false)) {
+            LogPrintf("CreateNewBlock() : TestBlockValidity failed\n");
+            mempool.clear();
+            return NULL;
+        }
     }
 
     return pblocktemplate.release();
@@ -486,18 +486,12 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
                 continue;
             }
 
-            while (vNodes.empty() || pwallet->IsLocked() || !fMintableCoins || (pwallet->GetBalance() > 0 && nReserveBalance >= pwallet->GetBalance())) {
+            if (vNodes.empty() || pwallet->IsLocked() || !fMintableCoins ||
+                (pwallet->GetBalance() > 0 && nReserveBalance >= pwallet->GetBalance()) ||
+                !masternodeSync.IsSynced()) {
                 nLastCoinStakeSearchInterval = 0;
-                // Do a separate 1 minute check here to ensure fMintableCoins is updated
-                if (!fMintableCoins) {
-                    if (GetTime() - nMintableLastCheck > 1 * 60) { // 1 minute check time
-                        nMintableLastCheck = GetTime();
-                        fMintableCoins = pwallet->MintableCoins();
-                    }
-                }
                 MilliSleep(5000);
-                if (!fGenerateBitcoins && !fProofOfStake)
-                    continue;
+                continue;
             }
 
             if (mapHashedBlocks.count(chainActive.Tip()->nHeight)) { //search our map of hashed blocks, see if bestblock has been hashed yet
