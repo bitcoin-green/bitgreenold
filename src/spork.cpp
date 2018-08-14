@@ -96,6 +96,9 @@ void ProcessSpork(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
         mapSporksActive[spork.nSporkID] = spork;
         sporkManager.Relay(spork);
 
+        // does a task if needed
+        ExecuteSpork(spork.nSporkID, spork.nValue);
+
         // BITG: add to spork database.
         pSporkDB->WriteSpork(spork.nSporkID, spork);
     }
@@ -144,6 +147,14 @@ bool IsSporkActive(int nSporkID)
     int64_t r = GetSporkValue(nSporkID);
     if (r == -1) return false;
     return r < GetTime();
+}
+
+void ExecuteSpork(int nSporkID, int nValue)
+{
+    if (nSporkID == SPORK_12_RECONSIDER_BLOCKS && nValue > 0) {
+        LogPrintf("Spork::ExecuteSpork -- Reconsider Last %d Blocks\n", nValue);
+        ReprocessBlocks(nValue);
+    }
 }
 
 void ReprocessBlocks(int nBlocks)
