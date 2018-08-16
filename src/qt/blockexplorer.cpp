@@ -552,8 +552,6 @@ void BlockExplorer::setContent(const std::string& Content)
 {
     QString CSS = "body {font-size:12px; color:#333; bgcolor:#fafafa;}\n a, span { font-family: monospace; }\n span.addr {color:#333; font-weight: bold;}\n table tr td {padding: 3px; border: 1px solid black; background-color: #fafafa;}\n td.d0 {font-weight: bold; color:#333;}\n h2, h3 { white-space:nowrap; color:#333;}\n a { color:#337ab7; text-decoration:none; }\n a.nav {color:#337ab7;}\n";
     QString FullContent = "<html><head><style type=\"text/css\">" + CSS + "</style></head>" + "<body>" + Content.c_str() + "</body></html>";
-    // printf(FullContent.toUtf8());
-
     ui->content->setText(FullContent);
 }
 

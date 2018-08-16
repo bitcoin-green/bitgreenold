@@ -122,7 +122,6 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"getfeeinfo", 0},
         {"preparecommunityproposal", 2},
         {"submitcommunityproposal", 2},
-
     };
 
 class CRPCConvertTable
