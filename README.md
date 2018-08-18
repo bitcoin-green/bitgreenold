@@ -1,7 +1,7 @@
 Bitcoin Green Core integration/staging repository
 =================================================
 
-Bitcoin Green (BITG) is a sustainable cryptocurrency modeled after Satoshi Nakamoto’s vision for Bitcoin. It is a decentralized, peer-to-peer transactional currency designed to offer a solution to the problem posed by the exponential increase in energy consumed by Bitcoin and other proof-of-work currencies. Proof-of-work mining is environmentally unsustainable due to the electricity used by high-powered mining hardware. Bitcoin Green utilizes an energy efficient proof-of-stake algorithm, can be mined on any computer, and will never require specialized mining equipment. The Green Protocol offers a simple solution to Bitcoin sustainability issues and provides a faster, more scalable blockchain that is better suited for daily transactional use.
+Bitcoin Green (BITG) is a sustainable cryptocurrency modeled after Satoshi Nakamoto’s vision for Bitcoin. It is a decentralized, peer-to-peer transactional currency designed to offer a solution to the problem posed by the exponential increase in energy consumed by Bitcoin and other proof-of-work currencies. Proof-of-work mining is environmentally unsustainable due to the electricity used by high-powered mining hardware. Bitcoin Green utilizes the Green Protocol, an energy efficient proof-of-stake algorithm inspired by PIVX/DASH, can be mined on any computer, and will never require specialized mining equipment. The Green Protocol offers a simple solution to Bitcoin sustainability issues and provides a faster, more scalable blockchain that is better suited for daily transactional use.
 
 - Fast transactions featuring guaranteed zero confirmation transactions, we call it _SwiftTX_.
 - Decentralized blockchain voting providing for consensus based advancement of the current Masternode
@@ -9,6 +9,8 @@ Bitcoin Green (BITG) is a sustainable cryptocurrency modeled after Satoshi Nakam
   with a collateral of 2,500 BITG.
 
 More information at [savebitcoin.io](http://www.savebitcoin.io)
+
+Please reach out at awareness@savebitcoin.io
 
 ### Coin Specs
 | Block Time                  | 60 Seconds      |
