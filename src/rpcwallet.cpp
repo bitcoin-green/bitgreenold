@@ -1634,7 +1634,7 @@ UniValue walletpassphrase(const UniValue& params, bool fHelp)
     strWalletPass = params[0].get_str().c_str();
     
     bool stakingOnly = false;
-    if (params.length > 2)
+    if (params.size() > 2)
         stakingOnly = params[2].get_bool();
 
     if (!pwalletMain->IsLocked())
