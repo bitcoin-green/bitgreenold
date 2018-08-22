@@ -335,6 +335,8 @@ UniValue dumpprivkey(const UniValue& params, bool fHelp)
             "\nReveals the private key corresponding to 'bitgaddress'.\n"
             "Then the importprivkey can be used with this output\n" +
             HelpRequiringPassphrase() + "\n"
+            "\nDo not recklessly execute this command in front of others, \n"
+            "hackers/scammers are known to use this method to steal your coins!\n"
 
             "\nArguments:\n"
             "1. \"bitgaddress\"   (string, required) The bitg address for the private key\n"
@@ -347,6 +349,15 @@ UniValue dumpprivkey(const UniValue& params, bool fHelp)
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
     EnsureWalletIsUnlocked();
+
+    static int count = 0;   /*  Display a warning the first time a user executes this command */
+    if(count == 0) {
+        ++count;
+        return "Warning: This command will print your private key! If someone\n"
+                "gains access to this key you will lose all your coins! Hackers/Scammers\n"
+                "are known to use this method. Be careful!";
+    }
+    ++count;
 
     string strAddress = params[0].get_str();
     CBitcoinAddress address;
@@ -379,6 +390,16 @@ UniValue dumpwallet(const UniValue& params, bool fHelp)
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
     EnsureWalletIsUnlocked();
+
+    static int count = 0;   /*  Display a warning the first time a user executes this command */
+    if(count == 0) {
+        ++count;
+        return "Warning: This command will dump your private keys! If someone\n"
+                "gains access to these keys you will lose all your coins! Hackers/Scammers\n"
+                "are known to use this method. Be careful!";
+    }
+    ++count;
+
 
     ofstream file;
     file.open(params[0].get_str().c_str());
