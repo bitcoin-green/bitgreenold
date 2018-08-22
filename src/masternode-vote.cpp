@@ -82,7 +82,7 @@ bool IsCommunityCollateralValid(uint256 nTxCollateralHash, uint256 nExpectedHash
         return true;
     } else {
         strError = strprintf("Collateral requires at least %d confirmations - %d confirmations", Params().Budget_Fee_Confirmations(), conf);
-        LogPrint("masternode", "::IsCommunityCollateralValid - %s\n", strError, conf);
+        LogPrint("masternode", "::IsCommunityCollateralValid - %s\n", strError);
         return false;
     }
 }
