@@ -21,8 +21,7 @@ static const int INIT_PROTO_VERSION = 209;
 static const int GETHEADERS_VERSION = 70077;
 
 //! disconnect from peers older than this proto version
-static const int MIN_PEER_PROTO_VERSION = 70912;
-static const int MIN_PEER_PROTO_VERSION_COMMUNITY_PROPOSALS = 70913;
+static const int MIN_PEER_PROTO_VERSION = 70913;
 
 //! fork blocks
 static const int SOFT_FORK_VERSION_120 = 260000;

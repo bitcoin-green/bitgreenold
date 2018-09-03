@@ -51,10 +51,6 @@ using namespace std;
 #error "Bitcoin Green cannot be compiled without assertions."
 #endif
 
-// 6 comes from OPCODE (1) + vch.size() (1) + BIGNUM size (4)
-#define SCRIPT_OFFSET 6
-// For Script size (BIGNUM/Uint256 size)
-#define BIGNUM_SIZE   4
 /**
  * Global state
  */
@@ -5307,9 +5303,6 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 //       it was the one which was commented out
 int ActiveProtocol()
 {
-    if (chainActive.Height() >= SOFT_FORK_VERSION_120)
-       return MIN_PEER_PROTO_VERSION_COMMUNITY_PROPOSALS;
-
     return MIN_PEER_PROTO_VERSION;
 }
 
