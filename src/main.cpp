@@ -1805,20 +1805,20 @@ bool CheckInputs(const CTransaction& tx, CValidationState& state, const CCoinsVi
         }
 
         if (!tx.IsCoinStake()) {
-            // if (nValueIn < tx.GetValueOut())
-            //     return state.DoS(100, error("CheckInputs() : %s value in (%s) < value out (%s)",
-            //                               tx.GetHash().ToString(), FormatMoney(nValueIn), FormatMoney(tx.GetValueOut())),
-            //         REJECT_INVALID, "bad-txns-in-belowout");
+            if (nValueIn < tx.GetValueOut())
+                return state.DoS(100, error("CheckInputs() : %s value in (%s) < value out (%s)",
+                                          tx.GetHash().ToString(), FormatMoney(nValueIn), FormatMoney(tx.GetValueOut())),
+                    REJECT_INVALID, "bad-txns-in-belowout");
 
             // Tally transaction fees
             CAmount nTxFee = nValueIn - tx.GetValueOut();
-            // if (nTxFee < 0)
-            //     return state.DoS(100, error("CheckInputs() : %s nTxFee < 0", tx.GetHash().ToString()),
-            //         REJECT_INVALID, "bad-txns-fee-negative");
+            if (nTxFee < 0)
+                return state.DoS(100, error("CheckInputs() : %s nTxFee < 0", tx.GetHash().ToString()),
+                    REJECT_INVALID, "bad-txns-fee-negative");
             nFees += nTxFee;
-            // if (!MoneyRange(nFees))
-            //     return state.DoS(100, error("CheckInputs() : nFees out of range"),
-            //         REJECT_INVALID, "bad-txns-fee-outofrange");
+            if (!MoneyRange(nFees))
+                return state.DoS(100, error("CheckInputs() : nFees out of range"),
+                    REJECT_INVALID, "bad-txns-fee-outofrange");
         }
         // The first loop above does all the inexpensive checks.
         // Only if ALL inputs pass do we perform expensive ECDSA signature checks.
