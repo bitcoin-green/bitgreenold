@@ -207,13 +207,13 @@ bool ComputeNextStakeModifier(const CBlockIndex* pindexPrev, uint64_t& nStakeMod
 
         // add the selected block from candidates to selected list
         mapSelectedBlocks.insert(make_pair(pindex->GetBlockHash(), pindex));
-        if (fDebug || GetBoolArg("-printstakemodifier", false))
+        if (GetBoolArg("-printstakemodifier", false))
             LogPrintf("ComputeNextStakeModifier: selected round %d stop=%s height=%d bit=%d\n",
                 nRound, DateTimeStrFormat("%Y-%m-%d %H:%M:%S", nSelectionIntervalStop).c_str(), pindex->nHeight, pindex->GetStakeEntropyBit());
     }
 
     // Print selection map for visualization of the selected blocks
-    if (fDebug || GetBoolArg("-printstakemodifier", false)) {
+    if (GetBoolArg("-printstakemodifier", false)) {
         string strSelectionMap = "";
         // '-' indicates proof-of-work blocks not selected
         strSelectionMap.insert(0, pindexPrev->nHeight - nHeightFirstCandidate + 1, '-');
@@ -231,7 +231,7 @@ bool ComputeNextStakeModifier(const CBlockIndex* pindexPrev, uint64_t& nStakeMod
         }
         LogPrintf("ComputeNextStakeModifier: selection height [%d, %d] map %s\n", nHeightFirstCandidate, pindexPrev->nHeight, strSelectionMap.c_str());
     }
-    if (fDebug || GetBoolArg("-printstakemodifier", false)) {
+    if (GetBoolArg("-printstakemodifier", false)) {
         LogPrintf("ComputeNextStakeModifier: new modifier=%s time=%s\n", boost::lexical_cast<std::string>(nStakeModifierNew).c_str(), DateTimeStrFormat("%Y-%m-%d %H:%M:%S", pindexPrev->GetBlockTime()).c_str());
     }
 
@@ -286,7 +286,7 @@ bool stakeTargetHit(uint256 hashProofOfStake, int64_t nValueIn, uint256 bnTarget
     uint256 bnCoinDayWeight = uint256(nValueIn) / 100;
 
     // Now check if proof-of-stake hash meets target protocol
-    return (uint256(hashProofOfStake) < bnCoinDayWeight * bnTargetPerCoinDay);
+    return hashProofOfStake < (bnCoinDayWeight * bnTargetPerCoinDay);
 }
 
 //instead of looping outside and reinitializing variables many times, we will give a nTimeTx and also search interval so that we can do all the hashing here
