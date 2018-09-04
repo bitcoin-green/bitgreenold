@@ -1,4 +1,6 @@
-// Copyright (c) 2014 The Bitcoin developers
+// Copyright (c) 2014-2017 The Bitcoin developers
+// Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2017-2018 The Bitcoin Green developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -40,10 +42,8 @@ static int64_t abs64(int64_t n)
     return (n >= 0 ? n : -n);
 }
 
-void AddTimeData(const CNetAddr& ip, int64_t nTime)
+void AddTimeData(const CNetAddr& ip, int64_t nOffsetSample)
 {
-    int64_t nOffsetSample = nTime - GetTime();
-
     LOCK(cs_nTimeOffset);
     // Ignore duplicates
     static set<CNetAddr> setKnown;
