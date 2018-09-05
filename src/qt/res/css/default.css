@@ -1067,7 +1067,8 @@ QStackedWidget#SendCoinsEntry .QFrame#SendCoins > .QLabel { /* Send Coin Entry L
 /* QStackedWidget#SendCoinsEntry .QValidatedLineEdit#payTo { /* Pay To Input Field */
 /* QStackedWidget#SendCoinsEntry .QValidatedLineEdit#payTo:!focus { /* Pay To Input Field */
 
-QStackedWidget#SendCoinsEntry .QToolButton { /* General Settings for Pay To Icons */
+QStackedWidget#SendCoinsEntry .QToolButton, /* General Settings for Pay To Icons */
+QDialog#Bip38ToolDialog .QToolButton {
 	background-color: #0f7f12;
 	border-width: 1px;
 	border-style: outset;
@@ -1079,14 +1080,17 @@ QStackedWidget#SendCoinsEntry .QToolButton { /* General Settings for Pay To Icon
 	margin: 2px;
 }
 
-QStackedWidget#SendCoinsEntry .QToolButton:hover { /* General Settings for Pay To Icons */
+QStackedWidget#SendCoinsEntry .QToolButton:hover, /* General Settings for Pay To Icons */
+QDialog#Bip38ToolDialog .QToolButton:hover {
 	background-color: #219C21;
 }
 
-QStackedWidget#SendCoinsEntry .QToolButton:focus { /* General Settings for Pay To Icons */
+QStackedWidget#SendCoinsEntry .QToolButton:focus,  /* General Settings for Pay To Icons */
+QDialog#Bip38ToolDialog .QToolButton:focus {
 }
 
-QStackedWidget#SendCoinsEntry .QToolButton:pressed { /* General Settings for Pay To Icons */
+QStackedWidget#SendCoinsEntry .QToolButton:pressed, /* General Settings for Pay To Icons */
+QDialog#Bip38ToolDialog .QToolButton:focus {
 }
 
 /* QStackedWidget#SendCoinsEntry .QToolButton#addressBookButton { /* Address Book Button */
