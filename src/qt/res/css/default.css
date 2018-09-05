@@ -150,7 +150,7 @@ QGroupBox {
 QToolTip {
 	background-color:#fff;
 	color:#333;
-	border-style: none;
+	border: 1px solid #333;
 }
 
 /****************************************************************************************/
