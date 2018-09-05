@@ -54,6 +54,6 @@ iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 9333 ! -d ${LOCALNET} -j MARK
 iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 9333 ! -d ${LOCALNET} -j MARK --set-mark 0x2
 
 if [ ! -z "${LOCALNET_V6}" ] ; then
-	ip6tables -t mangle -A OUTPUT -p tcp -m tcp --dport 9999 ! -d ${LOCALNET_V6} -j MARK --set-mark 0x4
-	ip6tables -t mangle -A OUTPUT -p tcp -m tcp --sport 9999 ! -d ${LOCALNET_V6} -j MARK --set-mark 0x4
+	ip6tables -t mangle -A OUTPUT -p tcp -m tcp --dport 9333 ! -d ${LOCALNET_V6} -j MARK --set-mark 0x4
+	ip6tables -t mangle -A OUTPUT -p tcp -m tcp --sport 9333 ! -d ${LOCALNET_V6} -j MARK --set-mark 0x4
 fi
