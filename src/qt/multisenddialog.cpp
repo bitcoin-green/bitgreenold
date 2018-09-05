@@ -1,23 +1,24 @@
+// Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2017-2018 The Bitcoin Green developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #include "multisenddialog.h"
+#include "ui_multisenddialog.h"
+
 #include "addressbookpage.h"
+#include "addresstablemodel.h"
 #include "base58.h"
 #include "init.h"
-#include "ui_multisenddialog.h"
 #include "walletmodel.h"
-#include <QLineEdit>
-#include <QMessageBox>
-#include <boost/lexical_cast.hpp>
+
 #include <QStyle>
 
-using namespace std;
-using namespace boost;
-
-MultiSendDialog::MultiSendDialog(QWidget* parent) : QDialog(parent),
+MultiSendDialog::MultiSendDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                                     ui(new Ui::MultiSendDialog),
-                                                    model(0)
+                                                    model(nullptr)
 {
     ui->setupUi(this);
-
     updateCheckBoxes();
 }
 
@@ -55,6 +56,13 @@ void MultiSendDialog::on_addressBookButton_clicked()
         dlg.setModel(model->getAddressTableModel());
         if (dlg.exec())
             setAddress(dlg.getReturnValue(), ui->multiSendAddressEdit);
+
+        // Update the label text box with the label in the addressbook
+        QString associatedLabel = model->getAddressTableModel()->labelForAddress(dlg.getReturnValue());
+        if (!associatedLabel.isEmpty())
+            ui->labelAddressLabelEdit->setText(associatedLabel);
+        else
+            ui->labelAddressLabelEdit->setText(tr("(no label)"));
     }
 }
 
@@ -72,6 +80,12 @@ void MultiSendDialog::on_viewButton_clicked()
 
     for (int i = 0; i < (int)pwalletMain->vMultiSend.size(); i++) {
         pMultiSend = pwalletMain->vMultiSend[i];
+        if (model && model->getAddressTableModel()) {
+            std::string associatedLabel;
+            associatedLabel = model->getAddressTableModel()->labelForAddress(pMultiSend.first.c_str()).toStdString();
+            strMultiSendPrint += associatedLabel.c_str();
+            strMultiSendPrint += " - ";
+        }
         strMultiSendPrint += pMultiSend.first.c_str();
         strMultiSendPrint += " - ";
         strMultiSendPrint += boost::lexical_cast<string>(pMultiSend.second);
@@ -126,10 +140,26 @@ void MultiSendDialog::on_addButton_clicked()
         strMultiSendPrint += boost::lexical_cast<string>(pMultiSend.second);
         strMultiSendPrint += "% \n";
     }
+
+    if (model && model->getAddressTableModel()) {
+        // update the address book with the label given or no label if none was given.
+        CBitcoinAddress address(strAddress);
+        std::string userInputLabel = ui->labelAddressLabelEdit->text().toStdString();
+        if (!userInputLabel.empty())
+            model->updateAddressBookLabels(address.Get(), userInputLabel, "send");
+        else
+            model->updateAddressBookLabels(address.Get(), "(no label)", "send");
+    }
+
     CWalletDB walletdb(pwalletMain->strWalletFile);
-    walletdb.WriteMultiSend(pwalletMain->vMultiSend);
-    ui->message->setText(tr("MultiSend Vector\n") + QString(strMultiSendPrint.c_str()));
-    return;
+    if(!walletdb.WriteMultiSend(pwalletMain->vMultiSend)) {
+        ui->message->setProperty("status", "error");
+        ui->message->style()->polish(ui->message);
+        ui->message->setText(tr("Saved the MultiSend to memory, but failed saving properties to the database."));
+        ui->multiSendAddressEdit->setFocus();
+        return;
+    }
+    ui->message->setText(tr("MultiSend Vector") + "\n" + QString(strMultiSendPrint.c_str()));
 }
 
 void MultiSendDialog::on_deleteButton_clicked()
