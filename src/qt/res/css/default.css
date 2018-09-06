@@ -947,13 +947,13 @@ QWidget .QFrame#frame_RecentTransactions { /* Transactions Widget */
 	margin-top:0;
 }
 
-QWidget .QFrame#frame_RecentTransactions .QLabel#label_4 { /* Recent Transactions Label */
+QWidget .QFrame#frame_RecentTransactions .QLabel#labelRecentTransactions { /* Recent Transactions Label */
 	qproperty-alignment: 'AlignVCenter | AlignLeft';
 	min-width:180px;
 	background-color:transparent;
 	color:#333333;
 	font-weight:bold;
-	font-size:20px;
+	font-size:14px;
 	margin-right:5px;
 	padding-right:5px;
 }
