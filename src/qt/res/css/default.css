@@ -884,7 +884,7 @@ QWidget .QFrame#frameBalances .QLabel#labelWalletStatus { /* Wallet Sync Status 
 	margin-left: 3px;
 }
 
-QWidget .QFrame#frameBalances .QLabel#labelUnconfirmed, /* Pending Balance */
+QWidget .QFrame#frameBalances .QLabel#labelPending, /* Pending Balance */
 QWidget .QFrame#frameBalances .QLabel#labelImmature { /* Immature Balance */
 	qproperty-alignment: 'AlignVCenter | AlignLeft';
 	font-size: 14px;
@@ -905,7 +905,7 @@ QWidget .QFrame#frameBalances .QLabel#labelSpendable { /* Spendable Header */
 QWidget .QFrame#frameBalances .QLabel#labelImmatureText, /* Immature Balance Label */
 QWidget .QFrame#frameBalances .QLabel#labelTotalText, /* Total Balance Label */
 QWidget .QFrame#frameBalances .QLabel#labelPendingText, /* Pending Balance Label */
-QWidget .QFrame#frameBalances .QLabel#labelBalanceText, /* Available Balance Label */
+QWidget .QFrame#frameBalances .QLabel#labelAvailableText, /* Available Balance Label */
 QWidget .QFrame#frameBalances .QLabel#labelBalances { /* BITG Balances Header Label */
 	qproperty-alignment: 'AlignVCenter | AlignLeft';
 	min-width: 160px;
@@ -925,7 +925,7 @@ QWidget .QFrame#frameBalances #lineBalances { /* BITG Balances Line separator */
 
 
 QWidget .QFrame#frameBalances .QLabel#labelTotal, /* Total Balance */
-QWidget .QFrame#frameBalances .QLabel#labelBalance { /* Available Balance */
+QWidget .QFrame#frameBalances .QLabel#labelAvailable { /* Available Balance */
 	qproperty-alignment: 'AlignVCenter | AlignLeft';
 	font-size: 14px;
 	font-weight: normal;
