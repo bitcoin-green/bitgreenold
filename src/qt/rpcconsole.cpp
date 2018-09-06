@@ -191,7 +191,6 @@ void RPCExecutor::request(const QString& command)
         return; // Nothing to do
 
     if(commandHasWarning(args[0])) {
-
         warningHistory[args[0]] = (warningHistory.count(args[0]) == 0 ? 1 : warningHistory[args[0]] + 1);
         emit reply(RPCConsole::CMD_ERROR, getCommandWarning(args[0]));
         return;
@@ -258,7 +257,7 @@ QString RPCExecutor::getCommandWarning(const std::string& command)
     }
 }
 
-RPCConsole::RPCConsole(QWidget* parent) : QDialog(parent),
+RPCConsole::RPCConsole(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                           ui(new Ui::RPCConsole),
                                           clientModel(0),
                                           historyPtr(0),
