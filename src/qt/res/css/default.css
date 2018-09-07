@@ -704,7 +704,9 @@ QWidget#AddressBookPage QHeaderView::section { /* Min width for Windows fix */
 /**************************** SETTINGS MENU *********************************************/
 
 /* Encrypt Wallet and Change Passphrase Dialog */
-QDialog#AskPassphraseDialog QLabel#passLabel1, QDialog#AskPassphraseDialog QLabel#passLabel2, QDialog#AskPassphraseDialog QLabel#passLabel3 {
+QDialog#AskPassphraseDialog QLabel#passLabel1,
+QDialog#AskPassphraseDialog QLabel#passLabel2,
+QDialog#AskPassphraseDialog QLabel#passLabel3 {
 	qproperty-alignment: 'AlignVCenter | AlignRight';
 }
 
@@ -935,6 +937,7 @@ QWidget .QFrame#frameBalances .QLabel#labelAvailable { /* Available Balance */
 }
 
 QWidget .QFrame#frameBalances .QLabel#labelLocked { /* Locked Balance */
+	qproperty-alignment: 'AlignVCenter | AlignLeft';
 	font-size: 14px;
 	font-weight: normal;
 	color: #0f7f12;

@@ -162,7 +162,6 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     // BITG Balance
     CAmount nTotalBalance = balance + unconfirmedBalance;
     CAmount nAvailableBalance = balance - immatureBalance - nLockedBalance;
-    CAmount nUnlockedBalance = nTotalBalance - nLockedBalance;
 
     // BITG Watch-Only Balance
     CAmount nTotalWatchBalance = watchOnlyBalance + watchUnconfBalance;
