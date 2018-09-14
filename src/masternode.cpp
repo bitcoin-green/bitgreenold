@@ -684,12 +684,11 @@ bool CMasternodeBroadcast::VerifySignature()
     return true;
 }
 
-std:: string CMasternodeBroadcast::GetStrMessage()
+std::string CMasternodeBroadcast::GetStrMessage()
 {
-    std::string strMessage;
-
-    strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + pubKeyCollateralAddress.GetID().ToString() + pubKeyMasternode.GetID().ToString() + boost::lexical_cast<std::string>(protocolVersion);
-
+    std::string vchPubKey(pubKeyCollateralAddress.begin(), pubKeyCollateralAddress.end());
+    std::string vchPubKey2(pubKeyMasternode.begin(), pubKeyMasternode.end());
+    std::string strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + vchPubKey + vchPubKey2 + boost::lexical_cast<std::string>(protocolVersion);
     return strMessage;
 }
 
