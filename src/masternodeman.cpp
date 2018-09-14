@@ -355,15 +355,14 @@ int CMasternodeMan::stable_size ()
     int64_t nMasternode_Min_Age = MN_WINNER_MINIMUM_AGE;
     int64_t nMasternode_Age = 0;
 
-    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
-        if (mn.protocolVersion < nMinProtocol) {
+    for (CMasternode& mn : vMasternodes) {
+        if (mn.protocolVersion < nMinProtocol)
             continue; // Skip obsolete versions
-        }
+
         if (IsSporkActive (SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)) {
             nMasternode_Age = GetAdjustedTime() - mn.sigTime;
-            if ((nMasternode_Age) < nMasternode_Min_Age) {
+            if (nMasternode_Age < nMasternode_Min_Age)
                 continue; // Skip masternodes younger than (default) 8000 sec (MUST be > MASTERNODE_REMOVAL_SECONDS)
-            }
         }
         mn.Check ();
         if (!mn.IsEnabled ())
@@ -380,7 +379,7 @@ int CMasternodeMan::CountEnabled(int protocolVersion)
     int i = 0;
     protocolVersion = protocolVersion == -1 ? masternodePayments.GetMinMasternodePaymentsProto() : protocolVersion;
 
-    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+    for (CMasternode& mn : vMasternodes) {
         mn.Check();
         if (mn.protocolVersion < protocolVersion || !mn.IsEnabled()) continue;
         i++;
@@ -486,11 +485,11 @@ CMasternode* CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlockHeight
     */
 
     int nMnCount = CountEnabled();
-    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+    for (CMasternode& mn : vMasternodes) {
         mn.Check();
         if (!mn.IsEnabled()) continue;
 
-        // //check protocol version
+        //check protocol version
         if (mn.protocolVersion < masternodePayments.GetMinMasternodePaymentsProto()) continue;
 
         //it's in the list (up to 8 entries ahead of current block to allow propagation) -- so let's skip it
@@ -549,10 +548,10 @@ CMasternode* CMasternodeMan::FindRandomNotInVec(std::vector<CTxIn>& vecToExclude
     LogPrint("masternode", "CMasternodeMan::FindRandomNotInVec - rand %d\n", rand);
     bool found;
 
-    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+    for (CMasternode& mn : vMasternodes) {
         if (mn.protocolVersion < protocolVersion || !mn.IsEnabled()) continue;
         found = false;
-        BOOST_FOREACH (CTxIn& usedVin, vecToExclude) {
+        for (CTxIn& usedVin : vecToExclude) {
             if (mn.vin.prevout == usedVin.prevout) {
                 found = true;
                 break;
@@ -573,7 +572,7 @@ CMasternode* CMasternodeMan::GetCurrentMasterNode(int mod, int64_t nBlockHeight,
     CMasternode* winner = NULL;
 
     // scan for winner
-    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+    for (CMasternode& mn : vMasternodes) {
         mn.Check();
         if (mn.protocolVersion < minProtocol || !mn.IsEnabled()) continue;
 
@@ -602,7 +601,7 @@ int CMasternodeMan::GetMasternodeRank(const CTxIn& vin, int64_t nBlockHeight, in
     if (!GetBlockHash(hash, nBlockHeight)) return -1;
 
     // scan for winner
-    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+    for (CMasternode& mn : vMasternodes) {
         if (mn.protocolVersion < minProtocol) {
             LogPrint("masternode","Skipping Masternode with obsolete version %d\n", mn.protocolVersion);
             continue;                                                       // Skip obsolete versions
@@ -628,11 +627,10 @@ int CMasternodeMan::GetMasternodeRank(const CTxIn& vin, int64_t nBlockHeight, in
     sort(vecMasternodeScores.rbegin(), vecMasternodeScores.rend(), CompareScoreTxIn());
 
     int rank = 0;
-    BOOST_FOREACH (PAIRTYPE(int64_t, CTxIn) & s, vecMasternodeScores) {
+    for (PAIRTYPE(int64_t, CTxIn) & s : vecMasternodeScores) {
         rank++;
-        if (s.second.prevout == vin.prevout) {
+        if (s.second.prevout == vin.prevout)
             return rank;
-        }
     }
 
     return -1;

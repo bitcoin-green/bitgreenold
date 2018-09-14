@@ -104,7 +104,6 @@ void CBudgetManager::CheckOrphanVotes()
 {
     LOCK(cs);
 
-
     std::string strError = "";
     std::map<uint256, CBudgetVote>::iterator it1 = mapOrphanMasternodeBudgetVotes.begin();
     while (it1 != mapOrphanMasternodeBudgetVotes.end()) {
@@ -517,7 +516,6 @@ void CBudgetManager::CheckAndRemove()
     LogPrint("mnbudget", "CBudgetManager::CheckAndRemove - mapFinalizedBudgets cleanup - size after: %d\n", mapFinalizedBudgets.size());
     LogPrint("mnbudget", "CBudgetManager::CheckAndRemove - mapProposals cleanup - size after: %d\n", mapProposals.size());
     LogPrint("mnbudget","CBudgetManager::CheckAndRemove - PASSED\n");
-
 }
 
 void CBudgetManager::FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, bool fProofOfStake)
@@ -709,8 +707,7 @@ TrxValidationStatus CBudgetManager::IsTransactionValid(const CTransaction& txNew
                 }
             } else {
                 LogPrint("mnbudget","CBudgetManager::IsTransactionValid - GetBlockStart() failed, budget is outside current payment cycle and will be ignored.\n");
-            }
-               
+            }    
         }
 
         ++it;

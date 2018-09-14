@@ -326,7 +326,6 @@ bool CActiveMasternode::GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secr
     return GetVinFromOutput(*selectedOutput, vin, pubkey, secretKey);
 }
 
-
 // Extract Masternode vin information from output
 bool CActiveMasternode::GetVinFromOutput(COutput out, CTxIn& vin, CPubKey& pubkey, CKey& secretKey)
 {
@@ -371,7 +370,7 @@ vector<COutput> CActiveMasternode::SelectCoinsMasternode()
             mnTxHash.SetHex(mne.getTxHash());
 
             int nIndex;
-            if(!mne.castOutputIndex(nIndex))
+            if (!mne.castOutputIndex(nIndex))
                 continue;
 
             COutPoint outpoint = COutPoint(mnTxHash, nIndex);
@@ -390,10 +389,9 @@ vector<COutput> CActiveMasternode::SelectCoinsMasternode()
     }
 
     // Filter
-    BOOST_FOREACH (const COutput& out, vCoins) {
-        if (out.tx->vout[out.i].nValue == MASTERNODE_COLLATERAL * COIN) { //exactly
+    for (const COutput& out : vCoins) {
+        if (out.tx->vout[out.i].nValue == MASTERNODE_COLLATERAL * COIN)
             filteredCoins.push_back(out);
-        }
     }
     return filteredCoins;
 }

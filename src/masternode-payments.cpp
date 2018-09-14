@@ -498,9 +498,8 @@ bool CMasternodePayments::IsScheduled(CMasternode& mn, int nNotBlockHeight)
 bool CMasternodePayments::AddWinningMasternode(CMasternodePaymentWinner& winnerIn)
 {
     uint256 blockHash = 0;
-    if (!GetBlockHash(blockHash, winnerIn.nBlockHeight - 100)) {
+    if (!GetBlockHash(blockHash, winnerIn.nBlockHeight - 100))
         return false;
-    }
 
     {
         LOCK2(cs_mapMasternodePayeeVotes, cs_mapMasternodeBlocks);
@@ -590,7 +589,7 @@ std::string CMasternodeBlockPayees::GetRequiredPaymentsString()
 
     std::string ret = "Unknown";
 
-    BOOST_FOREACH (CMasternodePayee& payee, vecPayments) {
+    for (CMasternodePayee& payee : vecPayments) {
         CTxDestination address1;
         ExtractDestination(payee.scriptPubKey, address1);
         CBitcoinAddress address2(address1);

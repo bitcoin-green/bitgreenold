@@ -494,7 +494,7 @@ bool CMasternodeBroadcast::CheckAndUpdate(int& nDos)
 
     // incorrect ping or its sigTime
     if (lastPing == CMasternodePing() || !lastPing.CheckAndUpdate(nDos, false, true))
-    return false;
+        return false;
 
     if (protocolVersion < masternodePayments.GetMinMasternodePaymentsProto()) {
         LogPrint("masternode","mnb - ignoring outdated Masternode %s protocol version %d\n", vin.prevout.hash.ToString(), protocolVersion);

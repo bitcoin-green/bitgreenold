@@ -2185,7 +2185,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     if (GetAdjustedTime() <= chainActive.Tip()->nTime)
         MilliSleep(10000);
 
-    BOOST_FOREACH (PAIRTYPE(const CWalletTx*, unsigned int) pcoin, setStakeCoins) {
+    for(PAIRTYPE(const CWalletTx*, unsigned int) pcoin : setStakeCoins) {
         //make sure that enough time has elapsed between
         CBlockIndex* pindex = NULL;
         BlockMap::iterator it = mapBlockIndex.find(pcoin.first->hashBlock);
@@ -2309,7 +2309,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 
     // Sign
     int nIn = 0;
-    BOOST_FOREACH (const CWalletTx* pcoin, vwtxPrev) {
+    for (const CWalletTx* pcoin : vwtxPrev) {
         if (!SignSignature(*this, *pcoin, txNew, nIn++))
             return error("CreateCoinStake : failed to sign coinstake");
     }

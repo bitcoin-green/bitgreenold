@@ -523,26 +523,27 @@ UniValue startmasternode (const UniValue& params, bool fHelp)
         UniValue statusObj(UniValue::VOBJ);
         statusObj.push_back(Pair("alias", alias));
 
-        BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
-            if (mne.getAlias() == alias) {
-                found = true;
-                std::string errorMessage;
-                CMasternodeBroadcast mnb;
+        for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
+            if (mne.getAlias() != alias)
+                continue;
 
-                bool result = activeMasternode.CreateBroadcast(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), errorMessage, mnb);
+            found = true;
+            std::string errorMessage;
+            CMasternodeBroadcast mnb;
 
-                statusObj.push_back(Pair("result", result ? "successful" : "failed"));
+            bool result = activeMasternode.CreateBroadcast(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), errorMessage, mnb);
 
-                if (result) {
-                    successful++;
-                    mnodeman.UpdateMasternodeList(mnb);
-                    mnb.Relay();
-                } else {
-                    failed++;
-                    statusObj.push_back(Pair("errorMessage", errorMessage));
-                }
-                break;
+            statusObj.push_back(Pair("result", result ? "successful" : "failed"));
+
+            if (result) {
+                successful++;
+                mnodeman.UpdateMasternodeList(mnb);
+                mnb.Relay();
+            } else {
+                failed++;
+                statusObj.push_back(Pair("errorMessage", errorMessage));
             }
+            break;
         }
 
         if (!found) {
@@ -786,7 +787,7 @@ UniValue getmasternodewinners (const UniValue& params, bool fHelp)
             UniValue winner(UniValue::VARR);
             boost::char_separator<char> sep(",");
             boost::tokenizer< boost::char_separator<char> > tokens(strPayment, sep);
-            BOOST_FOREACH (const string& t, tokens) {
+            for (const string& t : tokens) {
                 UniValue addr(UniValue::VOBJ);
                 std::size_t pos = t.find(":");
                 std::string strAddress = t.substr(0,pos);
@@ -811,7 +812,7 @@ UniValue getmasternodewinners (const UniValue& params, bool fHelp)
             obj.push_back(Pair("winner", winner));
         }
 
-            ret.push_back(obj);
+        ret.push_back(obj);
     }
 
     return ret;
