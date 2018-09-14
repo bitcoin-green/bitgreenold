@@ -2089,7 +2089,8 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
             std::vector<CScriptCheck> vChecks;
             unsigned int flags = SCRIPT_VERIFY_P2SH | SCRIPT_VERIFY_DERSIG;
             if (!CheckInputs(tx, state, view, fScriptChecks, flags, false, nScriptCheckThreads ? &vChecks : NULL))
-                return false;
+                if (!Checkpoints::CheckBlock(pindex->nHeight, *pindex->phashBlock))
+                    return false;
             control.Add(vChecks);
         }
         nValueOut += tx.GetValueOut();
