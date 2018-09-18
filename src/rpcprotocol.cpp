@@ -39,7 +39,7 @@ const size_t POST_READ_SIZE = 256 * 1024;
 
 /**
  * HTTP protocol
- * 
+ *
  * This ain't Apache.  We're just using HTTP header for the length field
  * and to be compatible with other JSON-RPC implementations.
  */

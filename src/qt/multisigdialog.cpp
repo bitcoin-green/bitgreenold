@@ -1,4 +1,5 @@
 // Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2017-2018 The Bitcoin Green developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -23,15 +24,20 @@
 #include "qvalidatedlineedit.h"
 #include "bitcoinamountfield.h"
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpinBox>
+#include <QVariant>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QToolButton>
+#include <QSpinBox>
 #include <QClipboard>
+#include <QDebug>
+#include <QArgument>
+#include <QtGlobal>
+#include <QString>
 
 
-MultisigDialog::MultisigDialog(QWidget* parent) : QDialog(parent),
+MultisigDialog::MultisigDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                                   ui(new Ui::MultisigDialog),
                                                   model(0)
 {
@@ -97,22 +103,66 @@ void MultisigDialog::pasteText()
 //slot for deleting QFrames with the delete buttons
 void MultisigDialog::deleteFrame()
 {
-   QWidget *buttonWidget = qobject_cast<QWidget*>(sender());
-   if(!buttonWidget)return;
+    QWidget *buttonWidget = qobject_cast<QWidget*>(sender());
+    if (!buttonWidget)return;
 
-   //if deleting last raw input/priv key, hide scroll area
-   if(buttonWidget->objectName() == "inputDeleteButton" && ui->inputsList->count() == 1){
-       isFirstRawTx = true;
-       ui->txInputsScrollArea->hide();
-   }else if(buttonWidget->objectName() == "keyDeleteButton" && ui->keyList->count() == 1){
-       isFirstPrivKey = true;
-       ui->keyScrollArea->hide();
-   }
+    //if deleting last raw input/priv key, hide scroll area
+    if (buttonWidget->objectName() == "inputDeleteButton" && ui->inputsList->count() == 1) {
+        isFirstRawTx = true;
+        ui->txInputsScrollArea->hide();
+    } else if(buttonWidget->objectName() == "keyDeleteButton" && ui->keyList->count() == 1) {
+        isFirstPrivKey = true;
+        ui->keyScrollArea->hide();
+    }
 
-   QFrame* frame = qobject_cast<QFrame*>(buttonWidget->parentWidget());
-   if(!frame)return;
+    QFrame* frame = qobject_cast<QFrame*>(buttonWidget->parentWidget());
+    if(!frame)return;
 
-   delete frame;
+    //figure out which frame was updated so we can update the correct list
+    bool destinationFrame = false, addressFrame = false, keyFrame = false, txInputFrame = false;
+
+    if (frame->objectName() == QString::fromStdString("destinationFrame"))
+        destinationFrame = true;
+    else if (frame->objectName() == QString::fromStdString("addressFrame"))
+        addressFrame = true;
+    else if (frame->objectName() == QString::fromStdString("keyFrame"))
+        keyFrame = true;
+    else if (frame->objectName() == QString::fromStdString("txInputFrame"))
+        txInputFrame = true;
+
+    delete frame;
+
+    //update the correct list inputs
+    //using else-if instead of else to stop accidental Seg faults
+    //if method is called on a frame that isn't a destinationFrame, addressFrame, keyFrame, txInputFrame
+    if (addressFrame) {
+        for (int i = 0; i < ui->addressList->count(); i++) {
+            QWidget *input = qobject_cast<QWidget *>(ui->addressList->itemAt(i)->widget());
+            QLabel *addressLabel = input->findChild<QLabel *>("addressLabel");
+            addressLabel->setText(QApplication::translate("MultisigDialog", strprintf("Address / Key %i:", i + 1).c_str(), 0));
+        }
+    }
+    else if (destinationFrame) {
+        for (int i = 0; i < ui->destinationsList->count(); i++) {
+            QWidget *input = qobject_cast<QWidget *>(ui->destinationsList->itemAt(i)->widget());
+            QLabel *destinationAddressLabel = input->findChild<QLabel *>("destinationAddressLabel");
+            destinationAddressLabel->setText(QApplication::translate("MultisigDialog", strprintf("%i. Address: ", i + 1).c_str(), 0));
+        }
+    }
+    else if (keyFrame) {
+        for (int i = 0; i < ui->keyList->count(); i++) {
+            QWidget *input = qobject_cast<QWidget *>(ui->keyList->itemAt(i)->widget());
+            QLabel *keyListLabel = input->findChild<QLabel *>("keyLabel");
+            keyListLabel->setText(QApplication::translate("MultisigDialog", strprintf("Key %i: ", i + 1).c_str(), 0));
+        }
+    }
+    else if (txInputFrame) {
+        for (int i = 0; i < ui->inputsList->count(); i++) {
+            QWidget *input = qobject_cast<QWidget *>(ui->inputsList->itemAt(i)->widget());
+            QLabel *txInputIdLabel = input->findChild<QLabel *>("txInputIdLabel");
+            txInputIdLabel->setText(QApplication::translate("MultisigDialog", strprintf("%i. Tx Hash: ", i + 1).c_str(), 0));
+        }
+    }
 }
 
 //slot to open address book dialog
@@ -131,7 +181,7 @@ void MultisigDialog::addressBookButtonReceiving()
         AddressBookPage dlg(AddressBookPage::ForSelection, AddressBookPage::ReceivingTab, this);
         dlg.setModel(model->getAddressTableModel());
         if (dlg.exec()) {
-             vle->setText(dlg.getReturnValue());
+            vle->setText(dlg.getReturnValue());
         }
     }
 }
@@ -313,8 +363,8 @@ void MultisigDialog::on_createButton_clicked()
             ui->createButtonStatus->setStyleSheet("QTextEdit{ color: black }");
 
             QString status(strprintf("Transaction has successfully created with a fee of %s.\n"
-                                     "The transaction has been automatically imported to the sign tab.\n"
-                                     "Please continue on to sign the tx from this wallet, to access the hex to send to other owners.", fee).c_str());
+                                             "The transaction has been automatically imported to the sign tab.\n"
+                                             "Please continue on to sign the tx from this wallet, to access the hex to send to other owners.", fee).c_str());
 
             ui->createButtonStatus->setText(status);
             ui->transactionHex->setText(QString::fromStdString(EncodeHexTx(multisigTx)));
@@ -429,8 +479,8 @@ bool MultisigDialog::createMultisigTransaction(vector<CTxIn> vUserIn, vector<CTx
         CAmount fee = ::minRelayTxFee.GetFee(nBytes);
 
         if(tx.vout.at(changeIndex).nValue > fee){
-           tx.vout.at(changeIndex).nValue -= fee;
-           feeStringRet = strprintf("%d",((double)fee)/COIN).c_str();
+            tx.vout.at(changeIndex).nValue -= fee;
+            feeStringRet = strprintf("%d",((double)fee)/COIN).c_str();
         }else{
             throw runtime_error("Not enough BITG provided to cover fee");
         }
@@ -452,7 +502,7 @@ void MultisigDialog::on_signButton_clicked()
 {
     if(!model)
         return;
-   try{
+    try{
         //parse tx hex
         CTransaction txRead;
         if(!DecodeHexTx(txRead, ui->transactionHex->text().toStdString())){
@@ -498,16 +548,16 @@ QString MultisigDialog::buildMultisigTxStatusString(bool fComplete, const CMutab
         ui->commitButton->setEnabled(true);
         string sTxId = tx.GetHash().GetHex();
         string sTxComplete   =  "Complete: true!\n"
-                                "The commit button has now been enabled for you to finalize the transaction.\n"
-                                "Once the commit button is clicked, the transaction will be published and coins transferred "
-                                "to their destinations.\nWARNING: THE ACTIONS OF THE COMMIT BUTTON ARE FINAL AND CANNOT BE REVERSED.";
+                "The commit button has now been enabled for you to finalize the transaction.\n"
+                "Once the commit button is clicked, the transaction will be published and coins transferred "
+                "to their destinations.\nWARNING: THE ACTIONS OF THE COMMIT BUTTON ARE FINAL AND CANNOT BE REVERSED.";
 
         return QString(strprintf("%s\nTx Id:\n%s\nTx Hex:\n%s",sTxComplete, sTxId, sTxHex).c_str());
     } else {
         string sTxIncomplete = "Complete: false.\n"
-                                "You may now send the hex below to another owner to sign.\n"
-                                "Keep in mind the transaction must be passed from one owner to the next for signing.\n"
-                                "Ensure all owners have imported the redeem before trying to sign. (besides creator)";
+                "You may now send the hex below to another owner to sign.\n"
+                "Keep in mind the transaction must be passed from one owner to the next for signing.\n"
+                "Ensure all owners have imported the redeem before trying to sign. (besides creator)";
 
         return QString(strprintf("%s\nTx Hex: %s", sTxIncomplete, sTxHex).c_str());
     }
@@ -594,7 +644,7 @@ bool MultisigDialog::signMultisigTx(CMutableTransaction& tx, string& errorOut, Q
             }
         }else{
             if (model->getEncryptionStatus() == model->Locked) {
-                if (!model->requestUnlock(true).isValid()) {
+                if (!model->requestUnlock(AskPassphraseDialog::Context::Multi_Sig, true).isValid()) {
                     // Unlock wallet was cancelled
                     throw runtime_error("Error: Your wallet is locked. Please enter the wallet passphrase first.");
                 }
@@ -718,9 +768,9 @@ bool MultisigDialog::createRedeemScript(int m, vector<string> vKeys, CScript& re
             throw runtime_error("a Multisignature address must require at least one key to redeem");
         if (n < m)
             throw runtime_error(
-                strprintf("not enough keys supplied "
-                          "(got %d keys, but need at least %d to redeem)",
-                    m, n));
+                    strprintf("not enough keys supplied "
+                                      "(got %d keys, but need at least %d to redeem)",
+                              m, n));
         if (n > 15)
             throw runtime_error("Number of addresses involved in the Multisignature address creation > 15\nReduce the number");
 
@@ -730,7 +780,7 @@ bool MultisigDialog::createRedeemScript(int m, vector<string> vKeys, CScript& re
         int i = 0;
         for(vector<string>::iterator it = vKeys.begin(); it != vKeys.end(); ++it) {
             string keyString = *it;
-    #ifdef ENABLE_WALLET
+#ifdef ENABLE_WALLET
             // Case 1: BITG address and we have full public key:
             CBitcoinAddress address(keyString);
             if (pwalletMain && address.IsValid()) {
@@ -752,7 +802,7 @@ bool MultisigDialog::createRedeemScript(int m, vector<string> vKeys, CScript& re
 
             //case 2: hex pub key
             else
-    #endif
+#endif
             if (IsHex(keyString)) {
                 CPubKey vchPubKey(ParseHex(keyString));
                 if (!vchPubKey.IsFullyValid()){
@@ -788,9 +838,9 @@ bool MultisigDialog::createRedeemScript(int m, vector<string> vKeys, CScript& re
 void MultisigDialog::on_addAddressButton_clicked()
 {
     //max addresses 15
-    if(ui->addressList->count() > 14){
+    if(ui->addressList->count() >= 15){
         ui->addMultisigStatus->setStyleSheet("QLabel { color: red; }");
-        ui->addMultisigStatus->setText(tr("Maximum possible addresses reached. (16)"));
+        ui->addMultisigStatus->setText(tr("Maximum possible addresses reached. (15)"));
         return;
     }
 
@@ -810,7 +860,7 @@ void MultisigDialog::on_addAddressButton_clicked()
     frameLayout->setContentsMargins(6, 6, 6, 6);
 
     QHBoxLayout* addressLayout = new QHBoxLayout();
-    addressLayout->setSpacing(0);
+    addressLayout->setSpacing(2);
     addressLayout->setObjectName(QStringLiteral("addressLayout"));
 
     QLabel* addressLabel = new QLabel(addressFrame);
@@ -822,32 +872,29 @@ void MultisigDialog::on_addAddressButton_clicked()
     address->setObjectName(QStringLiteral("address"));
     addressLayout->addWidget(address);
 
-    QPushButton* addressBookButton = new QPushButton(addressFrame);
+    QToolButton* addressBookButton = new QToolButton(addressFrame);
     addressBookButton->setObjectName(QStringLiteral("addressBookButton"));
     QIcon icon3;
     icon3.addFile(QStringLiteral(":/icons/address-book"), QSize(), QIcon::Normal, QIcon::Off);
     addressBookButton->setIcon(icon3);
-    addressBookButton->setAutoDefault(false);
     connect(addressBookButton, SIGNAL(clicked()), this, SLOT(addressBookButtonReceiving()));
 
     addressLayout->addWidget(addressBookButton);
 
-    QPushButton* addressPasteButton = new QPushButton(addressFrame);
+    QToolButton* addressPasteButton = new QToolButton(addressFrame);
     addressPasteButton->setObjectName(QStringLiteral("addressPasteButton"));
     QIcon icon4;
     icon4.addFile(QStringLiteral(":/icons/editpaste"), QSize(), QIcon::Normal, QIcon::Off);
     addressPasteButton->setIcon(icon4);
-    addressPasteButton->setAutoDefault(false);
     connect(addressPasteButton, SIGNAL(clicked()), this, SLOT(pasteText()));
 
     addressLayout->addWidget(addressPasteButton);
 
-    QPushButton* addressDeleteButton = new QPushButton(addressFrame);
+    QToolButton* addressDeleteButton = new QToolButton(addressFrame);
     addressDeleteButton->setObjectName(QStringLiteral("addressDeleteButton"));
     QIcon icon5;
     icon5.addFile(QStringLiteral(":/icons/remove"), QSize(), QIcon::Normal, QIcon::Off);
     addressDeleteButton->setIcon(icon5);
-    addressDeleteButton->setAutoDefault(false);
     connect(addressDeleteButton, SIGNAL(clicked()), this, SLOT(deleteFrame()));
 
     addressLayout->addWidget(addressDeleteButton);
@@ -885,6 +932,7 @@ void MultisigDialog::on_addInputButton_clicked()
     frameLayout->setContentsMargins(6, 6, 6, 6);
 
     QHBoxLayout* txInputLayout = new QHBoxLayout();
+    txInputLayout->setSpacing(2);
     txInputLayout->setObjectName(QStringLiteral("txInputLayout"));
 
     QLabel* txInputIdLabel = new QLabel(txInputFrame);
@@ -912,12 +960,11 @@ void MultisigDialog::on_addInputButton_clicked()
     txInputVout->setSizePolicy(sizePolicy);
     txInputLayout->addWidget(txInputVout);
 
-    QPushButton* inputDeleteButton = new QPushButton(txInputFrame);
+    QToolButton* inputDeleteButton = new QToolButton(txInputFrame);
     inputDeleteButton->setObjectName(QStringLiteral("inputDeleteButton"));
     QIcon icon;
     icon.addFile(QStringLiteral(":/icons/remove"), QSize(), QIcon::Normal, QIcon::Off);
     inputDeleteButton->setIcon(icon);
-    inputDeleteButton->setAutoDefault(false);
     connect(inputDeleteButton, SIGNAL(clicked()), this, SLOT(deleteFrame()));
     txInputLayout->addWidget(inputDeleteButton);
 
@@ -964,12 +1011,11 @@ void MultisigDialog::on_addDestinationButton_clicked()
 
     destinationLayout->addWidget(destinationAmount);
 
-    QPushButton* destinationDeleteButton = new QPushButton(destinationFrame);
+    QToolButton* destinationDeleteButton = new QToolButton(destinationFrame);
     destinationDeleteButton->setObjectName(QStringLiteral("destinationDeleteButton"));
     QIcon icon;
     icon.addFile(QStringLiteral(":/icons/remove"), QSize(), QIcon::Normal, QIcon::Off);
     destinationDeleteButton->setIcon(icon);
-    destinationDeleteButton->setAutoDefault(false);
     connect(destinationDeleteButton, SIGNAL(clicked()), this, SLOT(deleteFrame()));
     destinationLayout->addWidget(destinationDeleteButton);
 
@@ -985,7 +1031,7 @@ void MultisigDialog::on_addPrivKeyButton_clicked()
         ui->keyScrollArea->show();
     }
 
-    if(ui->keyList->count() > 14){
+    if(ui->keyList->count() >= 15){
         ui->signButtonStatus->setStyleSheet("QTextEdit{ color: red }");
         ui->signButtonStatus->setText(tr("Maximum (15)"));
         return;
@@ -1010,12 +1056,11 @@ void MultisigDialog::on_addPrivKeyButton_clicked()
     key->setEchoMode(QLineEdit::Password);
     keyLayout->addWidget(key);
 
-    QPushButton* keyDeleteButton = new QPushButton(keyFrame);
+    QToolButton* keyDeleteButton = new QToolButton(keyFrame);
     keyDeleteButton->setObjectName(QStringLiteral("keyDeleteButton"));
     QIcon icon;
     icon.addFile(QStringLiteral(":/icons/remove"), QSize(), QIcon::Normal, QIcon::Off);
     keyDeleteButton->setIcon(icon);
-    keyDeleteButton->setAutoDefault(false);
     connect(keyDeleteButton, SIGNAL(clicked()), this, SLOT(deleteFrame()));
     keyLayout->addWidget(keyDeleteButton);
 
