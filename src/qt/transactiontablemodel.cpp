@@ -1,4 +1,7 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
+// Copyright (c) 2014-2016 The Dash developers
+// Copyright (c) 2016-2018 The PIVX developers
+// Copyright (c) 2017-2018 The Bitcoin Green developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -394,8 +397,6 @@ QString TransactionTableModel::formatTxToAddress(const TransactionRecord* wtx, b
 QVariant TransactionTableModel::addressColor(const TransactionRecord* wtx) const
 {
     switch (wtx->type) {
-    case TransactionRecord::SendToSelf:
-        return COLOR_BAREADDRESS;
     // Show addresses without label in a less visible color
     case TransactionRecord::RecvWithAddress:
     case TransactionRecord::SendToAddress:
@@ -405,6 +406,7 @@ QVariant TransactionTableModel::addressColor(const TransactionRecord* wtx) const
         if (label.isEmpty())
             return COLOR_BAREADDRESS;
     }
+    case TransactionRecord::SendToSelf:
     default:
         // To avoid overriding above conditional formats a default text color for this QTableView is not defined in stylesheet,
         // so we must always return a color here
@@ -532,7 +534,15 @@ QVariant TransactionTableModel::data(const QModelIndex& index, int role) const
     case Qt::TextAlignmentRole:
         return column_alignments[index.column()];
     case Qt::ForegroundRole:
-        // Conflicted, most probably orphaned
+        // Minted
+        if (rec->type == TransactionRecord::Generated || rec->type == TransactionRecord::StakeMint ||
+                rec->type == TransactionRecord::MNReward) {
+            if (rec->status.status == TransactionStatus::Conflicted || rec->status.status == TransactionStatus::NotAccepted)
+                return COLOR_ORPHAN;
+            else
+                return COLOR_STAKE;
+        }
+        // Conflicted tx
         if (rec->status.status == TransactionStatus::Conflicted || rec->status.status == TransactionStatus::NotAccepted) {
             return COLOR_CONFLICTED;
         }

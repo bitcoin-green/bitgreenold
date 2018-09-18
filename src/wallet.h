@@ -383,11 +383,14 @@ public:
     void ReacceptWalletTransactions();
     void ResendWalletTransactions();
     CAmount GetBalance() const;
+    CAmount GetLockedCoins() const;
+    CAmount GetUnlockedCoins() const;
     CAmount GetUnconfirmedBalance() const;
     CAmount GetImmatureBalance() const;
     CAmount GetWatchOnlyBalance() const;
     CAmount GetUnconfirmedWatchOnlyBalance() const;
     CAmount GetImmatureWatchOnlyBalance() const;
+    CAmount GetLockedWatchOnlyBalance() const;
     bool CreateTransaction(CScript scriptPubKey, int64_t nValue, CWalletTx& wtxNew, CReserveKey& reservekey, int64_t& nFeeRet, std::string& strFailReason, const CCoinControl* coinControl);
     bool CreateTransaction(const std::vector<std::pair<CScript, CAmount> >& vecSend,
         CWalletTx& wtxNew,
@@ -832,142 +835,17 @@ public:
     }
 
     //! filter decides which addresses will count towards the debit
-    CAmount GetDebit(const isminefilter& filter) const
-    {
-        if (vin.empty())
-            return 0;
-
-        CAmount debit = 0;
-        if (filter & ISMINE_SPENDABLE) {
-            if (fDebitCached)
-                debit += nDebitCached;
-            else {
-                nDebitCached = pwallet->GetDebit(*this, ISMINE_SPENDABLE);
-                fDebitCached = true;
-                debit += nDebitCached;
-            }
-        }
-        if (filter & ISMINE_WATCH_ONLY) {
-            if (fWatchDebitCached)
-                debit += nWatchDebitCached;
-            else {
-                nWatchDebitCached = pwallet->GetDebit(*this, ISMINE_WATCH_ONLY);
-                fWatchDebitCached = true;
-                debit += nWatchDebitCached;
-            }
-        }
-        return debit;
-    }
-
-    CAmount GetCredit(const isminefilter& filter) const
-    {
-        // Must wait until coinbase is safely deep enough in the chain before valuing it
-        if (IsCoinBase() && GetBlocksToMaturity() > 0)
-            return 0;
-
-        CAmount credit = 0;
-        if (filter & ISMINE_SPENDABLE) {
-            // GetBalance can assume transactions in mapWallet won't change
-            if (fCreditCached)
-                credit += nCreditCached;
-            else {
-                nCreditCached = pwallet->GetCredit(*this, ISMINE_SPENDABLE);
-                fCreditCached = true;
-                credit += nCreditCached;
-            }
-        }
-        if (filter & ISMINE_WATCH_ONLY) {
-            if (fWatchCreditCached)
-                credit += nWatchCreditCached;
-            else {
-                nWatchCreditCached = pwallet->GetCredit(*this, ISMINE_WATCH_ONLY);
-                fWatchCreditCached = true;
-                credit += nWatchCreditCached;
-            }
-        }
-        return credit;
-    }
-
-    CAmount GetImmatureCredit(bool fUseCache = true) const
-    {
-        if ((IsCoinBase() || IsCoinStake()) && GetBlocksToMaturity() > 0 && IsInMainChain()) {
-            if (fUseCache && fImmatureCreditCached)
-                return nImmatureCreditCached;
-            nImmatureCreditCached = pwallet->GetCredit(*this, ISMINE_SPENDABLE);
-            fImmatureCreditCached = true;
-            return nImmatureCreditCached;
-        }
-
-        return 0;
-    }
-
-    CAmount GetAvailableCredit(bool fUseCache = true) const
-    {
-        if (pwallet == 0)
-            return 0;
-
-        // Must wait until coinbase is safely deep enough in the chain before valuing it
-        if (IsCoinBase() && GetBlocksToMaturity() > 0)
-            return 0;
-
-        if (fUseCache && fAvailableCreditCached)
-            return nAvailableCreditCached;
-
-        CAmount nCredit = 0;
-        uint256 hashTx = GetHash();
-        for (unsigned int i = 0; i < vout.size(); i++) {
-            if (!pwallet->IsSpent(hashTx, i)) {
-                const CTxOut& txout = vout[i];
-                nCredit += pwallet->GetCredit(txout, ISMINE_SPENDABLE);
-                if (!MoneyRange(nCredit))
-                    throw std::runtime_error("CWalletTx::GetAvailableCredit() : value out of range");
-            }
-        }
-
-        nAvailableCreditCached = nCredit;
-        fAvailableCreditCached = true;
-        return nCredit;
-    }
-
-    CAmount GetImmatureWatchOnlyCredit(const bool& fUseCache = true) const
-    {
-        if (IsCoinBase() && GetBlocksToMaturity() > 0 && IsInMainChain()) {
-            if (fUseCache && fImmatureWatchCreditCached)
-                return nImmatureWatchCreditCached;
-            nImmatureWatchCreditCached = pwallet->GetCredit(*this, ISMINE_WATCH_ONLY);
-            fImmatureWatchCreditCached = true;
-            return nImmatureWatchCreditCached;
-        }
-
-        return 0;
-    }
-
-    CAmount GetAvailableWatchOnlyCredit(const bool& fUseCache = true) const
-    {
-        if (pwallet == 0)
-            return 0;
-
-        // Must wait until coinbase is safely deep enough in the chain before valuing it
-        if (IsCoinBase() && GetBlocksToMaturity() > 0)
-            return 0;
-
-        if (fUseCache && fAvailableWatchCreditCached)
-            return nAvailableWatchCreditCached;
-
-        CAmount nCredit = 0;
-        for (unsigned int i = 0; i < vout.size(); i++) {
-            if (!pwallet->IsSpent(GetHash(), i)) {
-                const CTxOut& txout = vout[i];
-                nCredit += pwallet->GetCredit(txout, ISMINE_WATCH_ONLY);
-                if (!MoneyRange(nCredit))
-                    throw std::runtime_error("CWalletTx::GetAvailableCredit() : value out of range");
-            }
-        }
-
-        nAvailableWatchCreditCached = nCredit;
-        fAvailableWatchCreditCached = true;
-        return nCredit;
-    }
+    CAmount GetDebit(const isminefilter& filter) const;
+    CAmount GetCredit(const isminefilter& filter) const;
+    CAmount GetImmatureCredit(bool fUseCache = true) const;
+    CAmount GetAvailableCredit(bool fUseCache = true) const;
+    // Return sum of unlocked coins
+    CAmount GetUnlockedCredit() const;
+    // Return sum of unlocked coins
+    CAmount GetLockedCredit() const;
+    CAmount GetImmatureWatchOnlyCredit(const bool& fUseCache = true) const;
+    CAmount GetAvailableWatchOnlyCredit(const bool& fUseCache = true) const;
+    CAmount GetLockedWatchOnlyCredit() const;
 
     CAmount GetChange() const
     {

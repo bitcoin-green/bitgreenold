@@ -1,4 +1,6 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
+// Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2017-2018 The Bitcoin Green developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -42,6 +44,7 @@ public:
         ThreadsScriptVerif,  // int
         DatabaseCache,       // int
         SpendZeroConfChange, // bool
+        HideZeroBalances,    // bool
         ShowMasternodesTab,  // bool
         Listen,              // bool
         StakeSplitThreshold, // int
@@ -81,6 +84,7 @@ private:
     int nDisplayUnit;
     QString strThirdPartyTxUrls;
     bool fCoinControlFeatures;
+    bool fHideZeroBalances;
     /* settings that were overriden by command-line */
     QString strOverriddenByCommandLine;
 
@@ -90,6 +94,7 @@ private:
 signals:
     void displayUnitChanged(int unit);
     void coinControlFeaturesChanged(bool);
+    void hideZeroBalancesChanged(bool);
 };
 
 #endif // BITCOIN_QT_OPTIONSMODEL_H

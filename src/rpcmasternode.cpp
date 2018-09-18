@@ -223,7 +223,7 @@ UniValue listmasternodes(const UniValue& params, bool fHelp)
             "  ,...\n"
             "]\n"
             "\nExamples:\n" +
-            HelpExampleCli("masternodelist", "") + HelpExampleRpc("masternodelist", ""));
+            HelpExampleCli("listmasternodes", "") + HelpExampleRpc("listmasternodes", ""));
 
     UniValue ret(UniValue::VARR);
     int nHeight;
@@ -384,7 +384,7 @@ UniValue masternodedebug (const UniValue& params, bool fHelp)
         return activeMasternode.GetStatus();
 
     CTxIn vin = CTxIn();
-    CPubKey pubkey = CScript();
+    CPubKey pubkey;
     CKey key;
     if (!activeMasternode.GetMasterNodeVin(vin, pubkey, key))
         throw runtime_error("Missing masternode input, please look at the documentation for instructions on masternode creation\n");
@@ -439,11 +439,10 @@ UniValue startmasternode (const UniValue& params, bool fHelp)
 
     bool fLock = (params[1].get_str() == "true" ? true : false);
 
+    EnsureWalletIsUnlocked();
+
     if (strCommand == "local") {
         if (!fMasterNode) throw runtime_error("you must set masternode=1 in the configuration\n");
-
-        if (pwalletMain->IsLocked())
-            throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
 
         if (activeMasternode.status != ACTIVE_MASTERNODE_STARTED) {
             activeMasternode.status = ACTIVE_MASTERNODE_INITIAL; // TODO: consider better way
@@ -480,13 +479,14 @@ UniValue startmasternode (const UniValue& params, bool fHelp)
                 continue;
             CTxIn vin = CTxIn(uint256(mne.getTxHash()), uint32_t(nIndex));
             CMasternode* pmn = mnodeman.Find(vin);
+            CMasternodeBroadcast mnb;
 
             if (pmn != NULL) {
                 if (strCommand == "missing") continue;
                 if (strCommand == "disabled" && pmn->IsEnabled()) continue;
             }
 
-            bool result = activeMasternode.Register(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), errorMessage);
+            bool result = activeMasternode.CreateBroadcast(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), errorMessage, mnb);
 
             UniValue statusObj(UniValue::VOBJ);
             statusObj.push_back(Pair("alias", mne.getAlias()));
@@ -515,9 +515,6 @@ UniValue startmasternode (const UniValue& params, bool fHelp)
     if (strCommand == "alias") {
         std::string alias = params[2].get_str();
 
-        if (pwalletMain->IsLocked())
-            throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
-
         bool found = false;
         int successful = 0;
         int failed = 0;
@@ -526,24 +523,27 @@ UniValue startmasternode (const UniValue& params, bool fHelp)
         UniValue statusObj(UniValue::VOBJ);
         statusObj.push_back(Pair("alias", alias));
 
-        BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
-            if (mne.getAlias() == alias) {
-                found = true;
-                std::string errorMessage;
+        for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
+            if (mne.getAlias() != alias)
+                continue;
 
-                bool result = activeMasternode.Register(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), errorMessage);
+            found = true;
+            std::string errorMessage;
+            CMasternodeBroadcast mnb;
 
-                statusObj.push_back(Pair("result", result ? "successful" : "failed"));
+            bool result = activeMasternode.CreateBroadcast(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), errorMessage, mnb);
 
-                if (result) {
-                    successful++;
-                    statusObj.push_back(Pair("error", ""));
-                } else {
-                    failed++;
-                    statusObj.push_back(Pair("error", errorMessage));
-                }
-                break;
+            statusObj.push_back(Pair("result", result ? "successful" : "failed"));
+
+            if (result) {
+                successful++;
+                mnodeman.UpdateMasternodeList(mnb);
+                mnb.Relay();
+            } else {
+                failed++;
+                statusObj.push_back(Pair("errorMessage", errorMessage));
             }
+            break;
         }
 
         if (!found) {
@@ -787,7 +787,7 @@ UniValue getmasternodewinners (const UniValue& params, bool fHelp)
             UniValue winner(UniValue::VARR);
             boost::char_separator<char> sep(",");
             boost::tokenizer< boost::char_separator<char> > tokens(strPayment, sep);
-            BOOST_FOREACH (const string& t, tokens) {
+            for (const string& t : tokens) {
                 UniValue addr(UniValue::VOBJ);
                 std::size_t pos = t.find(":");
                 std::string strAddress = t.substr(0,pos);
@@ -812,7 +812,7 @@ UniValue getmasternodewinners (const UniValue& params, bool fHelp)
             obj.push_back(Pair("winner", winner));
         }
 
-            ret.push_back(obj);
+        ret.push_back(obj);
     }
 
     return ret;

@@ -27,9 +27,7 @@ SendCoinsEntry::SendCoinsEntry(QWidget* parent) : QStackedWidget(parent),
 #ifdef Q_OS_MAC
     ui->payToLayout->setSpacing(4);
 #endif
-#if QT_VERSION >= 0x040700
     ui->addAsLabel->setPlaceholderText(tr("Enter a label for this address to add it to your address book"));
-#endif
 
     // normal bitg address field
     GUIUtil::setupAddressWidget(ui->payTo, this);

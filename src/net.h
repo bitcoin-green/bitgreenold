@@ -120,7 +120,6 @@ bool IsLocal(const CService& addr);
 bool GetLocal(CService& addr, const CNetAddr* paddrPeer = NULL);
 bool IsReachable(enum Network net);
 bool IsReachable(const CNetAddr& addr);
-void SetReachable(enum Network net, bool fFlag = true);
 CAddress GetLocalAddress(const CNetAddr* paddrPeer = NULL);
 
 
@@ -160,6 +159,7 @@ public:
     int64_t nLastSend;
     int64_t nLastRecv;
     int64_t nTimeConnected;
+    int64_t nTimeOffset;
     std::string addrName;
     int nVersion;
     std::string cleanSubVer;
@@ -265,7 +265,7 @@ public:
     {
         switch (banReason) {
         case BanReasonNodeMisbehaving:
-            return "node misbehabing";
+            return "node misbehaving";
         case BanReasonManuallyAdded:
             return "manually added";
         default:
@@ -300,6 +300,7 @@ public:
     int64_t nLastSend;
     int64_t nLastRecv;
     int64_t nTimeConnected;
+    int64_t nTimeOffset;
     CAddress addr;
     std::string addrName;
     CService addrLocal;

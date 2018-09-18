@@ -1,14 +1,18 @@
-// Copyright (c) 2011-2013 The Bitcoin developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2011-2014 The Bitcoin developers
+// Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2017-2018 The Bitcoin Green developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_QT_WALLETVIEW_H
 #define BITCOIN_QT_WALLETVIEW_H
 
 #include "amount.h"
+#include "askpassphrasedialog.h"
 #include "masternodelist.h"
 
 #include <QStackedWidget>
+#include <ui_interface.h>
 
 class BitcoinGUI;
 class ClientModel;
@@ -108,7 +112,7 @@ public slots:
     /** Change encrypted wallet passphrase */
     void changePassphrase();
     /** Ask for passphrase to unlock wallet temporarily */
-    void unlockWallet();
+    void unlockWallet(AskPassphraseDialog::Context context);
     /** Lock wallet */
     void lockWallet();
     /** Toggle wallet lock state */
