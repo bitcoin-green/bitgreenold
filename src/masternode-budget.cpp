@@ -785,7 +785,7 @@ std::vector<CBudgetProposal*> CBudgetManager::GetBudget()
     std::map<uint256, CBudgetProposal>::iterator it1 = mapProposals.begin();
     while (it1 != mapProposals.end()) {
         CBudgetProposal* pBudgetProposal = &((*it1).second);
-        if (pBudgetProposal->mapVotes->size() > nHighestCount &&
+        if (pBudgetProposal->mapVotes.size() > nHighestCount &&
             nBlockHeight >= pBudgetProposal->GetBlockStart() &&
             nBlockHeight <= pBudgetProposal->GetBlockEnd()) {
             nHighestCount = pBudgetProposal->GetVoteCount();
