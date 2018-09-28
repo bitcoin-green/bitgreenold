@@ -109,8 +109,8 @@ public:
         nRejectBlockOutdatedMajority = 950;
         nToCheckBlockUpgradeMajority = 1000;
         nMinerThreads = 0;
-        nTargetTimespan = 1 * 60; // Bitcoin Green: 1 day
-        nTargetSpacing = 2 * 60;  // Bitcoin Green: 2 minutes
+        nTargetTimespan = 24 * 60 * 60; // Bitcoin Green: 1 day
+        nTargetSpacing = 1 * 60;  // Bitcoin Green: 1 minute
         nMaturity = 10;
         nMasternodeCountDrift = 20;
         nMaxMoneyOut = 21000000 * COIN;
@@ -220,8 +220,8 @@ public:
         nRejectBlockOutdatedMajority = 75;
         nToCheckBlockUpgradeMajority = 100;
         nMinerThreads = 0;
-        nTargetTimespan = 1 * 60; // Bitcoin Green: 1 day
-        nTargetSpacing = 2 * 60;  // Bitcoin Green: 1 minute
+        nTargetTimespan = 24 * 60 * 60; // Bitcoin Green: 1 day
+        nTargetSpacing = 1 * 60;  // Bitcoin Green: 1 minute
         nLastPOWBlock = 200;
         nMaturity = 15;
         nMasternodeCountDrift = 4;
@@ -295,7 +295,7 @@ public:
         nToCheckBlockUpgradeMajority = 1000;
         nMinerThreads = 1;
         nTargetTimespan = 24 * 60 * 60; // Bitcoin Green: 1 day
-        nTargetSpacing = 2 * 60;        // Bitcoin Green: 1 minutes
+        nTargetSpacing = 1 * 60;        // Bitcoin Green: 1 minutes
         bnProofOfWorkLimit = ~uint256(0) >> 1;
         genesis.nTime = 1516926684;
         genesis.nBits = 0x207fffff;
