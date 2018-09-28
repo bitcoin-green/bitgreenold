@@ -693,7 +693,7 @@ TrxValidationStatus CBudgetManager::IsTransactionValid(const CTransaction& txNew
                  strProposals.c_str(), pfinalizedBudget->GetBlockStart(), pfinalizedBudget->GetBlockEnd(),
                  nBlockHeight, pfinalizedBudget->GetVoteCount(), nCountThreshold);
 
-        if (pfinalizedBudget->GetVoteCount() > nCountThreshold) {
+        if (pfinalizedBudget->GetVoteCount() >= nCountThreshold) {
             fThreshold = true;
             LogPrint("mnbudget","CBudgetManager::IsTransactionValid - GetVoteCount() > nCountThreshold passed\n");
             if (nBlockHeight >= pfinalizedBudget->GetBlockStart() && nBlockHeight <= pfinalizedBudget->GetBlockEnd()) {
@@ -770,6 +770,29 @@ std::vector<CBudgetProposal*> CBudgetManager::GetBudget()
     }
 
     std::sort(vBudgetPorposalsSort.begin(), vBudgetPorposalsSort.end(), sortProposalsByVotes());
+    
+    std::vector<CBudgetProposal*> vBudgetProposalsRet;
+
+    CAmount nBudgetAllocated = 0;
+    CBlockIndex* pindexPrev = chainActive.Tip();
+    if (pindexPrev == NULL) return vBudgetProposalsRet;
+
+    // Grab The Highest Count
+
+    int nHighestCount = 0;
+    int nBlockHeight = pindexPrev->nHeight + 1;
+
+    std::map<uint256, CBudgetProposal>::iterator it1 = mapProposals.begin();
+    while (it1 != mapProposals.end()) {
+        CBudgetProposal* pBudgetProposal = &((*it1).second);
+        if (pBudgetProposal->GetVoteCount() > nHighestCount &&
+            nBlockHeight >= pBudgetProposal->GetBlockStart() &&
+            nBlockHeight <= pBudgetProposal->GetBlockEnd()) {
+            nHighestCount = pBudgetProposal->GetVoteCount();
+        }
+
+        ++it1;
+    }
 
     // ------- Grab The Budgets In Order
 
@@ -781,6 +804,7 @@ std::vector<CBudgetProposal*> CBudgetManager::GetBudget()
 
     int nBlockStart = pindexPrev->nHeight - pindexPrev->nHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
     int nBlockEnd = nBlockStart + GetBudgetPaymentCycleBlocks() - 1;
+    int nCountThreshold = mnodeman.CountEnabled(ActiveProtocol()) / 10;
     CAmount nTotalBudget = GetTotalBudget(nBlockStart);
 
 
@@ -792,13 +816,15 @@ std::vector<CBudgetProposal*> CBudgetManager::GetBudget()
         //prop start/end should be inside this period
         if (pbudgetProposal->fValid && pbudgetProposal->nBlockStart <= nBlockStart &&
             pbudgetProposal->nBlockEnd >= nBlockEnd &&
+            // check the highest budget proposals (+/- 10% to assist in consensus)
+            pbudgetProposal->mapVotes->size() >= nHighestCount - nCountThreshold;
             pbudgetProposal->GetYeas() - pbudgetProposal->GetNays() > mnodeman.CountEnabled(ActiveProtocol()) / 10 &&
             pbudgetProposal->IsEstablished()) {
 
-            LogPrint("mnbudget","CBudgetManager::GetBudget() -   Check 1 passed: valid=%d | %ld <= %ld | %ld >= %ld | Yeas=%d Nays=%d Count=%d | established=%d\n",
+            LogPrint("mnbudget","CBudgetManager::GetBudget() -   Check 1 passed: valid=%d | %ld <= %ld | %ld >= %ld | Yeas=%d Nays=%d Count=%d | Threshold=%d | established=%d\n",
                       pbudgetProposal->fValid, pbudgetProposal->nBlockStart, nBlockStart, pbudgetProposal->nBlockEnd,
                       nBlockEnd, pbudgetProposal->GetYeas(), pbudgetProposal->GetNays(), mnodeman.CountEnabled(ActiveProtocol()) / 10,
-                      pbudgetProposal->IsEstablished());
+                      nCountThreshold, pbudgetProposal->IsEstablished());
 
             if (pbudgetProposal->GetAmount() + nBudgetAllocated <= nTotalBudget) {
                 pbudgetProposal->SetAllotted(pbudgetProposal->GetAmount());
@@ -811,10 +837,10 @@ std::vector<CBudgetProposal*> CBudgetManager::GetBudget()
             }
         }
         else {
-            LogPrint("mnbudget","CBudgetManager::GetBudget() -   Check 1 failed: valid=%d | %ld <= %ld | %ld >= %ld | Yeas=%d Nays=%d Count=%d | established=%d\n",
+            LogPrint("mnbudget","CBudgetManager::GetBudget() -   Check 1 failed: valid=%d | %ld <= %ld | %ld >= %ld | Yeas=%d Nays=%d Count=%d | Threshold=%d | established=%d\n",
                       pbudgetProposal->fValid, pbudgetProposal->nBlockStart, nBlockStart, pbudgetProposal->nBlockEnd,
                       nBlockEnd, pbudgetProposal->GetYeas(), pbudgetProposal->GetNays(), mnodeman.CountEnabled(ActiveProtocol()) / 10,
-                      pbudgetProposal->IsEstablished());
+                      nCountThreshold, pbudgetProposal->IsEstablished());
         }
 
         ++it2;
