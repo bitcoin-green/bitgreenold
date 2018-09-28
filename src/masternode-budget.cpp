@@ -788,7 +788,7 @@ std::vector<CBudgetProposal*> CBudgetManager::GetBudget()
         if (pBudgetProposal->mapVotes.size() > nHighestCount &&
             nBlockHeight >= pBudgetProposal->GetBlockStart() &&
             nBlockHeight <= pBudgetProposal->GetBlockEnd()) {
-            nHighestCount = pBudgetProposal->GetVoteCount();
+            nHighestCount = pBudgetProposal->mapVotes.size();
         }
 
         ++it1;
@@ -811,7 +811,7 @@ std::vector<CBudgetProposal*> CBudgetManager::GetBudget()
         if (pbudgetProposal->fValid && pbudgetProposal->nBlockStart <= nBlockStart &&
             pbudgetProposal->nBlockEnd >= nBlockEnd &&
             // check the highest budget proposals (+/- 10% to assist in consensus)
-            pbudgetProposal->mapVotes->size() >= nHighestCount - nCountThreshold &&
+            pbudgetProposal->mapVotes.size() >= nHighestCount - nCountThreshold &&
             pbudgetProposal->GetYeas() - pbudgetProposal->GetNays() > mnodeman.CountEnabled(ActiveProtocol()) / 10 &&
             pbudgetProposal->IsEstablished()) {
 
