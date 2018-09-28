@@ -794,13 +794,7 @@ std::vector<CBudgetProposal*> CBudgetManager::GetBudget()
         ++it1;
     }
 
-    // ------- Grab The Budgets In Order
-
-    std::vector<CBudgetProposal*> vBudgetProposalsRet;
-
-    CAmount nBudgetAllocated = 0;
-    CBlockIndex* pindexPrev = chainActive.Tip();
-    if (pindexPrev == NULL) return vBudgetProposalsRet;
+    // ------- Grab The Budgets In Order    
 
     int nBlockStart = pindexPrev->nHeight - pindexPrev->nHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
     int nBlockEnd = nBlockStart + GetBudgetPaymentCycleBlocks() - 1;
