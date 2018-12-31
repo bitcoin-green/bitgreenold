@@ -28,12 +28,15 @@ UniValue getconnectioncount(const UniValue& params, bool fHelp)
         throw runtime_error(
             "getconnectioncount\n"
             "\nReturns the number of connections to other nodes.\n"
+
             "\nbResult:\n"
             "n          (numeric) The connection count\n"
+
             "\nExamples:\n" +
             HelpExampleCli("getconnectioncount", "") + HelpExampleRpc("getconnectioncount", ""));
 
-    LOCK(cs_vNodes);
+    LOCK2(cs_main, cs_vNodes);
+
     return (int)vNodes.size();
 }
 
@@ -45,11 +48,13 @@ UniValue ping(const UniValue& params, bool fHelp)
             "\nRequests that a ping be sent to all other nodes, to measure ping time.\n"
             "Results provided in getpeerinfo, pingtime and pingwait fields are decimal seconds.\n"
             "Ping command is handled in queue with all other commands, so it measures processing backlog, not just network ping.\n"
+
             "\nExamples:\n" +
             HelpExampleCli("ping", "") + HelpExampleRpc("ping", ""));
 
     // Request that each node send a ping during next message processing pass
-    LOCK(cs_vNodes);
+    LOCK2(cs_main, cs_vNodes);
+
     BOOST_FOREACH (CNode* pNode, vNodes) {
         pNode->fPingQueued = true;
     }
@@ -76,6 +81,7 @@ UniValue getpeerinfo(const UniValue& params, bool fHelp)
         throw runtime_error(
             "getpeerinfo\n"
             "\nReturns data about each connected network node as a json array of objects.\n"
+
             "\nbResult:\n"
             "[\n"
             "  {\n"
@@ -105,8 +111,11 @@ UniValue getpeerinfo(const UniValue& params, bool fHelp)
             "  }\n"
             "  ,...\n"
             "]\n"
+
             "\nExamples:\n" +
             HelpExampleCli("getpeerinfo", "") + HelpExampleRpc("getpeerinfo", ""));
+
+    LOCK(cs_main);
 
     vector<CNodeStats> vstats;
     CopyNodeStats(vstats);
@@ -167,9 +176,11 @@ UniValue addnode(const UniValue& params, bool fHelp)
             "addnode \"node\" \"add|remove|onetry\"\n"
             "\nAttempts add or remove a node from the addnode list.\n"
             "Or try a connection to a node once.\n"
+
             "\nArguments:\n"
             "1. \"node\"     (string, required) The node (see getpeerinfo for nodes)\n"
             "2. \"command\"  (string, required) 'add' to add a node to the list, 'remove' to remove a node from the list, 'onetry' to try a connection to the node once\n"
+
             "\nExamples:\n" +
             HelpExampleCli("addnode", "\"192.168.0.6:9333\" \"onetry\"") + HelpExampleRpc("addnode", "\"192.168.0.6:9333\", \"onetry\""));
 
@@ -206,8 +217,10 @@ UniValue disconnectnode(const UniValue& params, bool fHelp)
         throw runtime_error(
             "disconnectnode \"node\" \n"
             "\nImmediately disconnects from the specified node.\n"
+
             "\nArguments:\n"
             "1. \"node\"     (string, required) The node (see getpeerinfo for nodes)\n"
+
             "\nExamples:\n"
             + HelpExampleCli("disconnectnode", "\"192.168.0.6:8333\"")
             + HelpExampleRpc("disconnectnode", "\"192.168.0.6:8333\"")
@@ -231,9 +244,11 @@ UniValue getaddednodeinfo(const UniValue& params, bool fHelp)
             "(note that onetry addnodes are not listed here)\n"
             "If dns is false, only a list of added nodes will be provided,\n"
             "otherwise connected information will also be available.\n"
+
             "\nArguments:\n"
             "1. dns        (boolean, required) If false, only a list of added nodes will be provided, otherwise connected information will also be available.\n"
             "2. \"node\"   (string, optional) If provided, return information about this specific node, otherwise all nodes are returned.\n"
+
             "\nResult:\n"
             "[\n"
             "  {\n"
@@ -249,6 +264,7 @@ UniValue getaddednodeinfo(const UniValue& params, bool fHelp)
             "  }\n"
             "  ,...\n"
             "]\n"
+
             "\nExamples:\n" +
             HelpExampleCli("getaddednodeinfo", "true") + HelpExampleCli("getaddednodeinfo", "true \"192.168.0.201\"") + HelpExampleRpc("getaddednodeinfo", "true, \"192.168.0.201\""));
 
@@ -332,12 +348,14 @@ UniValue getnettotals(const UniValue& params, bool fHelp)
             "getnettotals\n"
             "\nReturns information about network traffic, including bytes in, bytes out,\n"
             "and current time.\n"
+
             "\nResult:\n"
             "{\n"
             "  \"totalbytesrecv\": n,   (numeric) Total bytes received\n"
             "  \"totalbytessent\": n,   (numeric) Total bytes sent\n"
             "  \"timemillis\": t        (numeric) Total cpu time\n"
             "}\n"
+
             "\nExamples:\n" +
             HelpExampleCli("getnettotals", "") + HelpExampleRpc("getnettotals", ""));
 
@@ -373,7 +391,8 @@ UniValue getnetworkinfo(const UniValue& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getnetworkinfo\n"
-            "Returns an object containing various state info regarding P2P networking.\n"
+            "\nReturns an object containing various state info regarding P2P networking.\n"
+
             "\nResult:\n"
             "{\n"
             "  \"version\": xxxxx,                      (numeric) the server version\n"
@@ -401,8 +420,11 @@ UniValue getnetworkinfo(const UniValue& params, bool fHelp)
             "  ,...\n"
             "  ]\n"
             "}\n"
+
             "\nExamples:\n" +
             HelpExampleCli("getnetworkinfo", "") + HelpExampleRpc("getnetworkinfo", ""));
+
+    LOCK(cs_main);
 
     UniValue obj(UniValue::VOBJ);
     obj.push_back(Pair("version", CLIENT_VERSION));
@@ -437,18 +459,19 @@ UniValue setban(const UniValue& params, bool fHelp)
     if (fHelp || params.size() < 2 ||
         (strCommand != "add" && strCommand != "remove"))
         throw runtime_error(
-                            "setban \"ip(/netmask)\" \"add|remove\" (bantime) (absolute)\n"
-                            "\nAttempts add or remove a IP/Subnet from the banned list.\n"
-                            "\nArguments:\n"
-                            "1. \"ip(/netmask)\" (string, required) The IP/Subnet (see getpeerinfo for nodes ip) with a optional netmask (default is /32 = single ip)\n"
-                            "2. \"command\"      (string, required) 'add' to add a IP/Subnet to the list, 'remove' to remove a IP/Subnet from the list\n"
-                            "3. \"bantime\"      (numeric, optional) time in seconds how long (or until when if [absolute] is set) the ip is banned (0 or empty means using the default time of 24h which can also be overwritten by the -bantime startup argument)\n"
-                            "4. \"absolute\"     (boolean, optional) If set, the bantime must be a absolute timestamp in seconds since epoch (Jan 1 1970 GMT)\n"
-                            "\nExamples:\n"
-                            + HelpExampleCli("setban", "\"192.168.0.6\" \"add\" 86400")
-                            + HelpExampleCli("setban", "\"192.168.0.0/24\" \"add\"")
-                            + HelpExampleRpc("setban", "\"192.168.0.6\", \"add\" 86400")
-                            );
+            "setban \"ip(/netmask)\" \"add|remove\" (bantime) (absolute)\n"
+            "\nAttempts add or remove a IP/Subnet from the banned list.\n"
+
+            "\nArguments:\n"
+            "1. \"ip(/netmask)\" (string, required) The IP/Subnet (see getpeerinfo for nodes ip) with a optional netmask (default is /32 = single ip)\n"
+            "2. \"command\"      (string, required) 'add' to add a IP/Subnet to the list, 'remove' to remove a IP/Subnet from the list\n"
+            "3. \"bantime\"      (numeric, optional) time in seconds how long (or until when if [absolute] is set) the ip is banned (0 or empty means using the default time of 24h which can also be overwritten by the -bantime startup argument)\n"
+            "4. \"absolute\"     (boolean, optional) If set, the bantime must be a absolute timestamp in seconds since epoch (Jan 1 1970 GMT)\n"
+
+            "\nExamples:\n"
+            + HelpExampleCli("setban", "\"192.168.0.6\" \"add\" 86400")
+            + HelpExampleCli("setban", "\"192.168.0.0/24\" \"add\"")
+            + HelpExampleRpc("setban", "\"192.168.0.6\", \"add\" 86400"));
 
     CSubNet subNet;
     CNetAddr netAddr;

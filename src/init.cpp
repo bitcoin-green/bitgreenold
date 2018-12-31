@@ -17,6 +17,8 @@
 #include "amount.h"
 #include "checkpoints.h"
 #include "compat/sanity.h"
+#include "httpserver.h"
+#include "httprpc.h"
 #include "key.h"
 #include "main.h"
 #include "masternode-budget.h"
@@ -164,6 +166,16 @@ static CCoinsViewDB* pcoinsdbview = NULL;
 static CCoinsViewErrorCatcher* pcoinscatcher = NULL;
 static boost::scoped_ptr<ECCVerifyHandle> globalVerifyHandle;
 
+void Interrupt(boost::thread_group& threadGroup)
+{
+    InterruptHTTPServer();
+    InterruptHTTPRPC();
+    InterruptRPC();
+    InterruptREST();
+    InterruptTorControl();
+    threadGroup.interrupt_all();
+}
+
 /** Preparing steps before shutting down or restarting the wallet */
 void PrepareShutdown()
 {
@@ -181,15 +193,17 @@ void PrepareShutdown()
     /// module was initialized.
     RenameThread("bitcoingreen-shutoff");
     mempool.AddTransactionsUpdated(1);
-    StopRPCThreads();
+    StopHTTPRPC();
+    StopREST();
+    StopRPC();
+    StopHTTPServer();
+    StopTorControl();
 #ifdef ENABLE_WALLET
     if (pwalletMain)
         bitdb.Flush(false);
     GenerateBitcoins(false, NULL, 0);
 #endif
     StopNode();
-    InterruptTorControl();
-    StopTorControl();
     DumpMasternodes();
     DumpBudgets();
     DumpCommunityVotes();
@@ -306,6 +320,26 @@ bool static Bind(const CService& addr, unsigned int flags)
         return false;
     }
     return true;
+}
+
+void OnRPCStopped()
+{
+    cvBlockChange.notify_all();
+    LogPrint("rpc", "RPC stopped.\n");
+}
+
+void OnRPCPreCommand(const CRPCCommand& cmd)
+{
+#ifdef ENABLE_WALLET
+    if (cmd.reqWallet && !pwalletMain)
+        throw JSONRPCError(RPC_METHOD_NOT_FOUND, "Method not found (disabled)");
+#endif
+
+    // Observe safe mode
+    string strWarning = GetWarnings("rpc");
+    if (strWarning != "" && !GetBoolArg("-disablesafemode", false) &&
+        !cmd.okSafeMode)
+        throw JSONRPCError(RPC_FORBIDDEN_BY_SAFE_MODE, string("Safe mode: ") + strWarning);
 }
 
 std::string HelpMessage(HelpMessageMode mode)
@@ -509,15 +543,11 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageOpt("-rpcpassword=<pw>", _("Password for JSON-RPC connections"));
     strUsage += HelpMessageOpt("-rpcport=<port>", strprintf(_("Listen for JSON-RPC connections on <port> (default: %u or testnet: %u)"), 9332, 19332));
     strUsage += HelpMessageOpt("-rpcallowip=<ip>", _("Allow JSON-RPC connections from specified source. Valid for <ip> are a single IP (e.g. 1.2.3.4), a network/netmask (e.g. 1.2.3.4/255.255.255.0) or a network/CIDR (e.g. 1.2.3.4/24). This option can be specified multiple times"));
-    strUsage += HelpMessageOpt("-rpcthreads=<n>", strprintf(_("Set the number of threads to service RPC calls (default: %d)"), 4));
-    strUsage += HelpMessageOpt("-rpckeepalive", strprintf(_("RPC support for HTTP persistent connections (default: %d)"), 1));
-
-    strUsage += HelpMessageGroup(_("RPC SSL options: (see the Bitcoin Wiki for SSL setup instructions)"));
-    strUsage += HelpMessageOpt("-rpcssl", _("Use OpenSSL (https) for JSON-RPC connections"));
-    strUsage += HelpMessageOpt("-rpcsslcertificatechainfile=<file.cert>", strprintf(_("Server certificate file (default: %s)"), "server.cert"));
-    strUsage += HelpMessageOpt("-rpcsslprivatekeyfile=<file.pem>", strprintf(_("Server private key (default: %s)"), "server.pem"));
-    strUsage += HelpMessageOpt("-rpcsslciphers=<ciphers>", strprintf(_("Acceptable ciphers (default: %s)"), "TLSv1.2+HIGH:TLSv1+HIGH:!SSLv2:!aNULL:!eNULL:!3DES:@STRENGTH"));
-
+    strUsage += HelpMessageOpt("-rpcthreads=<n>", strprintf(_("Set the number of threads to service RPC calls (default: %d)"), DEFAULT_HTTP_THREADS));
+    if (GetBoolArg("-help-debug", false)) {
+        strUsage += HelpMessageOpt("-rpcworkqueue=<n>", strprintf("Set the depth of the work queue to service RPC calls (default: %d)", DEFAULT_HTTP_WORKQUEUE));
+        strUsage += HelpMessageOpt("-rpcservertimeout=<n>", strprintf("Timeout during HTTP requests (default: %d)", DEFAULT_HTTP_SERVER_TIMEOUT));
+    }
     return strUsage;
 }
 
@@ -645,6 +675,22 @@ bool InitSanityCheck(void)
     return true;
 }
 
+bool AppInitServers()
+{
+    RPCServer::OnStopped(&OnRPCStopped);
+    RPCServer::OnPreCommand(&OnRPCPreCommand);
+    if (!InitHTTPServer())
+        return false;
+    if (!StartRPC())
+        return false;
+    if (!StartHTTPRPC())
+        return false;
+    if (GetBoolArg("-rest", false) && !StartREST())
+        return false;
+    if (!StartHTTPServer())
+        return false;
+    return true;
+}
 
 /** Initialize bitcoingreen.
  *  @pre Parameters should be parsed and config file should be read.
@@ -981,7 +1027,8 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
      */
     if (fServer) {
         uiInterface.InitMessage.connect(SetRPCWarmupStatus);
-        StartRPCThreads();
+        if (!AppInitServers())
+            return InitError(_("Unable to start HTTP server. See debug log for details."));
     }
 
     int64_t nStart;

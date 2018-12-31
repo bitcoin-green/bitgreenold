@@ -15,10 +15,14 @@
 #include "rpcserver.h"
 #include "ui_interface.h"
 #include "util.h"
+#include "httpserver.h"
+#include "httprpc.h"
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/thread.hpp>
+
+#include <stdio.h>
 
 /* Introduction text for doxygen: */
 
@@ -47,7 +51,7 @@ void DetectShutdownThread(boost::thread_group* threadGroup)
         fShutdown = ShutdownRequested();
     }
     if (threadGroup) {
-        threadGroup->interrupt_all();
+        Interrupt(*threadGroup);
         threadGroup->join_all();
     }
 }
@@ -157,7 +161,7 @@ bool AppInit(int argc, char* argv[])
         if (detectShutdownThread)
             detectShutdownThread->interrupt();
 
-        threadGroup.interrupt_all();
+        Interrupt(threadGroup);
         // threadGroup.join_all(); was left out intentionally here, because we didn't re-test all of
         // the startup-failure cases to make sure they don't result in a hang due to some
         // thread-blocking-waiting-for-another-thread-during-startup case

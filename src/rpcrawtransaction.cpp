@@ -170,6 +170,8 @@ UniValue getrawtransaction(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("getrawtransaction", "\"mytxid\"") + HelpExampleCli("getrawtransaction", "\"mytxid\" 1") + HelpExampleRpc("getrawtransaction", "\"mytxid\", 1"));
 
+    LOCK(cs_main);
+
     uint256 hash = ParseHashV(params[0], "parameter 1");
 
     bool fVerbose = false;
@@ -203,6 +205,7 @@ UniValue listunspent(const UniValue& params, bool fHelp)
             "Optionally filter to only include txouts paid to specified addresses.\n"
             "Results are an array of Objects, each of which has:\n"
             "{txid, vout, scriptPubKey, amount, confirmations}\n"
+
             "\nArguments:\n"
             "1. minconf          (numeric, optional, default=1) The minimum confirmations to filter\n"
             "2. maxconf          (numeric, optional, default=9999999) The maximum confirmations to filter\n"
@@ -263,6 +266,7 @@ UniValue listunspent(const UniValue& params, bool fHelp)
     UniValue results(UniValue::VARR);
     vector<COutput> vecOutputs;
     assert(pwalletMain != NULL);
+    LOCK2(cs_main, pwalletMain->cs_wallet);
     pwalletMain->AvailableCoins(vecOutputs, false, NULL, false, ALL_COINS, false, nWatchonlyConfig);
     BOOST_FOREACH (const COutput& out, vecOutputs) {
         if (out.nDepth < nMinDepth || out.nDepth > nMaxDepth)
@@ -339,6 +343,7 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
             "\nExamples\n" +
             HelpExampleCli("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\" \"{\\\"address\\\":0.01}\"") + HelpExampleRpc("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\", \"{\\\"address\\\":0.01}\""));
 
+    LOCK(cs_main);
     RPCTypeCheck(params, boost::assign::list_of(UniValue::VARR)(UniValue::VOBJ));
 
     UniValue inputs = params[0].get_array();
@@ -433,6 +438,7 @@ UniValue decoderawtransaction(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("decoderawtransaction", "\"hexstring\"") + HelpExampleRpc("decoderawtransaction", "\"hexstring\""));
 
+    LOCK(cs_main);
     RPCTypeCheck(params, boost::assign::list_of(UniValue::VSTR));
 
     CTransaction tx;
@@ -452,8 +458,10 @@ UniValue decodescript(const UniValue& params, bool fHelp)
         throw runtime_error(
             "decodescript \"hex\"\n"
             "\nDecode a hex-encoded script.\n"
+
             "\nArguments:\n"
             "1. \"hex\"     (string) the hex encoded script\n"
+
             "\nResult:\n"
             "{\n"
             "  \"asm\":\"asm\",   (string) Script public key\n"
@@ -466,9 +474,11 @@ UniValue decodescript(const UniValue& params, bool fHelp)
             "  ],\n"
             "  \"p2sh\",\"address\" (string) script address\n"
             "}\n"
+
             "\nExamples:\n" +
             HelpExampleCli("decodescript", "\"hexstring\"") + HelpExampleRpc("decodescript", "\"hexstring\""));
 
+    LOCK(cs_main);
     RPCTypeCheck(params, boost::assign::list_of(UniValue::VSTR));
 
     UniValue r(UniValue::VOBJ);
@@ -499,40 +509,55 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
             + HelpRequiringPassphrase() + "\n"
 #endif
 
-                                          "\nArguments:\n"
-                                          "1. \"hexstring\"     (string, required) The transaction hex string\n"
-                                          "2. \"prevtxs\"       (string, optional) An json array of previous dependent transaction outputs\n"
-                                          "     [               (json array of json objects, or 'null' if none provided)\n"
-                                          "       {\n"
-                                          "         \"txid\":\"id\",             (string, required) The transaction id\n"
-                                          "         \"vout\":n,                  (numeric, required) The output number\n"
-                                          "         \"scriptPubKey\": \"hex\",   (string, required) script key\n"
-                                          "         \"redeemScript\": \"hex\"    (string, required for P2SH) redeem script\n"
-                                          "       }\n"
-                                          "       ,...\n"
-                                          "    ]\n"
-                                          "3. \"privatekeys\"     (string, optional) A json array of base58-encoded private keys for signing\n"
-                                          "    [                  (json array of strings, or 'null' if none provided)\n"
-                                          "      \"privatekey\"   (string) private key in base58-encoding\n"
-                                          "      ,...\n"
-                                          "    ]\n"
-                                          "4. \"sighashtype\"     (string, optional, default=ALL) The signature hash type. Must be one of\n"
-                                          "       \"ALL\"\n"
-                                          "       \"NONE\"\n"
-                                          "       \"SINGLE\"\n"
-                                          "       \"ALL|ANYONECANPAY\"\n"
-                                          "       \"NONE|ANYONECANPAY\"\n"
-                                          "       \"SINGLE|ANYONECANPAY\"\n"
+            "\nArguments:\n"
+            "1. \"hexstring\"     (string, required) The transaction hex string\n"
+            "2. \"prevtxs\"       (string, optional) An json array of previous dependent transaction outputs\n"
+            "     [               (json array of json objects, or 'null' if none provided)\n"
+            "       {\n"
+            "         \"txid\":\"id\",             (string, required) The transaction id\n"
+            "         \"vout\":n,                  (numeric, required) The output number\n"
+            "         \"scriptPubKey\": \"hex\",   (string, required) script key\n"
+            "         \"redeemScript\": \"hex\"    (string, required for P2SH) redeem script\n"
+            "       }\n"
+            "       ,...\n"
+            "    ]\n"
+            "3. \"privatekeys\"     (string, optional) A json array of base58-encoded private keys for signing\n"
+            "    [                  (json array of strings, or 'null' if none provided)\n"
+            "      \"privatekey\"   (string) private key in base58-encoding\n"
+            "      ,...\n"
+            "    ]\n"
+            "4. \"sighashtype\"     (string, optional, default=ALL) The signature hash type. Must be one of\n"
+            "       \"ALL\"\n"
+            "       \"NONE\"\n"
+            "       \"SINGLE\"\n"
+            "       \"ALL|ANYONECANPAY\"\n"
+            "       \"NONE|ANYONECANPAY\"\n"
+            "       \"SINGLE|ANYONECANPAY\"\n"
 
-                                          "\nResult:\n"
-                                          "{\n"
-                                          "  \"hex\": \"value\",   (string) The raw transaction with signature(s) (hex-encoded string)\n"
-                                          "  \"complete\": n       (numeric) if transaction has a complete set of signature (0 if not)\n"
-                                          "}\n"
+            "\nResult:\n"
+            "{\n"
+            "  \"hex\" : \"value\",           (string) The hex-encoded raw transaction with signature(s)\n"
+            "  \"complete\" : true|false,   (boolean) If the transaction has a complete set of signatures\n"
+            "  \"errors\" : [                 (json array of objects) Script verification errors (if there are any)\n"
+            "    {\n"
+            "      \"txid\" : \"hash\",           (string) The hash of the referenced, previous transaction\n"
+            "      \"vout\" : n,                (numeric) The index of the output to spent and used as input\n"
+            "      \"scriptSig\" : \"hex\",       (string) The hex-encoded signature script\n"
+            "      \"sequence\" : n,            (numeric) Script sequence number\n"
+            "      \"error\" : \"text\"           (string) Verification or signing error related to the input\n"
+            "    }\n"
+            "    ,...\n"
+            "  ]\n"
+            "}\n"
 
-                                          "\nExamples:\n" +
+            "\nExamples:\n" +
             HelpExampleCli("signrawtransaction", "\"myhex\"") + HelpExampleRpc("signrawtransaction", "\"myhex\""));
 
+#ifdef ENABLE_WALLET
+    LOCK2(cs_main, pwalletMain ? &pwalletMain->cs_wallet : NULL);
+#else
+    LOCK(cs_main);
+#endif
     RPCTypeCheck(params, boost::assign::list_of(UniValue::VSTR)(UniValue::VARR)(UniValue::VARR)(UniValue::VSTR), true);
 
     vector<unsigned char> txData(ParseHexV(params[0], "argument 1"));
@@ -592,7 +617,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
         }
     }
 #ifdef ENABLE_WALLET
-    else
+    else if (pwalletMain)
         EnsureWalletIsUnlocked();
 #endif
 
@@ -701,12 +726,14 @@ UniValue sendrawtransaction(const UniValue& params, bool fHelp)
             "sendrawtransaction \"hexstring\" ( allowhighfees )\n"
             "\nSubmits raw transaction (serialized, hex-encoded) to local node and network.\n"
             "\nAlso see createrawtransaction and signrawtransaction calls.\n"
+
             "\nArguments:\n"
             "1. \"hexstring\"    (string, required) The hex string of the raw transaction)\n"
             "2. allowhighfees    (boolean, optional, default=false) Allow high fees\n"
             "3. swifttx           (boolean, optional, default=false) Use SwiftTX to send this transaction\n"
             "\nResult:\n"
             "\"hex\"             (string) The transaction hash in hex\n"
+
             "\nExamples:\n"
             "\nCreate a transaction\n" +
             HelpExampleCli("createrawtransaction", "\"[{\\\"txid\\\" : \\\"mytxid\\\",\\\"vout\\\":0}]\" \"{\\\"myaddress\\\":0.01}\"") +
@@ -714,6 +741,7 @@ UniValue sendrawtransaction(const UniValue& params, bool fHelp)
             "\nSend the transaction (signed hex)\n" + HelpExampleCli("sendrawtransaction", "\"signedhex\"") +
             "\nAs a json rpc call\n" + HelpExampleRpc("sendrawtransaction", "\"signedhex\""));
 
+    LOCK(cs_main);
     RPCTypeCheck(params, boost::assign::list_of(UniValue::VSTR)(UniValue::VBOOL));
 
     // parse hex string from parameter

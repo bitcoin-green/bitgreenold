@@ -85,8 +85,10 @@ UniValue getnewaddress(const UniValue& params, bool fHelp)
             "\nReturns a new BITG address for receiving payments.\n"
             "If 'account' is specified (recommended), it is added to the address book \n"
             "so payments received with the address will be credited to 'account'.\n"
+
             "\nArguments:\n"
             "1. \"account\"        (string, optional) The account name for the address to be linked to. if not provided, the default account \"\" is used. It can also be set to the empty string \"\" to represent the default account. The account does not need to exist, it will be created if there is no account by the given name.\n"
+
             "\nResult:\n"
             "\"bitgaddress\"    (string) The new bitg address\n"
             "\nExamples:\n" +
@@ -157,6 +159,7 @@ UniValue getaccountaddress(const UniValue& params, bool fHelp)
             "\nReturns the current BITG address for receiving payments to this account.\n"
             "\nArguments:\n"
             "1. \"account\"       (string, required) The account name for the address. It can also be set to the empty string \"\" to represent the default account. The account does not need to exist, it will be created and a new address created  if there is no account by the given name.\n"
+
             "\nResult:\n"
             "\"bitgaddress\"   (string) The account bitg address\n"
             "\nExamples:\n" +
@@ -182,8 +185,10 @@ UniValue getrawchangeaddress(const UniValue& params, bool fHelp)
             "getrawchangeaddress\n"
             "\nReturns a new BITG address, for receiving change.\n"
             "This is for use with raw transactions, NOT normal use.\n"
+
             "\nResult:\n"
             "\"address\"    (string) The address\n"
+
             "\nExamples:\n" +
             HelpExampleCli("getrawchangeaddress", "") + HelpExampleRpc("getrawchangeaddress", ""));
 
@@ -211,9 +216,11 @@ UniValue setaccount(const UniValue& params, bool fHelp)
         throw runtime_error(
             "setaccount \"bitgaddress\" \"account\"\n"
             "\nSets the account associated with the given address.\n"
+
             "\nArguments:\n"
             "1. \"bitgaddress\"  (string, required) The bitg address to be associated with an account.\n"
             "2. \"account\"         (string, required) The account to assign the address to.\n"
+
             "\nExamples:\n" +
             HelpExampleCli("setaccount", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\" \"tabby\"") + HelpExampleRpc("setaccount", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\", \"tabby\""));
 
@@ -250,10 +257,12 @@ UniValue getaccount(const UniValue& params, bool fHelp)
         throw runtime_error(
             "getaccount \"bitgaddress\"\n"
             "\nReturns the account associated with the given address.\n"
+
             "\nArguments:\n"
             "1. \"bitgaddress\"  (string, required) The bitg address for account lookup.\n"
             "\nResult:\n"
             "\"accountname\"        (string) the account address\n"
+
             "\nExamples:\n" +
             HelpExampleCli("getaccount", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\"") + HelpExampleRpc("getaccount", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\""));
 
@@ -277,13 +286,16 @@ UniValue getaddressesbyaccount(const UniValue& params, bool fHelp)
         throw runtime_error(
             "getaddressesbyaccount \"account\"\n"
             "\nReturns the list of addresses for the given account.\n"
+
             "\nArguments:\n"
             "1. \"account\"  (string, required) The account name.\n"
+
             "\nResult:\n"
             "[                     (json array of string)\n"
             "  \"bitgaddress\"  (string) a bitg address associated with the given account\n"
             "  ,...\n"
             "]\n"
+
             "\nExamples:\n" +
             HelpExampleCli("getaddressesbyaccount", "\"tabby\"") + HelpExampleRpc("getaddressesbyaccount", "\"tabby\""));
 
@@ -340,7 +352,8 @@ UniValue sendtoaddress(const UniValue& params, bool fHelp)
         throw runtime_error(
             "sendtoaddress \"bitgaddress\" amount ( \"comment\" \"comment-to\" )\n"
             "\nSend an amount to a given address. The amount is a real and is rounded to the nearest 0.00000001\n" +
-            HelpRequiringPassphrase() +
+            HelpRequiringPassphrase() + "\n"
+
             "\nArguments:\n"
             "1. \"bitgaddress\"  (string, required) The bitg address to send to.\n"
             "2. \"amount\"      (numeric, required) The amount in btc to send. eg 0.1\n"
@@ -349,8 +362,10 @@ UniValue sendtoaddress(const UniValue& params, bool fHelp)
             "4. \"comment-to\"  (string, optional) A comment to store the name of the person or organization \n"
             "                             to which you're sending the transaction. This is not part of the \n"
             "                             transaction, just kept in your wallet.\n"
+
             "\nResult:\n"
             "\"transactionid\"  (string) The transaction id.\n"
+
             "\nExamples:\n" +
             HelpExampleCli("sendtoaddress", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\" 0.1") +
             HelpExampleCli("sendtoaddress", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\" 0.1 \"donation\" \"seans outpost\"") +
@@ -394,8 +409,10 @@ UniValue sendtoaddressix(const UniValue& params, bool fHelp)
             "4. \"comment-to\"  (string, optional) A comment to store the name of the person or organization \n"
             "                             to which you're sending the transaction. This is not part of the \n"
             "                             transaction, just kept in your wallet.\n"
+
             "\nResult:\n"
             "\"transactionid\"  (string) The transaction id.\n"
+
             "\nExamples:\n" +
             HelpExampleCli("sendtoaddressix", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\" 0.1") +
             HelpExampleCli("sendtoaddressix", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\" 0.1 \"donation\" \"seans outpost\"") +
@@ -432,6 +449,7 @@ UniValue listaddressgroupings(const UniValue& params, bool fHelp)
             "\nLists groups of addresses which have had their common ownership\n"
             "made public by common use as inputs or as the resulting change\n"
             "in past transactions\n"
+
             "\nResult:\n"
             "[\n"
             "  [\n"
@@ -444,6 +462,7 @@ UniValue listaddressgroupings(const UniValue& params, bool fHelp)
             "  ]\n"
             "  ,...\n"
             "]\n"
+
             "\nExamples:\n" +
             HelpExampleCli("listaddressgroupings", "") + HelpExampleRpc("listaddressgroupings", ""));
 
@@ -475,13 +494,16 @@ UniValue signmessage(const UniValue& params, bool fHelp)
             "signmessage \"bitgaddress\" \"message\"\n"
             "\nSign a message with the private key of an address" +
             HelpRequiringPassphrase() + "\n"
-                                        "\nArguments:\n"
-                                        "1. \"bitgaddress\"  (string, required) The bitg address to use for the private key.\n"
-                                        "2. \"message\"         (string, required) The message to create a signature of.\n"
-                                        "\nResult:\n"
-                                        "\"signature\"          (string) The signature of the message encoded in base 64\n"
-                                        "\nExamples:\n"
-                                        "\nUnlock the wallet for 30 seconds\n" +
+
+            "\nArguments:\n"
+            "1. \"bitgaddress\"  (string, required) The bitg address to use for the private key.\n"
+            "2. \"message\"         (string, required) The message to create a signature of.\n"
+
+            "\nResult:\n"
+            "\"signature\"          (string) The signature of the message encoded in base64\n"
+
+            "\nExamples:\n"
+            "\nUnlock the wallet for 30 seconds\n" +
             HelpExampleCli("walletpassphrase", "\"mypassphrase\" 30") +
             "\nCreate the signature\n" +
             HelpExampleCli("signmessage", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\" \"my message\"") +
@@ -523,12 +545,14 @@ UniValue signmessage(const UniValue& params, bool fHelp)
 UniValue getreceivedbyaddress(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 2)
-        throw runtime_error(
+        throw std::runtime_error(
             "getreceivedbyaddress \"bitgaddress\" ( minconf )\n"
             "\nReturns the total amount received by the given bitgaddress in transactions with at least minconf confirmations.\n"
+
             "\nArguments:\n"
             "1. \"bitgaddress\"  (string, required) The bitg address for transactions.\n"
             "2. minconf             (numeric, optional, default=1) Only include transactions confirmed at least this many times.\n"
+
             "\nResult:\n"
             "amount   (numeric) The total amount in BITG received at this address.\n"
             "\nExamples:\n"
@@ -541,13 +565,15 @@ UniValue getreceivedbyaddress(const UniValue& params, bool fHelp)
             "\nAs a json rpc call\n" +
             HelpExampleRpc("getreceivedbyaddress", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\", 6"));
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     // bitg address
     CBitcoinAddress address = CBitcoinAddress(params[0].get_str());
     if (!address.IsValid())
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid BITG address");
     CScript scriptPubKey = GetScriptForDestination(address.Get());
     if (!IsMine(*pwalletMain, scriptPubKey))
-        return (double)0.0;
+        throw JSONRPCError(RPC_WALLET_ERROR, "Address not found in wallet");
 
     // Minimum confirmations
     int nMinDepth = 1;
@@ -556,7 +582,7 @@ UniValue getreceivedbyaddress(const UniValue& params, bool fHelp)
 
     // Tally
     CAmount nAmount = 0;
-    for (map<uint256, CWalletTx>::iterator it = pwalletMain->mapWallet.begin(); it != pwalletMain->mapWallet.end(); ++it) {
+    for (std::map<uint256, CWalletTx>::iterator it = pwalletMain->mapWallet.begin(); it != pwalletMain->mapWallet.end(); ++it) {
         const CWalletTx& wtx = (*it).second;
         if (wtx.IsCoinBase() || !IsFinalTx(wtx))
             continue;
@@ -577,9 +603,11 @@ UniValue getreceivedbyaccount(const UniValue& params, bool fHelp)
         throw runtime_error(
             "getreceivedbyaccount \"account\" ( minconf )\n"
             "\nReturns the total amount received by addresses with <account> in transactions with at least [minconf] confirmations.\n"
+
             "\nArguments:\n"
             "1. \"account\"      (string, required) The selected account, may be the default account using \"\".\n"
             "2. minconf          (numeric, optional, default=1) Only include transactions confirmed at least this many times.\n"
+
             "\nResult:\n"
             "amount              (numeric) The total amount in BITG received for this account.\n"
             "\nExamples:\n"
@@ -662,12 +690,15 @@ UniValue getbalance(const UniValue& params, bool fHelp)
             "If account is specified, returns the balance in the account.\n"
             "Note that the account \"\" is not the same as leaving the parameter out.\n"
             "The server total may be different to the balance in the default \"\" account.\n"
+
             "\nArguments:\n"
             "1. \"account\"      (string, optional) The selected account, or \"*\" for entire wallet. It may be the default account using \"\".\n"
             "2. minconf          (numeric, optional, default=1) Only include transactions confirmed at least this many times.\n"
             "3. includeWatchonly (bool, optional, default=false) Also include balance in watchonly addresses (see 'importaddress')\n"
+
             "\nResult:\n"
             "amount              (numeric) The total amount in BITG received for this account.\n"
+
             "\nExamples:\n"
             "\nThe total amount in the server across all accounts\n" +
             HelpExampleCli("getbalance", "") +
@@ -742,31 +773,37 @@ UniValue getunconfirmedbalance(const UniValue &params, bool fHelp)
 UniValue movecmd(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() < 3 || params.size() > 5)
-        throw runtime_error(
+        throw std::runtime_error(
             "move \"fromaccount\" \"toaccount\" amount ( minconf \"comment\" )\n"
             "\nMove a specified amount from one account in your wallet to another.\n"
+
             "\nArguments:\n"
             "1. \"fromaccount\"   (string, required) The name of the account to move funds from. May be the default account using \"\".\n"
             "2. \"toaccount\"     (string, required) The name of the account to move funds to. May be the default account using \"\".\n"
-            "3. minconf           (numeric, optional, default=1) Only use funds with at least this many confirmations.\n"
-            "4. \"comment\"       (string, optional) An optional comment, stored in the wallet only.\n"
+            "3. amount            (numeric, required) Quantity of BITG to move between accounts.\n"
+            "4. minconf           (numeric, optional, default=1) Only use funds with at least this many confirmations.\n"
+            "5. \"comment\"       (string, optional) An optional comment, stored in the wallet only.\n"
+
             "\nResult:\n"
-            "true|false           (boolean) true if successfull.\n"
+            "true|false           (boolean) true if successful.\n"
+
             "\nExamples:\n"
             "\nMove 0.01 BITG from the default account to the account named tabby\n" +
             HelpExampleCli("move", "\"\" \"tabby\" 0.01") +
-            "\nMove 0.01 BITG from timotei to akiko with a comment and funds have 6 confirmations\n" + HelpExampleCli("move", "\"timotei\" \"akiko\" 0.01 6 \"happy birthday!\"") +
-            "\nAs a json rpc call\n" + HelpExampleRpc("move", "\"timotei\", \"akiko\", 0.01, 6, \"happy birthday!\""));
+            "\nMove 0.01 BITG from timotei to akiko with a comment\n" +
+            HelpExampleCli("move", "\"timotei\" \"akiko\" 0.01 1 \"happy birthday!\"") +
+            "\nAs a json rpc call\n" +
+            HelpExampleRpc("move", "\"timotei\", \"akiko\", 0.01, 1, \"happy birthday!\""));
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    string strFrom = AccountFromValue(params[0]);
-    string strTo = AccountFromValue(params[1]);
+    std::string strFrom = AccountFromValue(params[0]);
+    std::string strTo = AccountFromValue(params[1]);
     CAmount nAmount = AmountFromValue(params[2]);
     if (params.size() > 3)
         // unused parameter, used to be nMinDepth, keep type-checking it though
         (void)params[3].get_int();
-    string strComment;
+    std::string strComment;
     if (params.size() > 4)
         strComment = params[4].get_str();
 
@@ -811,23 +848,28 @@ UniValue sendfrom(const UniValue& params, bool fHelp)
             "\nSent an amount from an account to a bitg address.\n"
             "The amount is a real and is rounded to the nearest 0.00000001." +
             HelpRequiringPassphrase() + "\n"
-                                        "\nArguments:\n"
-                                        "1. \"fromaccount\"       (string, required) The name of the account to send funds from. May be the default account using \"\".\n"
-                                        "2. \"tobitgaddress\"  (string, required) The bitg address to send funds to.\n"
-                                        "3. amount                (numeric, required) The amount in bitg. (transaction fee is added on top).\n"
-                                        "4. minconf               (numeric, optional, default=1) Only use funds with at least this many confirmations.\n"
-                                        "5. \"comment\"           (string, optional) A comment used to store what the transaction is for. \n"
-                                        "                                     This is not part of the transaction, just kept in your wallet.\n"
-                                        "6. \"comment-to\"        (string, optional) An optional comment to store the name of the person or organization \n"
-                                        "                                     to which you're sending the transaction. This is not part of the transaction, \n"
-                                        "                                     it is just kept in your wallet.\n"
-                                        "\nResult:\n"
-                                        "\"transactionid\"        (string) The transaction id.\n"
-                                        "\nExamples:\n"
-                                        "\nSend 0.01 btc from the default account to the address, must have at least 1 confirmation\n" +
-            HelpExampleCli("sendfrom", "\"\" \"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\" 0.01") +
-            "\nSend 0.01 from the tabby account to the given address, funds must have at least 6 confirmations\n" + HelpExampleCli("sendfrom", "\"tabby\" \"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\" 0.01 6 \"donation\" \"seans outpost\"") +
-            "\nAs a json rpc call\n" + HelpExampleRpc("sendfrom", "\"tabby\", \"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\", 0.01, 6, \"donation\", \"seans outpost\""));
+
+            "\nArguments:\n"
+            "1. \"fromaccount\"       (string, required) The name of the account to send funds from. May be the default account using \"\".\n"
+            "2. \"tobitgaddress\"  (string, required) The bitg address to send funds to.\n"
+            "3. amount                (numeric, required) The amount in BITG. (transaction fee is added on top).\n"
+            "4. minconf               (numeric, optional, default=1) Only use funds with at least this many confirmations.\n"
+            "5. \"comment\"           (string, optional) A comment used to store what the transaction is for. \n"
+            "                                     This is not part of the transaction, just kept in your wallet.\n"
+            "6. \"comment-to\"        (string, optional) An optional comment to store the name of the person or organization \n"
+            "                                     to which you're sending the transaction. This is not part of the transaction, \n"
+            "                                     it is just kept in your wallet.\n"
+
+            "\nResult:\n"
+            "\"transactionid\"        (string) The transaction id.\n"
+
+            "\nExamples:\n"
+            "\nSend 0.01 BITG from the default account to the address, must have at least 1 confirmation\n" +
+            HelpExampleCli("sendfrom", "\"\" \"DMJRSsuU9zfyrvxVaAEFQqK4MxZg6vgeS6\" 0.01") +
+            "\nSend 0.01 from the tabby account to the given address, funds must have at least 6 confirmations\n" +
+            HelpExampleCli("sendfrom", "\"tabby\" \"DMJRSsuU9zfyrvxVaAEFQqK4MxZg6vgeS6\" 0.01 6 \"donation\" \"seans outpost\"") +
+            "\nAs a json rpc call\n" +
+            HelpExampleRpc("sendfrom", "\"tabby\", \"DMJRSsuU9zfyrvxVaAEFQqK4MxZg6vgeS6\", 0.01, 6, \"donation\", \"seans outpost\""));
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
@@ -966,7 +1008,8 @@ UniValue addmultisigaddress(const UniValue& params, bool fHelp)
             "\nExamples:\n"
             "\nAdd a multisig address from 2 addresses\n" +
             HelpExampleCli("addmultisigaddress", "2 \"[\\\"Xt4qk9uKvQYAonVGSZNXqxeDmtjaEWgfrs\\\",\\\"XoSoWQkpgLpppPoyyzbUFh1fq2RBvW6UK1\\\"]\"") +
-            "\nAs json rpc call\n" + HelpExampleRpc("addmultisigaddress", "2, \"[\\\"Xt4qk9uKvQYAonVGSZNXqxeDmtjaEWgfrs\\\",\\\"XoSoWQkpgLpppPoyyzbUFh1fq2RBvW6UK1\\\"]\""));
+            "\nAs json rpc call\n" +
+            HelpExampleRpc("addmultisigaddress", "2, \"[\\\"Xt4qk9uKvQYAonVGSZNXqxeDmtjaEWgfrs\\\",\\\"XoSoWQkpgLpppPoyyzbUFh1fq2RBvW6UK1\\\"]\""));
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
@@ -1120,6 +1163,7 @@ UniValue listreceivedbyaddress(const UniValue& params, bool fHelp)
         throw runtime_error(
             "listreceivedbyaddress ( minconf includeempty includeWatchonly)\n"
             "\nList balances by receiving address.\n"
+
             "\nArguments:\n"
             "1. minconf       (numeric, optional, default=1) The minimum number of confirmations before payments are included.\n"
             "2. includeempty  (numeric, optional, default=false) Whether to include addresses that haven't received any payments.\n"
@@ -1152,6 +1196,7 @@ UniValue listreceivedbyaccount(const UniValue& params, bool fHelp)
         throw runtime_error(
             "listreceivedbyaccount ( minconf includeempty includeWatchonly)\n"
             "\nList balances by account.\n"
+
             "\nArguments:\n"
             "1. minconf      (numeric, optional, default=1) The minimum number of confirmations before payments are included.\n"
             "2. includeempty (boolean, optional, default=false) Whether to include accounts that haven't received any payments.\n"
@@ -1386,14 +1431,17 @@ UniValue listaccounts(const UniValue& params, bool fHelp)
         throw runtime_error(
             "listaccounts ( minconf includeWatchonly)\n"
             "\nReturns Object that has account names as keys, account balances as values.\n"
+
             "\nArguments:\n"
             "1. minconf          (numeric, optional, default=1) Only include transactions with at least this many confirmations\n"
             "2. includeWatchonly (bool, optional, default=false) Include balances in watchonly addresses (see 'importaddress')\n"
+
             "\nResult:\n"
             "{                      (json object where keys are account names, and values are numeric balances\n"
             "  \"account\": x.xxx,  (numeric) The property name is the account name, and the value is the total balance for the account.\n"
             "  ...\n"
             "}\n"
+
             "\nExamples:\n"
             "\nList account balances where there at least 1 confirmation\n" +
             HelpExampleCli("listaccounts", "") +
@@ -1459,10 +1507,12 @@ UniValue listsinceblock(const UniValue& params, bool fHelp)
         throw runtime_error(
             "listsinceblock ( \"blockhash\" target-confirmations includeWatchonly)\n"
             "\nGet all transactions in blocks since block [blockhash], or all transactions if omitted\n"
+
             "\nArguments:\n"
             "1. \"blockhash\"   (string, optional) The block hash to list transactions since\n"
             "2. target-confirmations:    (numeric, optional) The confirmations required, must be 1 or more\n"
             "3. includeWatchonly:        (bool, optional, default=false) Include transactions to watchonly addresses (see 'importaddress')"
+
             "\nResult:\n"
             "{\n"
             "  \"transactions\": [\n"
@@ -1486,6 +1536,7 @@ UniValue listsinceblock(const UniValue& params, bool fHelp)
             "  ],\n"
             "  \"lastblock\": \"lastblockhash\"     (string) The hash of the last block\n"
             "}\n"
+
             "\nExamples:\n" +
             HelpExampleCli("listsinceblock", "") +
             HelpExampleCli("listsinceblock", "\"000000000000000bacf66f7497b7dc45ef753ee9a7d38571037cdb1a57f663ad\" 6") +
@@ -1544,9 +1595,11 @@ UniValue gettransaction(const UniValue& params, bool fHelp)
         throw runtime_error(
             "gettransaction \"txid\" ( includeWatchonly )\n"
             "\nGet detailed information about in-wallet transaction <txid>\n"
+
             "\nArguments:\n"
             "1. \"txid\"    (string, required) The transaction id\n"
             "2. \"includeWatchonly\"    (bool, optional, default=false) Whether to include watchonly addresses in balance calculation and details[]\n"
+
             "\nResult:\n"
             "{\n"
             "  \"amount\" : x.xxx,        (numeric) The transaction amount in BITG\n"
@@ -1619,8 +1672,10 @@ UniValue backupwallet(const UniValue& params, bool fHelp)
         throw runtime_error(
             "backupwallet \"destination\"\n"
             "\nSafely copies wallet.dat to destination, which can be a directory or a path with filename.\n"
+
             "\nArguments:\n"
             "1. \"destination\"   (string) The destination directory or file\n"
+
             "\nExamples:\n" +
             HelpExampleCli("backupwallet", "\"backup.dat\"") + HelpExampleRpc("backupwallet", "\"backup.dat\""));
 
@@ -1690,6 +1745,7 @@ UniValue walletpassphrase(const UniValue& params, bool fHelp)
             "\nNote:\n"
             "Issuing the walletpassphrase command while the wallet is already unlocked will set a new unlock\n"
             "time that overrides the old one. A timeout of \"0\" unlocks until the wallet is closed.\n"
+
             "\nExamples:\n"
             "\nUnlock the wallet for 60 seconds\n" +
             HelpExampleCli("walletpassphrase", "\"my pass phrase\" 60") +
@@ -1713,7 +1769,7 @@ UniValue walletpassphrase(const UniValue& params, bool fHelp)
     // TODO: get rid of this .c_str() by implementing SecureString::operator=(std::string)
     // Alternately, find a way to make params[0] mlock()'d to begin with.
     strWalletPass = params[0].get_str().c_str();
-    
+
     bool stakingOnly = false;
     if (params.size() == 3)
         stakingOnly = params[2].get_bool();
@@ -1721,14 +1777,22 @@ UniValue walletpassphrase(const UniValue& params, bool fHelp)
     if (!pwalletMain->IsLocked() && pwalletMain->fWalletUnlockStakingOnly && stakingOnly)
         throw JSONRPCError(RPC_WALLET_ALREADY_UNLOCKED, "Error: Wallet is already unlocked.");
 
+    // Get the timeout
+    int64_t nSleepTime = params[1].get_int64();
+    // Timeout cannot be negative, otherwise it will relock immediately
+    if (nSleepTime < 0) {
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Timeout cannot be negative.");
+    }
+    // Clamp timeout
+    constexpr int64_t MAX_SLEEP_TIME = 100000000; // larger values trigger a macos/libevent bug?
+    if (nSleepTime > MAX_SLEEP_TIME) {
+        nSleepTime = MAX_SLEEP_TIME;
+    }
+
     if (!pwalletMain->Unlock(strWalletPass, stakingOnly))
         throw JSONRPCError(RPC_WALLET_PASSPHRASE_INCORRECT, "Error: The wallet passphrase entered was incorrect.");
 
     pwalletMain->TopUpKeyPool();
-
-    int64_t nSleepTime = params[1].get_int64();
-    LOCK(cs_nWalletUnlockTime);
-    nWalletUnlockTime = GetTime() + nSleepTime;
 
     if (nSleepTime > 0) {
         nWalletUnlockTime = GetTime () + nSleepTime;
@@ -1745,9 +1809,11 @@ UniValue walletpassphrasechange(const UniValue& params, bool fHelp)
         throw runtime_error(
             "walletpassphrasechange \"oldpassphrase\" \"newpassphrase\"\n"
             "\nChanges the wallet passphrase from 'oldpassphrase' to 'newpassphrase'.\n"
+
             "\nArguments:\n"
             "1. \"oldpassphrase\"      (string) The current passphrase\n"
             "2. \"newpassphrase\"      (string) The new passphrase\n"
+
             "\nExamples:\n" +
             HelpExampleCli("walletpassphrasechange", "\"old one\" \"new one\"") + HelpExampleRpc("walletpassphrasechange", "\"old one\", \"new one\""));
 
@@ -1788,6 +1854,7 @@ UniValue walletlock(const UniValue& params, bool fHelp)
             "\nRemoves the wallet encryption key from memory, locking the wallet.\n"
             "After calling this method, you will need to call walletpassphrase again\n"
             "before being able to call any methods which require the wallet to be unlocked.\n"
+
             "\nExamples:\n"
             "\nSet the passphrase for 2 minutes to perform a transaction\n" +
             HelpExampleCli("walletpassphrase", "\"my pass phrase\" 120") +
@@ -1826,8 +1893,10 @@ UniValue encryptwallet(const UniValue& params, bool fHelp)
             "Use the walletpassphrase call for this, and then walletlock call.\n"
             "If the wallet is already encrypted, use the walletpassphrasechange call.\n"
             "Note that this will shutdown the server.\n"
+
             "\nArguments:\n"
             "1. \"passphrase\"    (string) The pass phrase to encrypt the wallet with. It must be at least 1 character, but should be long.\n"
+
             "\nExamples:\n"
             "\nEncrypt you wallet\n" +
             HelpExampleCli("encryptwallet", "\"my pass phrase\"") +
@@ -1879,6 +1948,7 @@ UniValue lockunspent(const UniValue& params, bool fHelp)
             "Locks are stored in memory only. Nodes start with zero locked outputs, and the locked output list\n"
             "is always cleared (by virtue of process exit) when a node stops or fails.\n"
             "Also see the listunspent call\n"
+
             "\nArguments:\n"
             "1. unlock            (boolean, required) Whether to unlock (true) or lock (false) the specified transactions\n"
             "2. \"transactions\"  (string, required) A json array of objects. Each object the txid (string) vout (numeric)\n"
@@ -1955,6 +2025,7 @@ UniValue listlockunspent(const UniValue& params, bool fHelp)
             "listlockunspent\n"
             "\nReturns list of temporarily unspendable outputs.\n"
             "See the lockunspent call to lock and unlock transactions for spending.\n"
+
             "\nResult:\n"
             "[\n"
             "  {\n"
@@ -1963,6 +2034,7 @@ UniValue listlockunspent(const UniValue& params, bool fHelp)
             "  }\n"
             "  ,...\n"
             "]\n"
+
             "\nExamples:\n"
             "\nList the unspent transactions\n" +
             HelpExampleCli("listunspent", "") +
@@ -1999,6 +2071,7 @@ UniValue settxfee(const UniValue& params, bool fHelp)
         throw runtime_error(
             "settxfee amount\n"
             "\nSet the transaction fee per kB.\n"
+
             "\nArguments:\n"
             "1. amount         (numeric, required) The transaction fee in BITG/kB rounded to the nearest 0.00000001\n"
             "\nResult\n"
@@ -2023,6 +2096,7 @@ UniValue getwalletinfo(const UniValue& params, bool fHelp)
         throw runtime_error(
             "getwalletinfo\n"
             "Returns an object containing various wallet state info.\n"
+
             "\nResult:\n"
             "{\n"
             "  \"walletversion\": xxxxx,     (numeric) the wallet version\n"
@@ -2031,7 +2105,9 @@ UniValue getwalletinfo(const UniValue& params, bool fHelp)
             "  \"keypoololdest\": xxxxxx,    (numeric) the timestamp (seconds since GMT epoch) of the oldest pre-generated key in the key pool\n"
             "  \"keypoolsize\": xxxx,        (numeric) how many new keys are pre-generated\n"
             "  \"unlocked_until\": ttt,      (numeric) the timestamp in seconds since epoch (midnight Jan 1 1970 GMT) that the wallet is unlocked for transfers, or 0 if the wallet is locked\n"
+            "  \"paytxfee\": x.xxxx,         (numeric) the transaction fee configuration, set in BITG/kB\n"
             "}\n"
+
             "\nExamples:\n" +
             HelpExampleCli("getwalletinfo", "") + HelpExampleRpc("getwalletinfo", ""));
 
@@ -2045,6 +2121,7 @@ UniValue getwalletinfo(const UniValue& params, bool fHelp)
     obj.push_back(Pair("keypoolsize", (int)pwalletMain->GetKeyPoolSize()));
     if (pwalletMain->IsCrypted())
         obj.push_back(Pair("unlocked_until", nWalletUnlockTime));
+    obj.push_back(Pair("paytxfee",      ValueFromAmount(payTxFee.GetFeePerK())));
     return obj;
 }
 
@@ -2104,11 +2181,13 @@ UniValue setstakesplitthreshold(const UniValue& params, bool fHelp)
 
             "\nArguments:\n"
             "1. value   (numeric, required) Threshold value between 1 and 999999\n"
+
             "\nResult:\n"
             "{\n"
             "  \"threshold\": n,    (numeric) Threshold value set\n"
             "  \"saved\": true|false    (boolean) 'true' if successfully saved to the wallet file\n"
             "}\n"
+
             "\nExamples:\n" +
             HelpExampleCli("setstakesplitthreshold", "5000") + HelpExampleRpc("setstakesplitthreshold", "5000"));
 
@@ -2144,8 +2223,10 @@ UniValue getstakesplitthreshold(const UniValue& params, bool fHelp)
         throw runtime_error(
             "getstakesplitthreshold\n"
             "Returns the threshold for stake splitting\n"
+
             "\nResult:\n"
             "n      (numeric) Threshold value\n"
+
             "\nExamples:\n" +
             HelpExampleCli("getstakesplitthreshold", "") + HelpExampleRpc("getstakesplitthreshold", ""));
 
@@ -2167,6 +2248,7 @@ UniValue autocombinerewards(const UniValue& params, bool fHelp)
             "\nArguments:\n"
             "1. enable          (boolean, required) Enable auto combine (true) or disable (false)\n"
             "2. threshold       (numeric, optional) Threshold amount (default: 0)\n"
+
             "\nExamples:\n" +
             HelpExampleCli("autocombinerewards", "true 500") + HelpExampleRpc("autocombinerewards", "true 500"));
 
