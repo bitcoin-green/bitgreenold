@@ -113,6 +113,8 @@ BITCOIN_CORE_H = \
   crypter.h \
   db.h \
   hash.h \
+  httprpc.h \
+  httpserver.h \
   init.h \
   kernel.h \
   swifttx.h \
@@ -194,6 +196,8 @@ libbitcoin_server_a_SOURCES = \
   bloom.cpp \
   chain.cpp \
   checkpoints.cpp \
+  httprpc.cpp \
+  httpserver.cpp \
   init.cpp \
   leveldbwrapper.cpp \
   main.cpp \
