@@ -30,7 +30,7 @@
 
 using namespace std;
 
-void EnsureWalletIsUnlocked();
+void EnsureWalletIsUnlocked(bool fAllowAnonOnly);
 
 std::string static EncodeDumpTime(int64_t nTime)
 {

@@ -31,6 +31,12 @@
   <key>CFBundleExecutable</key>
   <string>BitcoinGreen-Qt</string>
 
+  <key>CFBundleName</key>
+  <string>BitcoinGreen-Qt</string>
+
+  <key>LSHasLocalizedDisplayName</key>
+  <true/>
+
   <key>CFBundleIdentifier</key>
   <string>io.savebitcoin.BitcoinGreen-Qt</string>
 

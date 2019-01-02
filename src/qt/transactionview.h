@@ -11,6 +11,7 @@
 
 #include <QKeyEvent>
 #include <QWidget>
+#include <QAction>
 
 class TransactionFilterProxy;
 class WalletModel;
