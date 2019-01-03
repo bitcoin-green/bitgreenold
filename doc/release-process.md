@@ -4,6 +4,7 @@ Release Process
 Before every release candidate:
 
 * Update translations see [translation_process.md](https://github.com/bitcoingreen/bitcoingreen/blob/master/doc/translation_process.md#synchronising-translations).
+* Update manpages, see [gen-manpages.sh](https://github.com/bitcoingreen/bitcoingreen/blob/master/contrib/devtools/README.md#gen-manpagessh).
 
 Before every minor and major release:
 

@@ -11,4 +11,3 @@ Release
 Debug
 Benchmark
 vs2010.*
-!Makefile

@@ -17,6 +17,9 @@
 #include "rpcclient.h"
 #include "rpcserver.h"
 #include "util.h"
+#ifdef ENABLE_WALLET
+#include "wallet.h"
+#endif // ENABLE_WALLET
 
 #include <openssl/crypto.h>
 
@@ -28,7 +31,9 @@
 
 #include <QDir>
 #include <QKeyEvent>
+#include <QMenu>
 #include <QScrollBar>
+#include <QSignalMapper>
 #include <QThread>
 #include <QTime>
 #include <QTimer>

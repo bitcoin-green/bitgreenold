@@ -844,7 +844,7 @@ QLabel#labelOverviewHeaderRight {
 	background-repeat: no-repeat;
 }
 
-QWidget .QFrame#frame_Header { /* Header with Page-Title and PIVX-image */
+QWidget .QFrame#frame_Header { /* Header with Page-Title and Bitcoin Green Logo */
 	min-width:400px;
 	background-color:#ffffff;
 }
