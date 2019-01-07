@@ -163,7 +163,7 @@ QVariant ProposalTableModel::data(const QModelIndex &index, int role) const
             } else {
                 return QColor(23, 168, 26);
             }
-        } 
+        }
 
         return COLOR_BAREADDRESS;
         break;
@@ -202,7 +202,7 @@ QVariant ProposalTableModel::headerData(int section, Qt::Orientation orientation
         else if (role == Qt::TextAlignmentRole)
         {
             return Qt::AlignCenter;
-        } 
+        }
         else if (role == Qt::ToolTipRole)
         {
             switch(section)

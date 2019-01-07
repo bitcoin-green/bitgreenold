@@ -99,7 +99,7 @@ private:
     QMenu *contextCommunityMenu;
 
     ColumnAlignedLayout *hlayout;
-    ColumnAlignedLayout *hlayout_community; 
+    ColumnAlignedLayout *hlayout_community;
 
     void vote_click_handler(const std::string voteString);
     void vote_community_click_handler(const std::string voteString);

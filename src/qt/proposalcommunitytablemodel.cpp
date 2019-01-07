@@ -150,7 +150,7 @@ QVariant ProposalCommunityTableModel::data(const QModelIndex &index, int role) c
             } else {
                 return QColor(23, 168, 26);
             }
-        } 
+        }
 
         return COLOR_BAREADDRESS;
         break;
@@ -185,7 +185,7 @@ QVariant ProposalCommunityTableModel::headerData(int section, Qt::Orientation or
         else if (role == Qt::TextAlignmentRole)
         {
             return Qt::AlignCenter;
-        } 
+        }
         else if (role == Qt::ToolTipRole)
         {
             switch(section)

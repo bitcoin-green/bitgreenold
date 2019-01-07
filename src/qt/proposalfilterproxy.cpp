@@ -44,7 +44,7 @@ bool ProposalFilterProxy::filterAcceptsRow(int sourceRow, const QModelIndex &sou
        return false;
     if(!propName.contains(proposalName, Qt::CaseInsensitive))
         return false;
-    if(nAmount < minAmount) 
+    if(nAmount < minAmount)
         return false;
     if(yesVotes < minYesVotes)
         return false;

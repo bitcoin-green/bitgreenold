@@ -20,7 +20,7 @@
 #include "masternodeconfig.h"
 #include "masternode.h"
 #include "util.h"
-// 
+
 #include "ui_interface.h"
 
 #include <QComboBox>
@@ -740,7 +740,7 @@ void ProposalList::vote_click_handler(const std::string voteString)
             vote.Relay();
             nSuccessful++;
         } else {
-            nFailed++;   
+            nFailed++;
         }
     }
 
