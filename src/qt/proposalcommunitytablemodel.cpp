@@ -55,8 +55,6 @@ void ProposalCommunityTableModel::refreshProposals() {
 
     int mnCount = mnodeman.CountEnabled(ActiveProtocol());
     
-    proposalRecords.append(new ProposalCommunityRecord("caf6edec6897869d12bd65a46c846de9dcb5109f7ce3b3089a889f3ad5224b41", 124000, "This is a description for a community proposal", "Community Proposal", 200, 302, -102, 0)); 
-
     std::vector<CCommunityProposal*> winningProps = communityVote.GetAllProposals();
     for (CCommunityProposal* pcommunityProposal : winningProps) {
         if (!pcommunityProposal->fValid) continue;
