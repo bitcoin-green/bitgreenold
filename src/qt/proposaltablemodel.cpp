@@ -60,11 +60,11 @@ void ProposalTableModel::refreshProposals() {
     std::vector<CBudgetProposal*> winningProps = budget.GetAllProposals();
     BOOST_FOREACH (CBudgetProposal* pbudgetProposal, winningProps) {
         if(!pbudgetProposal->fValid) continue;
-  
+
         int percentage = 0;
         int64_t absoluteYes = (int64_t)pbudgetProposal->GetYeas() - (int64_t)pbudgetProposal->GetNays();
         if(mnCount > 0) percentage = (int)min(floor(absoluteYes * 100 / (0.1 * mnCount)), 100.0);
-        
+
         proposalRecords.append(new ProposalRecord(
                         QString::fromStdString(pbudgetProposal->GetHash().ToString()),
                         (int64_t)pbudgetProposal->GetBlockStart(),

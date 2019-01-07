@@ -20,7 +20,7 @@
 #include "masternodeconfig.h"
 #include "masternode.h"
 #include "util.h"
- 
+// 
 #include "ui_interface.h"
 
 #include <QComboBox>
@@ -205,8 +205,7 @@ ProposalList::ProposalList(QWidget* parent) : QWidget(parent), proposalProxyMode
     connect(voteNoButton, SIGNAL(clicked()), this, SLOT(voteNo()));
 
     connect(proposalWidget, SIGNAL(textChanged(QString)), this, SLOT(changedProposal(QString)));
-   
-   
+
     connect(startBlockWidget, SIGNAL(textChanged(QString)), this, SLOT(changedStartBlock(QString)));
     connect(endBlockWidget, SIGNAL(textChanged(QString)), this, SLOT(changedEndBlock(QString)));
     connect(yesVotesWidget, SIGNAL(textChanged(QString)), this, SLOT(changedYesVotes(QString)));
@@ -336,7 +335,6 @@ ProposalList::ProposalList(QWidget* parent) : QWidget(parent), proposalProxyMode
     connect(voteNoCommunityButton, SIGNAL(clicked()), this, SLOT(voteNoCommunity()));
 
     connect(proposalCommunityWidget, SIGNAL(textChanged(QString)), this, SLOT(changedProposalCommunity(QString)));
-   
 
     connect(endBlockCommunityWidget, SIGNAL(textChanged(QString)), this, SLOT(changedEndBlockCommunity(QString)));
     connect(yesVotesCommunityWidget, SIGNAL(textChanged(QString)), this, SLOT(changedYesVotesCommunity(QString)));
@@ -419,7 +417,7 @@ void ProposalList::setModel(WalletModel* model) {
         proposalCommunityList->setColumnWidth(ProposalCommunityTableModel::NoVotes, NO_VOTES_COLUMN_WIDTH);
         //proposalCommunityList->setColumnWidth(ProposalCommunityTableModel::AbsoluteYesVotes, ABSOLUTE_YES_COLUMN_WIDTH);
         proposalCommunityList->setColumnWidth(ProposalCommunityTableModel::Percentage, PERCENTAGE_COLUMN_WIDTH);
-        
+
         columnResizingFixer = new GUIUtil::TableViewLastColumnResizingFixer(proposalList, PERCENTAGE_COLUMN_WIDTH, MINIMUM_COLUMN_WIDTH);
         columnCommunityResizingFixer = new GUIUtil::TableViewLastColumnResizingFixer(proposalCommunityList, PERCENTAGE_COLUMN_WIDTH, MINIMUM_COLUMN_WIDTH);
 
@@ -773,7 +771,7 @@ void ProposalList::openDescription()
 {
     if(!proposalCommunityList || !proposalCommunityList->selectionModel())
         return;
-    
+
     QModelIndexList selection = proposalCommunityList->selectionModel()->selectedRows(0);
 
     if(!selection.isEmpty()) {

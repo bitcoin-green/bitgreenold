@@ -18,7 +18,6 @@ public:
 
     void setProposalEnd(const CAmount& block);
     void setProposal(const QString &proposal);
-    
     void setMinPercentage(const CAmount& minimum);
     void setMinYesVotes(const CAmount& minimum);
     void setMinNoVotes(const CAmount& minimum);

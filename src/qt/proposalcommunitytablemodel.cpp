@@ -54,15 +54,15 @@ void ProposalCommunityTableModel::refreshProposals() {
     proposalRecords.clear();
 
     int mnCount = mnodeman.CountEnabled(ActiveProtocol());
-    
+
     std::vector<CCommunityProposal*> winningProps = communityVote.GetAllProposals();
     for (CCommunityProposal* pcommunityProposal : winningProps) {
         if (!pcommunityProposal->fValid) continue;
-        
+
         int percentage = 0;
         int64_t absoluteYes = (int64_t)pcommunityProposal->GetYeas() - (int64_t)pcommunityProposal->GetNays();
         if(mnCount > 0) percentage = (int)min(floor(absoluteYes * 100 / (0.1 * mnCount)), 100.0);
-        
+
         proposalRecords.append(new ProposalCommunityRecord(
                         QString::fromStdString(pcommunityProposal->GetHash().ToString()),
                         (int64_t)pcommunityProposal->GetBlockEnd(),
