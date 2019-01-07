@@ -582,6 +582,42 @@ QSlider::handle:horizontal:hover {
 	border-radius: 8px;
 }
 
+QTabWidget {
+	border-bottom:1px solid #333;
+}
+
+QTabWidget::pane {
+	border: 1px solid #d7d7d7;
+}
+
+QTabWidget > QWidget {
+	background-color:#ffffff;
+	color:#333;
+}
+
+QTabWidget QTabBar::tab {
+	background-color:#f8f6f6;
+	color:#333;
+	padding-left:10px;
+	padding-right:10px;
+	padding-top:5px;
+	padding-bottom:5px;
+	border-top: 1px solid #d7d7d7;
+}
+
+QTabWidget QTabBar::tab:first {
+	border-left: 1px solid #d7d7d7;
+}
+
+QTabWidget QTabBar::tab:last {
+	border-right: 1px solid #d7d7d7;
+}
+
+QTabWidget QTabBar::tab:selected, QTabWidget QTabBar::tab:hover {
+	background-color:#0f7f12;
+	color:#fff;
+}
+
 /**************************** DIALOG BOXES **********************************************/
 
 QDialog {
@@ -838,13 +874,20 @@ QLabel#labelOverviewHeaderLeft {
 	background-color:#ffffff;
 }
 
+QLabel#labelProposalListHeaderRight {
+	qproperty-alignment: 'AlignVCenter | AlignRight';
+	background-image: url(':/images/bitcoingreen_logo_horizontal');
+	background-repeat: no-repeat;
+	height: 60px;
+}
+
 QLabel#labelOverviewHeaderRight {
 	qproperty-alignment: 'AlignVCenter | AlignRight';
 	background-image: url(':/images/bitcoingreen_logo_horizontal');
 	background-repeat: no-repeat;
 }
 
-QWidget .QFrame#frame_Header { /* Header with Page-Title and Bitcoin Green Logo */
+QWidget .QFrame#frame_Header { /* Header with Page-Title and PIVX-image */
 	min-width:400px;
 	background-color:#ffffff;
 }

@@ -130,6 +130,9 @@ WalletView::WalletView(QWidget* parent) : QStackedWidget(parent),
         addWidget(masternodeListPage);
     }
 
+    proposalList = new ProposalList(this);
+    addWidget(proposalList);
+
     // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
 
@@ -195,6 +198,7 @@ void WalletView::setWalletModel(WalletModel* walletModel)
     }
     receiveCoinsPage->setModel(walletModel);
     sendCoinsPage->setModel(walletModel);
+    proposalList->setModel(walletModel);
 
     if (walletModel) {
         // Receive and pass through messages from wallet model
@@ -258,6 +262,11 @@ void WalletView::gotoMasternodePage()
     if (settings.value("fShowMasternodesTab").toBool()) {
         setCurrentWidget(masternodeListPage);
     }
+}
+
+void WalletView::gotoProposalPage()
+{
+    setCurrentWidget(proposalList);
 }
 
 void WalletView::gotoReceiveCoinsPage()

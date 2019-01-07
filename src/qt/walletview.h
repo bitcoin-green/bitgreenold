@@ -10,6 +10,7 @@
 #include "amount.h"
 #include "askpassphrasedialog.h"
 #include "masternodelist.h"
+#include "proposallist.h"
 
 #include <QStackedWidget>
 #include <ui_interface.h>
@@ -71,6 +72,7 @@ private:
     MasternodeList* masternodeListPage;
 
     TransactionView* transactionView;
+    ProposalList *proposalList;
 
     QProgressDialog* progressDialog;
     QLabel* transactionSum;
@@ -82,6 +84,8 @@ public slots:
     void gotoHistoryPage();
     /** Switch to masternode page */
     void gotoMasternodePage();
+    /** Switch to proposal page */
+    void gotoProposalPage();
     /** Switch to explorer page */
     void gotoBlockExplorerPage();
     /** Switch to receive coins page */
