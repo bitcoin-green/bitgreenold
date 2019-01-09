@@ -86,64 +86,48 @@ ProposalList::ProposalList(QWidget* parent) : QWidget(parent), proposalProxyMode
     hlayout->setSpacing(0);
 
     proposalWidget = new QLineEdit(this);
-#if QT_VERSION >= 0x040700
     proposalWidget->setPlaceholderText(tr("Enter proposal name"));
-#endif
     proposalWidget->setObjectName("proposalWidget");
     hlayout->addWidget(proposalWidget);
 
     amountWidget = new QLineEdit(this);
-#if QT_VERSION >= 0x040700
     amountWidget->setPlaceholderText(tr("Min amount"));
-#endif
     amountWidget->setValidator(new QDoubleValidator(0, 1e20, 8, this));
     amountWidget->setObjectName("amountWidget");
     hlayout->addWidget(amountWidget);
 
     startBlockWidget = new QLineEdit(this);
-#if QT_VERSION >= 0x040700
     startBlockWidget->setPlaceholderText(tr("Start Block"));
-#endif
     startBlockWidget->setValidator(new QIntValidator(0, INT_MAX, this));
     startBlockWidget->setObjectName("startBlockWidget");
     hlayout->addWidget(startBlockWidget);
 
     endBlockWidget = new QLineEdit(this);
-#if QT_VERSION >= 0x040700
     endBlockWidget->setPlaceholderText(tr("End Block"));
-#endif
     endBlockWidget->setValidator(new QIntValidator(0, INT_MAX, this));
     endBlockWidget->setObjectName("endBlockWidget");
     hlayout->addWidget(endBlockWidget);
 
     yesVotesWidget = new QLineEdit(this);
-#if QT_VERSION >= 0x040700
     yesVotesWidget->setPlaceholderText(tr("Min yes votes"));
-#endif
     yesVotesWidget->setValidator(new QIntValidator(0, INT_MAX, this));
     yesVotesWidget->setObjectName("yesVotesWidget");
     hlayout->addWidget(yesVotesWidget);
 
     noVotesWidget = new QLineEdit(this);
-#if QT_VERSION >= 0x040700
     noVotesWidget->setPlaceholderText(tr("Min no votes"));
-#endif
     noVotesWidget->setValidator(new QIntValidator(0, INT_MAX, this));
     noVotesWidget->setObjectName("noVotesWidget");
     hlayout->addWidget(noVotesWidget);
 
     //absoluteYesVotesWidget = new QLineEdit(this);
-#if QT_VERSION >= 0x040700
     //absoluteYesVotesWidget->setPlaceholderText(tr("Min abs. yes votes"));
-#endif
     //absoluteYesVotesWidget->setValidator(new QIntValidator(INT_MIN, INT_MAX, this));
     //absoluteYesVotesWidget->setObjectName("absoluteYesVotesWidget");
     //hlayout->addWidget(absoluteYesVotesWidget);
 
     percentageWidget = new QLineEdit(this);
-#if QT_VERSION >= 0x040700
     percentageWidget->setPlaceholderText(tr("Min percentage"));
-#endif
     percentageWidget->setValidator(new QIntValidator(-100, 100, this));
     percentageWidget->setObjectName("percentageWidget");
     hlayout->addWidget(percentageWidget);
@@ -230,50 +214,38 @@ ProposalList::ProposalList(QWidget* parent) : QWidget(parent), proposalProxyMode
     hlayout_community->setSpacing(0);
 
     proposalCommunityWidget = new QLineEdit(this);
-#if QT_VERSION >= 0x040700
     proposalCommunityWidget->setPlaceholderText(tr("Enter proposal name"));
-#endif
     proposalCommunityWidget->setObjectName("proposalCommunityWidget");
     hlayout_community->addWidget(proposalCommunityWidget);
 
 
     endBlockCommunityWidget = new QLineEdit(this);
-#if QT_VERSION >= 0x040700
     endBlockCommunityWidget->setPlaceholderText(tr("End Block"));
-#endif
     endBlockCommunityWidget->setValidator(new QIntValidator(0, INT_MAX, this));
     endBlockCommunityWidget->setObjectName("endBlockCommunityWidget");
     hlayout_community->addWidget(endBlockCommunityWidget);
 
     yesVotesCommunityWidget = new QLineEdit(this);
-#if QT_VERSION >= 0x040700
     yesVotesCommunityWidget->setPlaceholderText(tr("Min yes votes"));
-#endif
     yesVotesCommunityWidget->setValidator(new QIntValidator(0, INT_MAX, this));
     yesVotesCommunityWidget->setObjectName("yesVotesCommunityWidget");
     hlayout_community->addWidget(yesVotesCommunityWidget);
 
     noVotesCommunityWidget = new QLineEdit(this);
-#if QT_VERSION >= 0x040700
     noVotesCommunityWidget->setPlaceholderText(tr("Min no votes"));
-#endif
     noVotesCommunityWidget->setValidator(new QIntValidator(0, INT_MAX, this));
     noVotesCommunityWidget->setObjectName("noVotesCommunityWidget");
     hlayout_community->addWidget(noVotesCommunityWidget);
 
 
     //absoluteYesVotesCommunityWidget = new QLineEdit(this);
-#if QT_VERSION >= 0x040700
     //absoluteYesVotesCommunityWidget->setPlaceholderText(tr("Min abs. yes votes"));
-#endif
     //absoluteYesVotesCommunityWidget->setValidator(new QIntValidator(INT_MIN, INT_MAX, this));
     //absoluteYesVotesCommunityWidget->setObjectName("absoluteYesVotesCommunityWidget");
     //hlayout_community->addWidget(absoluteYesVotesCommunityWidget);
 
     percentageCommunityWidget = new QLineEdit(this);
-#if QT_VERSION >= 0x040700
     percentageCommunityWidget->setPlaceholderText(tr("Min percentage"));
-#endif
     percentageCommunityWidget->setValidator(new QIntValidator(-100, 100, this));
     percentageCommunityWidget->setObjectName("percentageCommunityWidget");
     hlayout_community->addWidget(percentageCommunityWidget);
