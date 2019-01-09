@@ -132,8 +132,7 @@ ProposalList::ProposalList(QWidget* parent) : QWidget(parent), proposalProxyMode
     noVotesWidget->setObjectName("noVotesWidget");
     hlayout->addWidget(noVotesWidget);
 
-
-    absoluteYesVotesWidget = new QLineEdit(this);
+    //absoluteYesVotesWidget = new QLineEdit(this);
 #if QT_VERSION >= 0x040700
     //absoluteYesVotesWidget->setPlaceholderText(tr("Min abs. yes votes"));
 #endif
@@ -210,7 +209,7 @@ ProposalList::ProposalList(QWidget* parent) : QWidget(parent), proposalProxyMode
     connect(endBlockWidget, SIGNAL(textChanged(QString)), this, SLOT(changedEndBlock(QString)));
     connect(yesVotesWidget, SIGNAL(textChanged(QString)), this, SLOT(changedYesVotes(QString)));
     connect(noVotesWidget, SIGNAL(textChanged(QString)), this, SLOT(changedNoVotes(QString)));
-    connect(absoluteYesVotesWidget, SIGNAL(textChanged(QString)), this, SLOT(changedAbsoluteYesVotes(QString)));
+    //connect(absoluteYesVotesWidget, SIGNAL(textChanged(QString)), this, SLOT(changedAbsoluteYesVotes(QString)));
     connect(yesVotesWidget, SIGNAL(textChanged(QString)), this, SLOT(changedYesVotes(QString)));
     connect(amountWidget, SIGNAL(textChanged(QString)), this, SLOT(changedAmount(QString)));
     connect(percentageWidget, SIGNAL(textChanged(QString)), this, SLOT(changedPercentage(QString)));
@@ -263,7 +262,7 @@ ProposalList::ProposalList(QWidget* parent) : QWidget(parent), proposalProxyMode
     hlayout_community->addWidget(noVotesCommunityWidget);
 
 
-    absoluteYesVotesCommunityWidget = new QLineEdit(this);
+    //absoluteYesVotesCommunityWidget = new QLineEdit(this);
 #if QT_VERSION >= 0x040700
     //absoluteYesVotesCommunityWidget->setPlaceholderText(tr("Min abs. yes votes"));
 #endif
@@ -339,7 +338,7 @@ ProposalList::ProposalList(QWidget* parent) : QWidget(parent), proposalProxyMode
     connect(endBlockCommunityWidget, SIGNAL(textChanged(QString)), this, SLOT(changedEndBlockCommunity(QString)));
     connect(yesVotesCommunityWidget, SIGNAL(textChanged(QString)), this, SLOT(changedYesVotesCommunity(QString)));
     connect(noVotesCommunityWidget, SIGNAL(textChanged(QString)), this, SLOT(changedNoVotesCommunity(QString)));
-    connect(absoluteYesVotesCommunityWidget, SIGNAL(textChanged(QString)), this, SLOT(changedAbsoluteYesVotesCommunity(QString)));
+    //connect(absoluteYesVotesCommunityWidget, SIGNAL(textChanged(QString)), this, SLOT(changedAbsoluteYesVotesCommunity(QString)));
     connect(yesVotesCommunityWidget, SIGNAL(textChanged(QString)), this, SLOT(changedYesVotesCommunity(QString)));
     connect(percentageCommunityWidget, SIGNAL(textChanged(QString)), this, SLOT(changedPercentageCommunity(QString)));
 
