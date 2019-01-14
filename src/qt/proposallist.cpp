@@ -323,9 +323,6 @@ ProposalList::ProposalList(QWidget* parent) : QWidget(parent), proposalProxyMode
 
     connect(openDescriptionAction, SIGNAL(triggered()), this, SLOT(openDescription()));
 
-    proposalList->horizontalHeader()->setStretchLastSection(true);
-    proposalCommunityList->horizontalHeader()->setStretchLastSection(true);
-
     vlayout_tabs->addWidget(tabWidget);
     vlayout->addLayout(vlayout_tabs);
 
@@ -397,6 +394,12 @@ void ProposalList::setModel(WalletModel* model) {
         timer = new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(refreshProposals()));
         timer->start(1000);
+
+        proposalList->horizontalHeader()->setStretchLastSection(false);
+        proposalList->horizontalHeader()->setSectionResizeMode(ProposalTableModel::Percentage, QHeaderView::Stretch);
+
+        proposalCommunityList->horizontalHeader()->setStretchLastSection(false);
+        proposalCommunityList->horizontalHeader()->setSectionResizeMode(ProposalCommunityTableModel::Percentage, QHeaderView::Stretch);
     }
 }
 
