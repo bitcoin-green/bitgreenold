@@ -11,6 +11,8 @@
 #include "askpassphrasedialog.h"
 #include "paymentrequestplus.h"
 #include "walletmodeltransaction.h"
+#include "proposaltablemodel.h"
+#include "proposalcommunitytablemodel.h"
 
 #include "allocators.h" /* for SecureString */
 #include "swifttx.h"
@@ -132,6 +134,8 @@ public:
     OptionsModel* getOptionsModel();
     AddressTableModel* getAddressTableModel();
     TransactionTableModel* getTransactionTableModel();
+    ProposalTableModel* getProposalTableModel();
+    ProposalCommunityTableModel* getProposalCommunityTableModel();
     RecentRequestsTableModel* getRecentRequestsTableModel();
 
     CAmount getBalance(const CCoinControl* coinControl = NULL) const;
@@ -227,6 +231,8 @@ private:
     AddressTableModel* addressTableModel;
     TransactionTableModel* transactionTableModel;
     RecentRequestsTableModel* recentRequestsTableModel;
+    ProposalTableModel* proposalTableModel;
+    ProposalCommunityTableModel* proposalCommunityTableModel;
 
     // Cache some values to be able to detect changes
     CAmount cachedBalance;

@@ -32,6 +32,8 @@ using namespace std;
 WalletModel::WalletModel(CWallet* wallet, OptionsModel* optionsModel, QObject* parent) : QObject(parent), wallet(wallet), optionsModel(optionsModel), addressTableModel(0),
                                                                                          transactionTableModel(0),
                                                                                          recentRequestsTableModel(0),
+                                                                                         proposalTableModel(0),
+                                                                                         proposalCommunityTableModel(0),
                                                                                          cachedBalance(0), cachedUnconfirmedBalance(0), cachedImmatureBalance(0),
                                                                                          cachedEncryptionStatus(Unencrypted),
                                                                                          cachedNumBlocks(0)
@@ -43,6 +45,8 @@ WalletModel::WalletModel(CWallet* wallet, OptionsModel* optionsModel, QObject* p
     addressTableModel = new AddressTableModel(wallet, this);
     transactionTableModel = new TransactionTableModel(wallet, this);
     recentRequestsTableModel = new RecentRequestsTableModel(wallet, this);
+    proposalTableModel = new ProposalTableModel(wallet, this);
+    proposalCommunityTableModel = new ProposalCommunityTableModel(wallet, this);
 
     // This timer will be fired repeatedly to update the balance
     pollTimer = new QTimer(this);
@@ -397,6 +401,15 @@ AddressTableModel* WalletModel::getAddressTableModel()
 TransactionTableModel* WalletModel::getTransactionTableModel()
 {
     return transactionTableModel;
+}
+
+ProposalTableModel* WalletModel::getProposalTableModel()
+{
+    return proposalTableModel;
+}
+
+ProposalCommunityTableModel* WalletModel::getProposalCommunityTableModel() {
+    return proposalCommunityTableModel;
 }
 
 RecentRequestsTableModel* WalletModel::getRecentRequestsTableModel()

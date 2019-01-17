@@ -85,6 +85,13 @@ QT_MOC_CPP = \
   qt/moc_overviewpage.cpp \
   qt/moc_peertablemodel.cpp \
   qt/moc_paymentserver.cpp \
+  qt/moc_columnalignedlayout.cpp \
+  qt/moc_proposalfilterproxy.cpp \
+  qt/moc_proposaltablemodel.cpp \
+  qt/moc_proposaldescriptiondialog.cpp \
+  qt/moc_proposalcommunityfilterproxy.cpp \
+  qt/moc_proposalcommunitytablemodel.cpp \
+  qt/moc_proposallist.cpp \
   qt/moc_qvalidatedlineedit.cpp \
   qt/moc_qvaluecombobox.cpp \
   qt/moc_receivecoinsdialog.cpp \
@@ -159,6 +166,15 @@ BITCOIN_QT_H = \
   qt/paymentserver.h \
   qt/peertablemodel.h \
   qt/platformstyle.h \
+  qt/columnalignedlayout.h \
+  qt/proposalcommunityfilterproxy.h \
+  qt/proposallist.h \
+  qt/proposaldescriptiondialog.h \
+  qt/proposalcommunityrecord.h \
+  qt/proposalcommunitytablemodel.h \
+  qt/proposalfilterproxy.h \
+  qt/proposalrecord.h \
+  qt/proposaltablemodel.h \
   qt/qvalidatedlineedit.h \
   qt/qvaluecombobox.h \
   qt/receivecoinsdialog.h \
@@ -249,7 +265,9 @@ RES_ICONS = \
   qt/res/icons/unit_ubitg.png \
   qt/res/icons/unit_tbitg.png \
   qt/res/icons/unit_tmbitg.png \
-  qt/res/icons/unit_tubitg.png
+  qt/res/icons/unit_tubitg.png \
+  qt/res/icons/proposal.png \
+  qt/res/icons/proposal_active.png
 
 BITCOIN_QT_BASE_CPP = \
   qt/bitcoinaddressvalidator.cpp \
@@ -293,6 +311,15 @@ BITCOIN_QT_WALLET_CPP = \
   qt/overviewpage.cpp \
   qt/paymentrequestplus.cpp \
   qt/paymentserver.cpp \
+  qt/columnalignedlayout.cpp \
+  qt/proposalfilterproxy.cpp \
+  qt/proposallist.cpp \
+  qt/proposaldescriptiondialog.cpp \
+  qt/proposalrecord.cpp \
+  qt/proposaltablemodel.cpp \
+  qt/proposalcommunityfilterproxy.cpp \
+  qt/proposalcommunityrecord.cpp \
+  qt/proposalcommunitytablemodel.cpp \
   qt/receivecoinsdialog.cpp \
   qt/receiverequestdialog.cpp \
   qt/recentrequeststablemodel.cpp \
