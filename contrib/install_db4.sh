@@ -9,7 +9,7 @@ if [ -z "${1}" ]; then
   echo "Usage: ./install_db4.sh <base-dir> [<extra-bdb-configure-flag> ...]"
   echo
   echo "Must specify a single argument: the directory in which db4 will be built."
-  echo "This is probably \`pwd\` if you're at the root of the pivx repository."
+  echo "This is probably \`pwd\` if you're at the root of the bitcoin green repository."
   exit 1
 fi
 
@@ -51,7 +51,7 @@ http_get() {
   if [ -f "${2}" ]; then
     echo "File ${2} already exists; not downloading again"
   elif check_exists curl; then
-    curl --insecure "${1}" -o "${2}"
+    curl --insecure --retry 5 "${1}" -o "${2}"
   else
     wget --no-check-certificate "${1}" -O "${2}"
   fi
@@ -81,7 +81,7 @@ make install
 echo
 echo "db4 build complete."
 echo
-echo 'When compiling pivxd, run `./configure` in the following way:'
+echo 'When compiling bitcoingreend, run `./configure` in the following way:'
 echo
 echo "  export BDB_PREFIX='${BDB_PREFIX}'"
 echo '  ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" ...'
