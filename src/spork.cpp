@@ -69,7 +69,7 @@ void ProcessSpork(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
         CSporkMessage spork;
         vRecv >> spork;
 
-        if (chainActive.Tip() == NULL) return;
+        if (chainActive.Tip() == nullptr) return;
 
         // Ignore spork messages about unknown/deleted sporks
         std::string strSpork = sporkManager.GetSporkNameByID(spork.nSporkID);

@@ -76,10 +76,10 @@ public:
     }
     void SetNull()
     {
-        ptx = NULL;
+        ptx = nullptr;
         n = (uint32_t)-1;
     }
-    bool IsNull() const { return (ptx == NULL && n == (uint32_t)-1); }
+    bool IsNull() const { return (ptx == nullptr && n == (uint32_t)-1); }
 };
 
 /**

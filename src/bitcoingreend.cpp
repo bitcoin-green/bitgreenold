@@ -146,7 +146,7 @@ bool AppInit(int argc, char* argv[])
     } catch (std::exception& e) {
         PrintExceptionContinue(&e, "AppInit()");
     } catch (...) {
-        PrintExceptionContinue(NULL, "AppInit()");
+        PrintExceptionContinue(nullptr, "AppInit()");
     }
 
     if (!fRet) {

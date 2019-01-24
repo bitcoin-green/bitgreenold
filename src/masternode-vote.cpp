@@ -94,7 +94,7 @@ void CCommunityVoteManager::CheckOrphanVotes()
     std::string strError = "";
     std::map<uint256, CCommunityVote>::iterator it1 = mapOrphanMasternodeCommunityVotes.begin();
     while (it1 != mapOrphanMasternodeCommunityVotes.end()) {
-        if (communityVote.UpdateProposal(((*it1).second), NULL, strError)) {
+        if (communityVote.UpdateProposal(((*it1).second), nullptr, strError)) {
             LogPrint("masternode", "CCommunityVoteManager::CheckOrphanVotes - Proposal/CommunityVote is known, activating and removing orphan vote\n");
             mapOrphanMasternodeCommunityVotes.erase(it1++);
         } else {
@@ -306,7 +306,7 @@ CCommunityProposal* CCommunityVoteManager::FindProposal(const std::string& strPr
     //find the prop with the highest yes count
 
     int nYesCount = -99999;
-    CCommunityProposal* pcommunityProposal = NULL;
+    CCommunityProposal* pcommunityProposal = nullptr;
 
     std::map<uint256, CCommunityProposal>::iterator it = mapProposals.begin();
     while (it != mapProposals.end()) {
@@ -317,7 +317,7 @@ CCommunityProposal* CCommunityVoteManager::FindProposal(const std::string& strPr
         ++it;
     }
 
-    if (nYesCount == -99999) return NULL;
+    if (nYesCount == -99999) return nullptr;
 
     return pcommunityProposal;
 }
@@ -329,7 +329,7 @@ CCommunityProposal* CCommunityVoteManager::FindProposal(uint256 nHash)
     if (mapProposals.count(nHash))
         return &mapProposals[nHash];
 
-    return NULL;
+    return nullptr;
 }
 
 std::vector<CCommunityProposal*> CCommunityVoteManager::GetAllProposals()
@@ -508,7 +508,7 @@ void CCommunityVoteManager::ProcessMessage(CNode* pfrom, std::string& strCommand
         }
 
         CMasternode* pmn = mnodeman.Find(vote.vin);
-        if (pmn == NULL) {
+        if (pmn == nullptr) {
             LogPrint("masternode", "mcvote - unknown masternode - vin: %s\n", vote.vin.prevout.hash.ToString());
             mnodeman.AskForMN(pfrom, vote.vin);
             return;
@@ -870,7 +870,7 @@ bool CCommunityVote::SignatureValid(bool fSignatureCheck)
 
     CMasternode* pmn = mnodeman.Find(vin);
 
-    if (pmn == NULL) {
+    if (pmn == nullptr) {
         LogPrint("masternode", "CCommunityVote::SignatureValid() - Unknown Masternode - %s\n", vin.prevout.hash.ToString());
         return false;
     }

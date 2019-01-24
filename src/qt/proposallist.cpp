@@ -631,7 +631,7 @@ void ProposalList::vote_community_click_handler(const std::string voteString)
         }
 
         CMasternode* pmn = mnodeman.Find(pubKeyMasternode);
-        if(pmn == NULL) {
+        if(pmn == nullptr) {
             nFailed++;
             continue;
         }
@@ -643,7 +643,7 @@ void ProposalList::vote_community_click_handler(const std::string voteString)
         }
 
         std::string strError = "";
-        if(communityVote.UpdateProposal(vote, NULL, strError)) {
+        if(communityVote.UpdateProposal(vote, nullptr, strError)) {
             communityVote.mapSeenMasternodeCommunityVotes.insert(make_pair(vote.GetHash(), vote));
             vote.Relay();
             nSuccessful++;
@@ -697,7 +697,7 @@ void ProposalList::vote_click_handler(const std::string voteString)
         }
 
         CMasternode* pmn = mnodeman.Find(pubKeyMasternode);
-        if(pmn == NULL) {
+        if(pmn == nullptr) {
             nFailed++;
             continue;
         }
@@ -709,7 +709,7 @@ void ProposalList::vote_click_handler(const std::string voteString)
         }
 
         std::string strError = "";
-        if(budget.UpdateProposal(vote, NULL, strError)) {
+        if(budget.UpdateProposal(vote, nullptr, strError)) {
             budget.mapSeenMasternodeBudgetVotes.insert(make_pair(vote.GetHash(), vote));
             vote.Relay();
             nSuccessful++;

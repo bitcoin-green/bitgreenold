@@ -77,7 +77,7 @@ UniValue getinfo(const UniValue& params, bool fHelp)
             HelpExampleCli("getinfo", "") + HelpExampleRpc("getinfo", ""));
 
 #ifdef ENABLE_WALLET
-    LOCK2(cs_main, pwalletMain ? &pwalletMain->cs_wallet : NULL);
+    LOCK2(cs_main, pwalletMain ? &pwalletMain->cs_wallet : nullptr);
 #else
     LOCK(cs_main);
 #endif
@@ -102,7 +102,7 @@ UniValue getinfo(const UniValue& params, bool fHelp)
     obj.push_back(Pair("testnet", Params().TestnetToBeDeprecatedFieldRPC()));
 
     // During inital block verification chainActive.Tip() might be not yet initialized
-    if (chainActive.Tip() == NULL) {
+    if (chainActive.Tip() == nullptr) {
         obj.push_back(Pair("status", "Blockchain information not yet available"));
         return obj;
     }
@@ -560,7 +560,7 @@ UniValue getstakingstatus(const UniValue& params, bool fHelp)
             HelpExampleCli("getstakingstatus", "") + HelpExampleRpc("getstakingstatus", ""));
 
 #ifdef ENABLE_WALLET
-    LOCK2(cs_main, pwalletMain ? &pwalletMain->cs_wallet : NULL);
+    LOCK2(cs_main, pwalletMain ? &pwalletMain->cs_wallet : nullptr);
 #else
     LOCK(cs_main);
 #endif
