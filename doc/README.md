@@ -1,5 +1,5 @@
 Bitcoin Green Core
-=====================
+==================
 
 Setup
 ---------------------
@@ -7,20 +7,20 @@ Setup
 
 Running
 ---------------------
-The following are some helpful notes on how to run Bitcoin Green on your native platform.
+The following are some helpful notes on how to run Bitcoin Green Core on your native platform.
 
 ### Unix
 
 Unpack the files into a directory and run:
 
-- bin/32/bitcoingreen-qt (GUI, 32-bit) or bin/32/bitcoingreend (headless, 32-bit)
-- bin/64/bitcoingreen-qt (GUI, 64-bit) or bin/64/bitcoingreend (headless, 64-bit)
+- `bin/bitcoingreen-qt` (GUI) or
+- `bin/bitcoingreend` (headless)
 
 ### Windows
 
 Unpack the files into a directory, and then run bitcoingreen-qt.exe.
 
-### OSX
+### macOS
 
 Drag BitcoinGreen-Qt to your applications folder, and then run BitcoinGreen-Qt.
 
@@ -30,9 +30,9 @@ Drag BitcoinGreen-Qt to your applications folder, and then run BitcoinGreen-Qt.
 
 Building
 ---------------------
-The following are developer notes on how to build Bitcoin Green on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
+The following are developer notes on how to build Bitcoin Green Core on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
 
-- [OSX Build Notes](build-osx.md)
+- [macOS Build Notes](build-osx.md)
 - [Unix Build Notes](build-unix.md)
 - [Gitian Building Guide](gitian-building.md)
 
@@ -58,6 +58,6 @@ The Bitcoin Green repo's [root README](https://github.com/bitcoingreen/bitcoingr
 
 License
 ---------------------
-Distributed under the [MIT/X11 software license](http://www.opensource.org/licenses/mit-license.php).
+Distributed under the [MIT software license](/COPYING).
 This product includes software developed by the OpenSSL Project for use in the [OpenSSL Toolkit](https://www.openssl.org/). This product includes
 cryptographic software written by Eric Young ([eay@cryptsoft.com](mailto:eay@cryptsoft.com)), and UPnP software written by Thomas Bernard.
