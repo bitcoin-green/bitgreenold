@@ -121,8 +121,8 @@ static void http_request_done(struct evhttp_request *req, void *ctx)
 {
     HTTPReply *reply = static_cast<HTTPReply*>(ctx);
 
-    if (req == NULL) {
-        /* If req is NULL, it means an error occurred while connecting, but
+    if (req == nullptr) {
+        /* If req is nullptr, it means an error occurred while connecting, but
          * I'm not sure how to find out which one. We also don't really care.
          */
         reply->status = 0;
@@ -153,14 +153,14 @@ UniValue CallRPC(const string& strMethod, const UniValue& params)
         throw runtime_error("cannot create event_base");
 
     // Synchronously look up hostname
-    struct evhttp_connection *evcon = evhttp_connection_base_new(base, NULL, host.c_str(), port); // TODO RAII
-    if (evcon == NULL)
+    struct evhttp_connection *evcon = evhttp_connection_base_new(base, nullptr, host.c_str(), port); // TODO RAII
+    if (evcon == nullptr)
         throw runtime_error("create connection failed");
     evhttp_connection_set_timeout(evcon, GetArg("-rpcclienttimeout", DEFAULT_HTTP_CLIENT_TIMEOUT));
 
     HTTPReply response;
     struct evhttp_request *req = evhttp_request_new(http_request_done, (void*)&response); // TODO RAII
-    if (req == NULL)
+    if (req == nullptr)
         throw runtime_error("create http request failed");
 
     // Get credentials
@@ -293,7 +293,7 @@ int CommandLineRPC(int argc, char* argv[])
         strPrint = string("error: ") + e.what();
         nRet = EXIT_FAILURE;
     } catch (...) {
-        PrintExceptionContinue(NULL, "CommandLineRPC()");
+        PrintExceptionContinue(nullptr, "CommandLineRPC()");
         throw;
     }
 
@@ -318,7 +318,7 @@ int main(int argc, char* argv[])
         PrintExceptionContinue(&e, "AppInitRPC()");
         return EXIT_FAILURE;
     } catch (...) {
-        PrintExceptionContinue(NULL, "AppInitRPC()");
+        PrintExceptionContinue(nullptr, "AppInitRPC()");
         return EXIT_FAILURE;
     }
 
@@ -328,7 +328,7 @@ int main(int argc, char* argv[])
     } catch (std::exception& e) {
         PrintExceptionContinue(&e, "CommandLineRPC()");
     } catch (...) {
-        PrintExceptionContinue(NULL, "CommandLineRPC()");
+        PrintExceptionContinue(nullptr, "CommandLineRPC()");
     }
     return ret;
 }

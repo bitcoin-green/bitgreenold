@@ -207,7 +207,7 @@ bool CMasternodeMan::Add(CMasternode& mn)
         return false;
 
     CMasternode* pmn = Find(mn.vin);
-    if (pmn == NULL) {
+    if (pmn == nullptr) {
         LogPrint("masternode", "CMasternodeMan: Adding new Masternode %s - %i now\n", mn.vin.prevout.hash.ToString(), size() + 1);
         vMasternodes.push_back(mn);
         return true;
@@ -444,7 +444,7 @@ CMasternode* CMasternodeMan::Find(const CScript& payee)
         if (payee2 == payee)
             return &mn;
     }
-    return NULL;
+    return nullptr;
 }
 
 CMasternode* CMasternodeMan::Find(const CTxIn& vin)
@@ -455,7 +455,7 @@ CMasternode* CMasternodeMan::Find(const CTxIn& vin)
         if (mn.vin.prevout == vin.prevout)
             return &mn;
     }
-    return NULL;
+    return nullptr;
 }
 
 
@@ -467,7 +467,7 @@ CMasternode* CMasternodeMan::Find(const CPubKey& pubKeyMasternode)
         if (mn.pubKeyMasternode == pubKeyMasternode)
             return &mn;
     }
-    return NULL;
+    return nullptr;
 }
 
 //
@@ -477,7 +477,7 @@ CMasternode* CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlockHeight
 {
     LOCK(cs);
 
-    CMasternode* pBestMasternode = NULL;
+    CMasternode* pBestMasternode = nullptr;
     std::vector<pair<int64_t, CTxIn> > vecMasternodeLastPaid;
 
     /*
@@ -542,7 +542,7 @@ CMasternode* CMasternodeMan::FindRandomNotInVec(std::vector<CTxIn>& vecToExclude
 
     int nCountEnabled = CountEnabled(protocolVersion);
     LogPrint("masternode", "CMasternodeMan::FindRandomNotInVec - nCountEnabled - vecToExclude.size() %d\n", nCountEnabled - vecToExclude.size());
-    if (nCountEnabled - vecToExclude.size() < 1) return NULL;
+    if (nCountEnabled - vecToExclude.size() < 1) return nullptr;
 
     int rand = GetRandInt(nCountEnabled - vecToExclude.size());
     LogPrint("masternode", "CMasternodeMan::FindRandomNotInVec - rand %d\n", rand);
@@ -563,13 +563,13 @@ CMasternode* CMasternodeMan::FindRandomNotInVec(std::vector<CTxIn>& vecToExclude
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 CMasternode* CMasternodeMan::GetCurrentMasterNode(int mod, int64_t nBlockHeight, int minProtocol)
 {
     int64_t score = 0;
-    CMasternode* winner = NULL;
+    CMasternode* winner = nullptr;
 
     // scan for winner
     for (CMasternode& mn : vMasternodes) {
@@ -701,7 +701,7 @@ CMasternode* CMasternodeMan::GetMasternodeByRank(int nRank, int64_t nBlockHeight
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
@@ -770,7 +770,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             // if nothing significant failed, search existing Masternode list
             CMasternode* pmn = Find(mnp.vin);
             // if it's known, don't ask for the mnb, just return
-            if (pmn != NULL) return;
+            if (pmn != nullptr) return;
         }
 
         // something significant is broken or mn is unknown,
@@ -856,7 +856,7 @@ void CMasternodeMan::UpdateMasternodeList(CMasternodeBroadcast mnb)
     LogPrint("masternode","CMasternodeMan::UpdateMasternodeList() -- masternode=%s\n", mnb.vin.prevout.ToString());
 
     CMasternode* pmn = Find(mnb.vin);
-    if (pmn == NULL) {
+    if (pmn == nullptr) {
         CMasternode mn(mnb);
         Add(mn);
     } else {

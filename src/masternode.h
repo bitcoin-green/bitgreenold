@@ -258,7 +258,7 @@ public:
 
     int GetMasternodeInputAge()
     {
-        if (chainActive.Tip() == NULL) return 0;
+        if (chainActive.Tip() == nullptr) return 0;
 
         if (cacheInputAge == 0) {
             cacheInputAge = GetInputAge(vin);

@@ -390,7 +390,7 @@ bool MultisigDialog::createMultisigTransaction(vector<CTxIn> vUserIn, vector<CTx
 
         for(CTxIn in : vUserIn){
             const CCoins* coins = view.AccessCoins(in.prevout.hash);
-            if(!coins->IsAvailable(in.prevout.n) || coins == NULL){
+            if(!coins->IsAvailable(in.prevout.n) || coins == nullptr){
                 continue;
             }
             CTxOut prevout = coins->vout[in.prevout.n];
@@ -441,7 +441,7 @@ bool MultisigDialog::createMultisigTransaction(vector<CTxIn> vUserIn, vector<CTx
 
         const CCoins* coins = view.AccessCoins(tx.vin[0].prevout.hash);
 
-        if(coins == NULL || !coins->IsAvailable(tx.vin[0].prevout.n)){
+        if(coins == nullptr || !coins->IsAvailable(tx.vin[0].prevout.n)){
             throw runtime_error("Coins unavailable (unconfirmed/spent)");
         }
 
@@ -740,7 +740,7 @@ void MultisigDialog::commitMultisigTx()
         if (!fHaveMempool && !fHaveChain) {
             // push to local node and sync with wallets
             CValidationState state;
-            if (!AcceptToMemoryPool(mempool, state, tx, false, NULL, !fOverrideFees)) {
+            if (!AcceptToMemoryPool(mempool, state, tx, false, nullptr, !fOverrideFees)) {
                 if (state.IsInvalid())
                     throw runtime_error(strprintf("Transaction rejected - %i: %s", state.GetRejectCode(), state.GetRejectReason()));
                 else
