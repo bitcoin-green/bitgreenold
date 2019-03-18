@@ -98,7 +98,6 @@ UniValue preparecommunityproposal(const UniValue& params, bool fHelp)
 
 UniValue submitcommunityproposal(const UniValue& params, bool fHelp)
 {
-    int nBlockMin = 0;
     CBlockIndex* pindexPrev = chainActive.Tip();
 
     if (fHelp || params.size() != 4)

@@ -872,3 +872,245 @@ UniValue getmasternodescores (const UniValue& params, bool fHelp)
 
     return obj;
 }
+
+bool DecodeHexVecMnb(std::vector<CMasternodeBroadcast>& vecMnb, std::string strHexMnb) {
+
+    if (!IsHex(strHexMnb))
+        return false;
+
+    std::vector<unsigned char> mnbData(ParseHex(strHexMnb));
+    CDataStream ssData(mnbData, SER_NETWORK, PROTOCOL_VERSION);
+    try {
+        ssData >> vecMnb;
+    } catch (const std::exception&) {
+        return false;
+    }
+
+    return true;
+}
+
+
+UniValue masternodebroadcast(const UniValue& params, bool fHelp)
+{
+    std::string strCommand;
+    if (params.size() >= 1)
+        strCommand = params[0].get_str();
+
+    if (fHelp ||
+        (
+#ifdef ENABLE_WALLET
+            strCommand != "create-alias" && strCommand != "create-all" &&
+#endif // ENABLE_WALLET
+            strCommand != "decode" && strCommand != "relay"))
+        throw std::runtime_error(
+                "masternodebroadcast \"command\"...\n"
+                "Set of commands to create and relay masternode broadcast messages\n"
+                "\nArguments:\n"
+                "1. \"command\"        (string or set of strings, required) The command to execute\n"
+                "\nAvailable commands:\n"
+#ifdef ENABLE_WALLET
+                "  create-alias  - Create single remote masternode broadcast message by assigned alias configured in masternode.conf\n"
+                "  create-all    - Create remote masternode broadcast messages for all masternodes configured in masternode.conf\n"
+#endif // ENABLE_WALLET
+                "  decode        - Decode masternode broadcast message\n"
+                "  relay         - Relay masternode broadcast message to the network\n"
+                );
+
+#ifdef ENABLE_WALLET
+    if (strCommand == "create-alias") {
+        if (!pwalletMain)
+            return NullUniValue;
+
+        // wait for reindex and/or import to finish
+        if (fImporting || fReindex)
+            throw JSONRPCError(RPC_INTERNAL_ERROR, "Wait for reindex and/or import to finish");
+
+        if (params.size() < 2)
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "Please specify an alias");
+
+        {
+            LOCK(pwalletMain->cs_wallet);
+            EnsureWalletIsUnlocked();
+        }
+
+        bool fFound = false;
+        std::string strAlias = params[1].get_str();
+
+        UniValue statusObj(UniValue::VOBJ);
+        std::vector<CMasternodeBroadcast> vecMnb;
+
+        statusObj.push_back(Pair("alias", strAlias));
+
+        for (const auto& mne : masternodeConfig.getEntries()) {
+            if (mne.getAlias() == strAlias) {
+                fFound = true;
+                std::string strError;
+                CMasternodeBroadcast mnb;
+
+                bool fResult = CMasternodeBroadcast::Create(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strError, mnb, true);
+
+                statusObj.push_back(Pair("result", fResult ? "successful" : "failed"));
+                if (fResult) {
+                    vecMnb.push_back(mnb);
+                    CDataStream ssVecMnb(SER_NETWORK, PROTOCOL_VERSION);
+                    ssVecMnb << vecMnb;
+                    statusObj.push_back(Pair("hex", HexStr(ssVecMnb)));
+                } else {
+                    statusObj.push_back(Pair("errorMessage", strError));
+                }
+                break;
+            }
+        }
+
+        if (!fFound) {
+            statusObj.push_back(Pair("result", "not found"));
+            statusObj.push_back(Pair("errorMessage", "Could not find alias in config. Verify with list-conf."));
+        }
+
+        return statusObj;
+    }
+
+    if (strCommand == "create-all") {
+        if (!pwalletMain)
+            return NullUniValue;
+
+        // wait for reindex and/or import to finish
+        if (fImporting || fReindex)
+            throw JSONRPCError(RPC_INTERNAL_ERROR, "Wait for reindex and/or import to finish");
+
+        {
+            LOCK(pwalletMain->cs_wallet);
+            EnsureWalletIsUnlocked();
+        }
+
+        int nSuccessful = 0;
+        int nFailed = 0;
+
+        UniValue resultsObj(UniValue::VOBJ);
+        std::vector<CMasternodeBroadcast> vecMnb;
+
+        for (const auto& mne : masternodeConfig.getEntries()) {
+            std::string strError;
+            CMasternodeBroadcast mnb;
+
+            bool fResult = CMasternodeBroadcast::Create(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strError, mnb, true);
+
+            UniValue statusObj(UniValue::VOBJ);
+            statusObj.push_back(Pair("alias", mne.getAlias()));
+            statusObj.push_back(Pair("result", fResult ? "successful" : "failed"));
+
+            if (fResult) {
+                nSuccessful++;
+                vecMnb.push_back(mnb);
+            } else {
+                nFailed++;
+                statusObj.push_back(Pair("errorMessage", strError));
+            }
+
+            resultsObj.push_back(Pair("status", statusObj));
+        }
+
+        CDataStream ssVecMnb(SER_NETWORK, PROTOCOL_VERSION);
+        ssVecMnb << vecMnb;
+        UniValue returnObj(UniValue::VOBJ);
+        returnObj.push_back(Pair("overall", strprintf("Successfully created broadcast messages for %d masternodes, failed to create %d, total %d", nSuccessful, nFailed, nSuccessful + nFailed)));
+        returnObj.push_back(Pair("detail", resultsObj));
+        returnObj.push_back(Pair("hex", HexStr(ssVecMnb.begin(), ssVecMnb.end())));
+
+        return returnObj;
+    }
+#endif // ENABLE_WALLET
+
+    if (strCommand == "decode") {
+        if (params.size() != 2)
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "Correct usage is 'masternodebroadcast decode \"hexstring\"'");
+
+        std::vector<CMasternodeBroadcast> vecMnb;
+
+        if (!DecodeHexVecMnb(vecMnb, params[1].get_str()))
+            throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Masternode broadcast message decode failed");
+
+        int nSuccessful = 0;
+        int nFailed = 0;
+        UniValue returnObj(UniValue::VOBJ);
+
+        for (auto& mnb : vecMnb) {
+            UniValue resultObj(UniValue::VOBJ);
+
+            if (mnb.VerifySignature()) {
+                nSuccessful++;
+                resultObj.push_back(Pair("vin", mnb.vin.prevout.ToStringShort()));
+                resultObj.push_back(Pair("addr", mnb.addr.ToString()));
+                resultObj.push_back(Pair("pubKeyCollateralAddress", CBitcoinAddress(mnb.pubKeyCollateralAddress.GetID()).ToString()));
+                resultObj.push_back(Pair("pubKeyMasternode", CBitcoinAddress(mnb.pubKeyMasternode.GetID()).ToString()));
+                resultObj.push_back(Pair("sig", EncodeBase64(&mnb.sig[0], mnb.sig.size())));
+                resultObj.push_back(Pair("sigTime", mnb.sigTime));
+                resultObj.push_back(Pair("protocolVersion", mnb.protocolVersion));
+
+                UniValue lastPingObj(UniValue::VOBJ);
+                lastPingObj.push_back(Pair("vin", mnb.lastPing.vin.prevout.ToStringShort()));
+                lastPingObj.push_back(Pair("blockHash", mnb.lastPing.blockHash.ToString()));
+                lastPingObj.push_back(Pair("sigTime", mnb.lastPing.sigTime));
+                lastPingObj.push_back(Pair("vchSig", EncodeBase64(&mnb.lastPing.vchSig[0], mnb.lastPing.vchSig.size())));
+
+                resultObj.push_back(Pair("lastPing", lastPingObj));
+                resultObj.push_back(Pair("nLastDsq", mnb.nLastDsq));
+            } else {
+                nFailed++;
+                resultObj.push_back(Pair("errorMessage", "Masternode broadcast signature verification failed"));
+            }
+
+            returnObj.push_back(Pair(mnb.GetHash().ToString(), resultObj));
+        }
+
+        returnObj.push_back(Pair("overall", strprintf("Successfully decoded broadcast messages for %d masternodes, failed to decode %d, total %d", nSuccessful, nFailed, nSuccessful + nFailed)));
+
+        return returnObj;
+    }
+
+    if (strCommand == "relay") {
+        if (params.size() < 2 || params.size() > 3)
+            throw JSONRPCError(RPC_INVALID_PARAMETER,   "masternodebroadcast relay \"hexstring\"\n"
+                                                        "\nArguments:\n"
+                                                        "1. \"hex\"      (string, required) Broadcast messages hex string\n");
+
+        std::vector<CMasternodeBroadcast> vecMnb;
+
+        if (!DecodeHexVecMnb(vecMnb, params[1].get_str()))
+            throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Masternode broadcast message decode failed");
+
+        int nSuccessful = 0;
+        int nFailed = 0;
+        UniValue returnObj(UniValue::VOBJ);
+
+        // verify all signatures first, bailout if any of them broken
+        for (auto& mnb : vecMnb) {
+            UniValue resultObj(UniValue::VOBJ);
+
+            resultObj.push_back(Pair("vin", mnb.vin.prevout.ToStringShort()));
+            resultObj.push_back(Pair("addr", mnb.addr.ToString()));
+
+            bool fResult;
+            if (mnb.VerifySignature()) {
+                mnodeman.UpdateMasternodeList(mnb);
+                mnb.Relay();
+            } else fResult = false;
+
+            if (fResult) {
+                nSuccessful++;
+                resultObj.push_back(Pair(mnb.GetHash().ToString(), "successful"));
+            } else {
+                nFailed++;
+                resultObj.push_back(Pair("errorMessage", "Masternode broadcast signature verification failed"));
+            }
+
+            returnObj.push_back(Pair(mnb.GetHash().ToString(), resultObj));
+        }
+
+        returnObj.push_back(Pair("overall", strprintf("Successfully relayed broadcast messages for %d masternodes, failed to relay %d, total %d", nSuccessful, nFailed, nSuccessful + nFailed)));
+
+        return returnObj;
+    }
+
+    return NullUniValue;
+}
