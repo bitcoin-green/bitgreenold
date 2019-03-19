@@ -1092,6 +1092,7 @@ UniValue masternodebroadcast(const UniValue& params, bool fHelp)
 
             bool fResult;
             if (mnb.VerifySignature()) {
+                fResult = true;
                 mnodeman.UpdateMasternodeList(mnb);
                 mnb.Relay();
             } else fResult = false;
