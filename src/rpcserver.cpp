@@ -367,6 +367,7 @@ static const CRPCCommand vRPCCommands[] =
         {"bitcoingreen", "getmasternodestatus", &getmasternodestatus, true, true, false},
         {"bitcoingreen", "getmasternodewinners", &getmasternodewinners, true, true, false},
         {"bitcoingreen", "getmasternodescores", &getmasternodescores, true, true, false},
+        {"bitcoingreen", "masternodebroadcast", &masternodebroadcast, true, true, false},
         {"bitcoingreen", "mnbudget", &mnbudget, true, true, false},
         {"bitcoingreen", "preparebudget", &preparebudget, true, true, false},
         {"bitcoingreen", "submitbudget", &submitbudget, true, true, false},
