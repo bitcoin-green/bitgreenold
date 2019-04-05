@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2017-2018 The Bitcoin Green developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -51,25 +52,25 @@ inline T* NCONST_PTR(const T* val)
 template <class T, class TAl>
 inline T* begin_ptr(std::vector<T, TAl>& v)
 {
-    return v.empty() ? NULL : &v[0];
+    return v.empty() ? nullptr : &v[0];
 }
 /** Get begin pointer of vector (const version) */
 template <class T, class TAl>
 inline const T* begin_ptr(const std::vector<T, TAl>& v)
 {
-    return v.empty() ? NULL : &v[0];
+    return v.empty() ? nullptr : &v[0];
 }
 /** Get end pointer of vector (non-const version) */
 template <class T, class TAl>
 inline T* end_ptr(std::vector<T, TAl>& v)
 {
-    return v.empty() ? NULL : (&v[0] + v.size());
+    return v.empty() ? nullptr : (&v[0] + v.size());
 }
 /** Get end pointer of vector (const version) */
 template <class T, class TAl>
 inline const T* end_ptr(const std::vector<T, TAl>& v)
 {
-    return v.empty() ? NULL : (&v[0] + v.size());
+    return v.empty() ? nullptr : (&v[0] + v.size());
 }
 
 /////////////////////////////////////////////////////////////////
@@ -907,6 +908,12 @@ public:
     {
         this->nSize += nSize;
         return *this;
+    }
+
+    /** Pretend _nSize bytes are written, without specifying them. */
+    void seek(size_t _nSize)
+    {
+        this->nSize += _nSize;
     }
 
     template <typename T>

@@ -64,7 +64,7 @@ public:
 class CLevelDBWrapper
 {
 private:
-    //! custom environment this database is using (may be NULL in case of default environment)
+    //! custom environment this database is using (may be nullptr in case of default environment)
     leveldb::Env* penv;
 
     //! database options used

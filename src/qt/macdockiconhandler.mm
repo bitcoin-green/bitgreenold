@@ -1,4 +1,6 @@
 // Copyright (c) 2011-2013 The Bitcoin Core developers
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2017-2018 The Bitcoin Green developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,18 +16,14 @@
 #include <objc/objc.h>
 #include <objc/message.h>
 
-#if QT_VERSION < 0x050000
-extern void qt_mac_set_dock_menu(QMenu *);
-#endif
-
-static MacDockIconHandler *s_instance = NULL;
+static MacDockIconHandler *s_instance = nullptr;
 
 bool dockClickHandler(id self,SEL _cmd,...) {
     Q_UNUSED(self)
     Q_UNUSED(_cmd)
-    
+
     s_instance->handleDockIconClickEvent();
-    
+
     // Return NO (false) to suppress the default OS X actions
     return false;
 }
@@ -33,7 +31,7 @@ bool dockClickHandler(id self,SEL _cmd,...) {
 void setupDockClickHandler() {
     Class cls = objc_getClass("NSApplication");
     id appInst = objc_msgSend((id)cls, sel_registerName("sharedApplication"));
-    
+
     if (appInst != NULL) {
         id delegate = objc_msgSend(appInst, sel_registerName("delegate"));
         Class delClass = (Class)objc_msgSend(delegate,  sel_registerName("class"));
@@ -53,10 +51,8 @@ MacDockIconHandler::MacDockIconHandler() : QObject()
     setupDockClickHandler();
     this->m_dummyWidget = new QWidget();
     this->m_dockMenu = new QMenu(this->m_dummyWidget);
-    this->setMainWindow(NULL);
-#if QT_VERSION < 0x050000
-    qt_mac_set_dock_menu(this->m_dockMenu);
-#elif QT_VERSION >= 0x050200
+    this->setMainWindow(nullptr);
+#if QT_VERSION >= 0x050200
     this->m_dockMenu->setAsDockMenu();
 #endif
     [pool release];

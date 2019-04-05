@@ -1,5 +1,6 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2017-2018 The Bitcoin Green developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,7 +13,6 @@
 
 #include <stdexcept>
 
-#include <openssl/x509.h>
 #include <openssl/x509_vfy.h>
 
 #include <QDateTime>
@@ -73,7 +73,7 @@ bool PaymentRequestPlus::getMerchant(X509_STORE* certStore, QString& merchant) c
 
     // One day we'll support more PKI types, but just
     // x509 for now:
-    const EVP_MD* digestAlgorithm = NULL;
+    const EVP_MD* digestAlgorithm = nullptr;
     if (paymentRequest.pki_type() == "x509+sha256") {
         digestAlgorithm = EVP_sha256();
     } else if (paymentRequest.pki_type() == "x509+sha1") {
@@ -101,14 +101,12 @@ bool PaymentRequestPlus::getMerchant(X509_STORE* certStore, QString& merchant) c
             qWarning() << "PaymentRequestPlus::getMerchant : Payment request: certificate expired or not yet active: " << qCert;
             return false;
         }
-#if QT_VERSION >= 0x050000
         if (qCert.isBlacklisted()) {
             qWarning() << "PaymentRequestPlus::getMerchant : Payment request: certificate blacklisted: " << qCert;
             return false;
         }
-#endif
-        const unsigned char* data = (const unsigned char*)certChain.certificate(i).data();
-        X509* cert = d2i_X509(NULL, &data, certChain.certificate(i).size());
+        const unsigned char *data = (const unsigned char *)certChain.certificate(i).data();
+        X509 *cert = d2i_X509(nullptr, &data, certChain.certificate(i).size());
         if (cert)
             certs.push_back(cert);
     }
@@ -133,7 +131,7 @@ bool PaymentRequestPlus::getMerchant(X509_STORE* certStore, QString& merchant) c
         return false;
     }
 
-    char* website = NULL;
+    char* website = nullptr;
     bool fResult = true;
     try {
         if (!X509_STORE_CTX_init(store_ctx, certStore, signing_cert, chain)) {
@@ -165,7 +163,7 @@ bool PaymentRequestPlus::getMerchant(X509_STORE* certStore, QString& merchant) c
 #endif
         EVP_PKEY* pubkey = X509_get_pubkey(signing_cert);
         EVP_MD_CTX_init(ctx);
-        if (!EVP_VerifyInit_ex(ctx, digestAlgorithm, NULL) ||
+        if (!EVP_VerifyInit_ex(ctx, digestAlgorithm, nullptr) ||
             !EVP_VerifyUpdate(ctx, data_to_verify.data(), data_to_verify.size()) ||
             !EVP_VerifyFinal(ctx, (const unsigned char*)paymentRequest.signature().data(), paymentRequest.signature().size(), pubkey)) {
             throw SSLVerifyError("Bad signature, invalid PaymentRequest.");
@@ -175,7 +173,7 @@ bool PaymentRequestPlus::getMerchant(X509_STORE* certStore, QString& merchant) c
 #endif
 
         // OpenSSL API for getting human printable strings from certs is baroque.
-        int textlen = X509_NAME_get_text_by_NID(certname, NID_commonName, NULL, 0);
+        int textlen = X509_NAME_get_text_by_NID(certname, NID_commonName, nullptr, 0);
         website = new char[textlen + 1];
         if (X509_NAME_get_text_by_NID(certname, NID_commonName, website, textlen + 1) == textlen && textlen > 0) {
             merchant = website;

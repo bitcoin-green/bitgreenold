@@ -39,6 +39,8 @@
         <file alias="history_active">res/icons/history_active.png</file>
         <file alias="overview">res/icons/overview.png</file>
         <file alias="overview_active">res/icons/overview_active.png</file>
+        <file alias="proposal_active">res/icons/proposal_active.png</file>
+        <file alias="proposal">res/icons/proposal.png</file>
         <file alias="masternodes">res/icons/masternodes.png</file>
         <file alias="masternodes_active">res/icons/masternodes_active.png</file>
         <file alias="export">res/icons/export.png</file>

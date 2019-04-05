@@ -1,4 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+# Copyright (c) 2017-2018 The PIVX developers
+# Copyright (c) 2017-2019 The Bitcoin Green developers
+# Distributed under the MIT software license, see the accompanying
+# file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 import os, sys
 from subprocess import check_output
 
@@ -23,14 +28,14 @@ def countRelevantCommas(line):
     return numRelevantCommas
 
 if __name__ == "__main__":
-    out = check_output(["git", "rev-parse", "--show-toplevel"])
+    out = check_output("git rev-parse --show-toplevel", shell=True, universal_newlines=True)
     srcDir = out.rstrip() + "/src/"
 
     filelist = [os.path.join(dp, f) for dp, dn, filenames in os.walk(srcDir) for f in filenames if os.path.splitext(f)[1] == '.cpp' or os.path.splitext(f)[1] == '.h' ]
     incorrectInstanceCounter = 0
 
-    for file in filelist:    
-        f = open(file,"r")
+    for file in filelist:
+        f = open(file,"r", encoding="utf-8")
         data = f.read()
         rows = data.split("\n")
         count = 0
@@ -73,12 +78,12 @@ if __name__ == "__main__":
                         numPercents = tempLine.count('%') - numExtraPercents - 2*tempLine.count('%%')
 
                         if numPercents != numCommas:
-                            print "Incorrect number of arguments for LogPrint(f) statement found."
+                            print("Incorrect number of arguments for LogPrint(f) statement found.")
                             print(str(file) + ":" + str(lineCounter - tempCount))
-                            print "Line = " + tempLine
+                            print("Line = " + tempLine)
                             print("numRelevantCommas = " + str(numCommas) + ", numRelevantPercents = " + str(numPercents))
-                            print ""
-                            
+                            print("")
+
                             incorrectInstanceCounter += 1
 
                     # Done with this multiline, clear tempLine

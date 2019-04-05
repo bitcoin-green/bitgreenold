@@ -8,7 +8,7 @@
 #define BITCOIN_QT_GUICONSTANTS_H
 
 /* Milliseconds between model updates */
-static const int MODEL_UPDATE_DELAY = 250;
+static const int MODEL_UPDATE_DELAY = 1000;
 
 /* AskPassphraseDialog -- Maximum passphrase length */
 static const int MAX_PASSPHRASE_SIZE = 1024;
@@ -35,6 +35,10 @@ static const bool DEFAULT_SPLASHSCREEN = true;
 #define COLOR_BLACK QColor(51, 51, 51)
 /* Transaction list -- TX status decoration - conflicted */
 #define COLOR_CONFLICTED QColor(255, 0, 0)
+/* Transaction list -- TX status decoration - orphan (Light Gray #D3D3D3) */
+#define COLOR_ORPHAN QColor(211, 211, 211)
+/* Transaction list -- TX status decoration - stake (Green #8A2BE2) */
+#define COLOR_STAKE QColor(15,127,18)
 
 /* Tooltips longer than this (in characters) are converted into rich text,
    so that they can be word-wrapped.

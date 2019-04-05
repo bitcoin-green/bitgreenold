@@ -1,4 +1,6 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
+// Copyright (c) 2018 The PIVX developers
+// Copyright (c) 2019 The Bitcoin Green developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -22,7 +24,7 @@ X509 *parse_b64der_cert(const char* cert_data)
     std::vector<unsigned char> data = DecodeBase64(cert_data);
     assert(data.size() > 0);
     const unsigned char* dptr = &data[0];
-    X509 *cert = d2i_X509(NULL, &dptr, data.size());
+    X509 *cert = d2i_X509(nullptr, &dptr, data.size());
     assert(cert);
     return cert;
 }
@@ -63,7 +65,7 @@ void PaymentServerTests::paymentServerTests()
 {
     SelectParams(CBaseChainParams::MAIN);
     OptionsModel optionsModel;
-    PaymentServer* server = new PaymentServer(NULL, false);
+    PaymentServer* server = new PaymentServer(nullptr, false);
     X509_STORE* caStore = X509_STORE_new();
     X509_STORE_add_cert(caStore, parse_b64der_cert(caCert_BASE64));
     PaymentServer::LoadRootCAs(caStore);
@@ -109,13 +111,17 @@ void PaymentServerTests::paymentServerTests()
     r.paymentRequest.getMerchant(caStore, merchant);
     QCOMPARE(merchant, QString(""));
 
+    unsigned long lDoSProtectionTrigger = (unsigned long) BIP70_MAX_PAYMENTREQUEST_SIZE + 1;
+    std::string randData(lDoSProtectionTrigger, '\0');
+
+    unsigned char* buff = reinterpret_cast<unsigned char *>(&randData[0]);
+
     // Just get some random data big enough to trigger BIP70 DoS protection
-    unsigned char randData[BIP70_MAX_PAYMENTREQUEST_SIZE + 1];
-    GetRandBytes(randData, sizeof(randData));
+    GetRandBytes(buff, sizeof(buff));
     // Write data to a temp file:
     QTemporaryFile tempFile;
     tempFile.open();
-    tempFile.write((const char*)randData, sizeof(randData));
+    tempFile.write((const char*)buff, sizeof(buff));
     tempFile.close();
     // Trigger BIP70 DoS protection
     QCOMPARE(PaymentServer::readPaymentRequestFromFile(tempFile.fileName(), r.paymentRequest), false);
