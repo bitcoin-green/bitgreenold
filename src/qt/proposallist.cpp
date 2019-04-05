@@ -69,15 +69,18 @@ ProposalList::ProposalList(QWidget* parent) : QWidget(parent), proposalProxyMode
     QVBoxLayout *vlayout_budget = new QVBoxLayout(this);
     vlayout_budget->setSpacing(0);
     budgetView->setLayout(vlayout_budget);
-
+/*
     QWidget *communityView = new QWidget(this);
     QVBoxLayout *vlayout_community = new QVBoxLayout(this);
     vlayout_community->setSpacing(0);
     communityView->setLayout(vlayout_community);
+*/
 
     QTabWidget *tabWidget = new QTabWidget(this);
     tabWidget->addTab(budgetView,"Budget Proposals");
+/*
     tabWidget->addTab(communityView,"Community Proposals");
+*/
 
     /** BUDGET PROPOSAL **/
 
@@ -209,6 +212,7 @@ ProposalList::ProposalList(QWidget* parent) : QWidget(parent), proposalProxyMode
 
     /** COMMUNITY PROPOSAL **/
 
+/*
     hlayout_community = new ColumnAlignedLayout();
     hlayout_community->setContentsMargins(0,0,0,0);
     hlayout_community->setSpacing(0);
@@ -322,6 +326,7 @@ ProposalList::ProposalList(QWidget* parent) : QWidget(parent), proposalProxyMode
     connect(voteAbstainAction, SIGNAL(triggered()), this, SLOT(voteAbstainCommunity()));
 
     connect(openDescriptionAction, SIGNAL(triggered()), this, SLOT(openDescription()));
+*/
 
     vlayout_tabs->addWidget(tabWidget);
     vlayout->addLayout(vlayout_tabs);
@@ -331,7 +336,9 @@ ProposalList::ProposalList(QWidget* parent) : QWidget(parent), proposalProxyMode
 
 void ProposalList::invalidateAlignedLayout() {
     hlayout->invalidate();
+/*
     hlayout_community->invalidate();
+*/
 }
 
 void ProposalList::setModel(WalletModel* model) {
@@ -362,7 +369,7 @@ void ProposalList::setModel(WalletModel* model) {
         proposalList->setColumnWidth(ProposalTableModel::Amount, AMOUNT_COLUMN_WIDTH);
         proposalList->setColumnWidth(ProposalTableModel::Percentage, PERCENTAGE_COLUMN_WIDTH);
 
-
+/*
         proposalCommunityProxyModel = new ProposalCommunityFilterProxy(this);
         proposalCommunityProxyModel->setSourceModel(model->getProposalCommunityTableModel());
         proposalCommunityProxyModel->setDynamicSortFilter(true);
@@ -385,9 +392,12 @@ void ProposalList::setModel(WalletModel* model) {
         proposalCommunityList->setColumnWidth(ProposalCommunityTableModel::NoVotes, NO_VOTES_COLUMN_WIDTH);
         //proposalCommunityList->setColumnWidth(ProposalCommunityTableModel::AbsoluteYesVotes, ABSOLUTE_YES_COLUMN_WIDTH);
         proposalCommunityList->setColumnWidth(ProposalCommunityTableModel::Percentage, PERCENTAGE_COLUMN_WIDTH);
+*/
 
         columnResizingFixer = new GUIUtil::TableViewLastColumnResizingFixer(proposalList, PERCENTAGE_COLUMN_WIDTH, MINIMUM_COLUMN_WIDTH);
+/*
         columnCommunityResizingFixer = new GUIUtil::TableViewLastColumnResizingFixer(proposalCommunityList, PERCENTAGE_COLUMN_WIDTH, MINIMUM_COLUMN_WIDTH);
+*/
 
         nLastUpdate = GetTime();
 
@@ -397,9 +407,10 @@ void ProposalList::setModel(WalletModel* model) {
 
         proposalList->horizontalHeader()->setStretchLastSection(false);
         proposalList->horizontalHeader()->setSectionResizeMode(ProposalTableModel::Percentage, QHeaderView::Stretch);
-
+/*
         proposalCommunityList->horizontalHeader()->setStretchLastSection(false);
         proposalCommunityList->horizontalHeader()->setSectionResizeMode(ProposalCommunityTableModel::Percentage, QHeaderView::Stretch);
+*/
     }
 }
 
@@ -408,7 +419,9 @@ void ProposalList::refreshProposals(bool force) {
 
     QString secOrMinutes = ((((double)(secondsRemaining / 60))) >= 1) ? tr("minute(s)") : tr("second(s)");
     secondsLabel->setText(tr("List will be updated in %1 %2").arg((secondsRemaining >= 60) ? QString::number(secondsRemaining / 60) : QString::number(secondsRemaining), secOrMinutes));
+/*
     secondsCommunityLabel->setText(tr("List will be updated in %1 %2").arg((secondsRemaining >= 60) ? QString::number(secondsRemaining / 60) : QString::number(secondsRemaining), secOrMinutes));
+*/
 
     if(secondsRemaining > 0 && !force) return;
     nLastUpdate = GetTime();
@@ -417,7 +430,9 @@ void ProposalList::refreshProposals(bool force) {
     model->getProposalCommunityTableModel()->refreshProposals();
 
     secondsLabel->setText(tr("List will be updated in 0 second(s)"));
+/*
     secondsCommunityLabel->setText(tr("List will be updated in 0 second(s)"));
+*/
 }
 
 void ProposalList::changedStartBlock(const QString &minAmount)
@@ -568,6 +583,7 @@ void ProposalList::changedAbsoluteYesVotesCommunity(const QString &minAbsoluteYe
 
 void ProposalList::contextualMenuCommunity(const QPoint &point)
 {
+/*
     QModelIndex index = proposalCommunityList->indexAt(point);
     QModelIndexList selection = proposalCommunityList->selectionModel()->selectedRows(0);
     if (selection.empty())
@@ -575,6 +591,7 @@ void ProposalList::contextualMenuCommunity(const QPoint &point)
 
     if(index.isValid())
         contextCommunityMenu->exec(QCursor::pos());
+*/
 }
 
 void ProposalList::voteYesCommunity()
@@ -594,6 +611,8 @@ void ProposalList::voteAbstainCommunity()
 
 void ProposalList::vote_community_click_handler(const std::string voteString)
 {
+/*
+
     if(!proposalCommunityList->selectionModel())
         return;
 
@@ -656,6 +675,7 @@ void ProposalList::vote_community_click_handler(const std::string voteString)
         tr("You voted %1 %2 time(s) successfully and failed %3 time(s) on %4").arg(QString::fromStdString(voteString), QString::number(nSuccessful), QString::number(nFailed), proposalName));
 
     refreshProposals(true);
+*/
 }
 
 void ProposalList::vote_click_handler(const std::string voteString)
@@ -758,5 +778,7 @@ void ProposalList::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event);
     columnResizingFixer->stretchColumnWidth(ProposalTableModel::Proposal);
+/*
     columnCommunityResizingFixer->stretchColumnWidth(ProposalCommunityTableModel::Proposal);
+*/
 }
