@@ -65,6 +65,8 @@ public:
     };
 
 private:
+    bool showBudgetProposals;
+    bool showCommunityProposals;
 
     ProposalFilterProxy *proposalProxyModel;
     ProposalCommunityFilterProxy *proposalCommunityProxyModel;

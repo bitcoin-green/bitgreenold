@@ -49,6 +49,8 @@ public:
         Listen,              // bool
         StakeSplitThreshold, // int
         OptionIDRowCount,
+        ShowBudgetProposalsTab,     // bool
+        ShowCommunityProposalsTab   // bool
     };
 
     void Init();
