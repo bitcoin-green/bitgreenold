@@ -114,6 +114,8 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     if (pnext)
         result.push_back(Pair("nextblockhash", pnext->GetBlockHash().GetHex()));
 
+    result.push_back(Pair("modifier", strprintf("%016x", blockindex->nStakeModifier)));
+
     result.push_back(Pair("moneysupply",ValueFromAmount(blockindex->nMoneySupply)));
 
     return result;
