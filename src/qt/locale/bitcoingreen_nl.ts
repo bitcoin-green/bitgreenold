@@ -1971,7 +1971,7 @@ MultiSend: %1</translation>
         <translation>gebruikt</translation>
     </message>
     <message>
-        <source>Warning: Invalid BITG address</source>
+        <source>Warning: Invalid Bitcoin Green address</source>
         <translation>Waarschuwing: Ongeldig BITG adres</translation>
     </message>
     <message>

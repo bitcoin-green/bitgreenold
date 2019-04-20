@@ -2657,7 +2657,7 @@ Kontroller adressen og prøv igen.</translation>
         <translation>Anvender</translation>
     </message>
     <message>
-        <source>Warning: Invalid BITG address</source>
+        <source>Warning: Invalid Bitcoin Green address</source>
         <translation>Advarsel! Ugyldig BITG adresse</translation>
     </message>
     <message>

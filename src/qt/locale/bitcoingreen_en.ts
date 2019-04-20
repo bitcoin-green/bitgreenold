@@ -3791,7 +3791,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+622"/>
-        <source>Warning: Invalid BITG address</source>
+        <source>Warning: Invalid Bitcoin Green address</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

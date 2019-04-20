@@ -2662,7 +2662,7 @@ Please check the address and try again.</source>
         <translation>사용</translation>
     </message>
     <message>
-        <source>Warning: Invalid BITG address</source>
+        <source>Warning: Invalid Bitcoin Green address</source>
         <translation>경고: 잘못된 BITG 주소</translation>
     </message>
     <message>

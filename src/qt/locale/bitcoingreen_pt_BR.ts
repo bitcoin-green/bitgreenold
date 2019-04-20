@@ -2369,7 +2369,7 @@ Favor verificar o endereço e tente novamente.</translation>
         <translation>usando</translation>
     </message>
     <message>
-        <source>Warning: Invalid BITG address</source>
+        <source>Warning: Invalid Bitcoin Green address</source>
         <translation>Aviso: endereço BITG inválido</translation>
     </message>
     <message>
