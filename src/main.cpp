@@ -1552,6 +1552,9 @@ int64_t GetBlockValue(int nHeight)
 {
     int64_t nSubsidy = 0;
 
+    if (Params().NetworkID() == CBaseChainParams::REGTEST)
+        return 50 * COIN;
+
     if (Params().NetworkID() == CBaseChainParams::TESTNET) {
         if (nHeight < Params().LAST_POW_BLOCK())
             return 5000 * COIN;
@@ -2127,7 +2130,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     }
 
     if (!control.Wait())
-        return state.DoS(100, false);
+        return state.DoS(100, error("%s: CheckQueue failed", __func__), REJECT_INVALID, "block-validation-failed");
     int64_t nTime2 = GetTimeMicros();
     nTimeVerify += nTime2 - nTimeStart;
     LogPrint("bench", "    - Verify %u txins: %.2fms (%.3fms/txin) [%.2fs]\n", nInputs - 1, 0.001 * (nTime2 - nTimeStart), nInputs <= 1 ? 0 : 0.001 * (nTime2 - nTimeStart) / (nInputs - 1), nTimeVerify * 0.000001);
@@ -2254,9 +2257,9 @@ void static UpdateTip(CBlockIndex* pindexNew)
     nTimeBestReceived = GetTime();
     mempool.AddTransactionsUpdated(1);
 
-    LogPrintf("UpdateTip: new best=%s  height=%d  log2_work=%.8g  tx=%lu  date=%s progress=%f  cache=%u\n",
-        chainActive.Tip()->GetBlockHash().ToString(), chainActive.Height(), log(chainActive.Tip()->nChainWork.getdouble()) / log(2.0), (unsigned long)chainActive.Tip()->nChainTx,
-        DateTimeStrFormat("%Y-%m-%d %H:%M:%S", chainActive.Tip()->GetBlockTime()),
+    LogPrintf("UpdateTip: new best=%s  height=%d  version=%d  log2_work=%.8g  tx=%lu  date=%s progress=%f  cache=%u\n",
+        chainActive.Tip()->GetBlockHash().ToString(), chainActive.Height(), chainActive.Tip()->nVersion, log(chainActive.Tip()->nChainWork.getdouble()) / log(2.0),
+        (unsigned long)chainActive.Tip()->nChainTx, DateTimeStrFormat("%Y-%m-%d %H:%M:%S", chainActive.Tip()->GetBlockTime()),
         Checkpoints::GuessVerificationProgress(chainActive.Tip()), (unsigned int)pcoinsTip->GetCacheSize());
 
     cvBlockChange.notify_all();
@@ -2991,7 +2994,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
 
     // Check timestamp
     LogPrint("debug", "%s: block=%s  is proof of stake=%d\n", __func__, block.GetHash().ToString().c_str(), block.IsProofOfStake());
-    if (block.GetBlockTime() > GetAdjustedTime() + (block.IsProofOfStake() ? 180 : 7200)) // 3 minute future drift for PoS
+    if (Params().NetworkID() != CBaseChainParams::REGTEST && block.GetBlockTime() > GetAdjustedTime() + (block.IsProofOfStake() ? 180 : 7200)) // 3 minute future drift for PoS
         return state.Invalid(error("CheckBlock() : block timestamp too far in the future"),
             REJECT_INVALID, "time-too-new");
 
@@ -3117,7 +3120,7 @@ bool CheckWork(const CBlock block, CBlockIndex* const pindexPrev)
 
     unsigned int nBitsRequired = GetNextWorkRequired(pindexPrev, &block);
 
-    if (block.IsProofOfWork() && (pindexPrev->nHeight + 1 <= Params().LAST_POW_BLOCK())) {
+    if (Params().NetworkID() != CBaseChainParams::REGTEST && block.IsProofOfWork() && (pindexPrev->nHeight + 1 <= Params().LAST_POW_BLOCK())) {
         double n1 = ConvertBitsToDouble(block.nBits);
         double n2 = ConvertBitsToDouble(nBitsRequired);
 
