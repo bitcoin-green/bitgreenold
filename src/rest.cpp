@@ -6,6 +6,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "chain.h"
+#include "core_io.h"
 #include "primitives/block.h"
 #include "primitives/transaction.h"
 #include "main.h"
@@ -59,11 +60,9 @@ struct CCoin {
     }
 };
 
-extern void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry);
 extern UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool txDetails = false);
 extern UniValue mempoolInfoToJSON();
 extern UniValue mempoolToJSON(bool fVerbose = false);
-extern void ScriptPubKeyToJSON(const CScript& scriptPubKey, UniValue& out, bool fIncludeHex);
 extern UniValue blockheaderToJSON(const CBlockIndex* blockindex);
 
 static bool RESTERR(HTTPRequest* req, enum HTTPStatusCode status, string message)
@@ -378,7 +377,7 @@ static bool rest_tx(HTTPRequest* req, const std::string& strURIPart)
 
     case RF_JSON: {
         UniValue objTx(UniValue::VOBJ);
-        TxToJSON(tx, hashBlock, objTx);
+        TxToUniv(tx, hashBlock, objTx);
         string strJSON = objTx.write() + "\n";
         req->WriteHeader("Content-Type", "application/json");
         req->WriteReply(HTTP_OK, strJSON);
@@ -569,7 +568,7 @@ static bool rest_getutxos(HTTPRequest* req, const std::string& strURIPart)
 
             // include the script in a json output
             UniValue o(UniValue::VOBJ);
-            ScriptPubKeyToJSON(coin.out.scriptPubKey, o, true);
+            ScriptPubKeyToUniv(coin.out.scriptPubKey, o, true);
             utxo.push_back(Pair("scriptPubKey", o));
             utxos.push_back(utxo);
         }

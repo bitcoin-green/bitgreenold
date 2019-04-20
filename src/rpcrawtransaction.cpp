@@ -33,66 +33,16 @@ using namespace boost;
 using namespace boost::assign;
 using namespace std;
 
-void ScriptPubKeyToJSON(const CScript& scriptPubKey, UniValue& out, bool fIncludeHex)
-{
-    txnouttype type;
-    vector<CTxDestination> addresses;
-    int nRequired;
-
-    out.push_back(Pair("asm", scriptPubKey.ToString()));
-    if (fIncludeHex)
-        out.push_back(Pair("hex", HexStr(scriptPubKey.begin(), scriptPubKey.end())));
-
-    if (!ExtractDestinations(scriptPubKey, type, addresses, nRequired)) {
-        out.push_back(Pair("type", GetTxnOutputType(type)));
-        return;
-    }
-
-    out.push_back(Pair("reqSigs", nRequired));
-    out.push_back(Pair("type", GetTxnOutputType(type)));
-
-    UniValue a(UniValue::VARR);
-    BOOST_FOREACH (const CTxDestination& addr, addresses)
-        a.push_back(CBitcoinAddress(addr).ToString());
-    out.push_back(Pair("addresses", a));
-}
-
 void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry)
 {
-    entry.push_back(Pair("txid", tx.GetHash().GetHex()));
-    entry.push_back(Pair("version", tx.nVersion));
-    entry.push_back(Pair("locktime", (int64_t)tx.nLockTime));
-    UniValue vin(UniValue::VARR);
-    BOOST_FOREACH (const CTxIn& txin, tx.vin) {
-        UniValue in(UniValue::VOBJ);
-        if (tx.IsCoinBase())
-            in.push_back(Pair("coinbase", HexStr(txin.scriptSig.begin(), txin.scriptSig.end())));
-        else {
-            in.push_back(Pair("txid", txin.prevout.hash.GetHex()));
-            in.push_back(Pair("vout", (int64_t)txin.prevout.n));
-            UniValue o(UniValue::VOBJ);
-            o.push_back(Pair("asm", txin.scriptSig.ToString()));
-            o.push_back(Pair("hex", HexStr(txin.scriptSig.begin(), txin.scriptSig.end())));
-            in.push_back(Pair("scriptSig", o));
-        }
-        in.push_back(Pair("sequence", (int64_t)txin.nSequence));
-        vin.push_back(in);
-    }
-    entry.push_back(Pair("vin", vin));
-    UniValue vout(UniValue::VARR);
-    for (unsigned int i = 0; i < tx.vout.size(); i++) {
-        const CTxOut& txout = tx.vout[i];
-        UniValue out(UniValue::VOBJ);
-        out.push_back(Pair("value", ValueFromAmount(txout.nValue)));
-        out.push_back(Pair("n", (int64_t)i));
-        UniValue o(UniValue::VOBJ);
-        ScriptPubKeyToJSON(txout.scriptPubKey, o, true);
-        out.push_back(Pair("scriptPubKey", o));
-        vout.push_back(out);
-    }
-    entry.push_back(Pair("vout", vout));
+    // Call into TxToUniv() in bitcoin-common to decode the transaction hex.
+    //
+    // Blockchain contextual information (confirmations and blocktime) is not
+    // available to code in bitcoin-common, so we query them here and push the
+    // data into the returned UniValue.
+    TxToUniv(tx, uint256(), entry);
 
-    if (hashBlock != 0) {
+    if (!hashBlock.IsNull()) {
         entry.push_back(Pair("blockhash", hashBlock.GetHex()));
         BlockMap::iterator mi = mapBlockIndex.find(hashBlock);
         if (mi != mapBlockIndex.end() && (*mi).second) {
@@ -447,7 +397,7 @@ UniValue decoderawtransaction(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "TX decode failed");
 
     UniValue result(UniValue::VOBJ);
-    TxToJSON(tx, 0, result);
+    TxToUniv(tx, 0, result);
 
     return result;
 }
@@ -489,7 +439,7 @@ UniValue decodescript(const UniValue& params, bool fHelp)
     } else {
         // Empty scripts are valid
     }
-    ScriptPubKeyToJSON(script, r, false);
+    ScriptPubKeyToUniv(script, r, false);
 
     r.push_back(Pair("p2sh", CBitcoinAddress(CScriptID(script)).ToString()));
     return r;
