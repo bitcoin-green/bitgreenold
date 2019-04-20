@@ -1549,9 +1549,7 @@ UniValue listsinceblock(const UniValue& params, bool fHelp)
     isminefilter filter = ISMINE_SPENDABLE;
 
     if (params.size() > 0) {
-        uint256 blockId = 0;
-
-        blockId.SetHex(params[0].get_str());
+        uint256 blockId(ParseHashV(params[0].get_str(), "blockhash"));
         BlockMap::iterator it = mapBlockIndex.find(blockId);
         if (it != mapBlockIndex.end())
             pindex = it->second;
@@ -1631,8 +1629,7 @@ UniValue gettransaction(const UniValue& params, bool fHelp)
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    uint256 hash;
-    hash.SetHex(params[0].get_str());
+    uint256 hash(ParseHashV(params[0].get_str(), "txid"));
 
     isminefilter filter = ISMINE_SPENDABLE;
     if (params.size() > 1)
