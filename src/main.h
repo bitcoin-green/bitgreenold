@@ -104,6 +104,13 @@ static const unsigned int MAX_REJECT_MESSAGE_LENGTH = 111;
 /** Enable bloom filter */
  static const bool DEFAULT_PEERBLOOMFILTERS = true;
 
+/** Default for -blockspamfilter, use header spam filter */
+static const bool DEFAULT_BLOCK_SPAM_FILTER = true;
+/** Default for -blockspamfiltermaxsize, maximum size of the list of indexes in the block spam filter */
+static const unsigned int DEFAULT_BLOCK_SPAM_FILTER_MAX_SIZE = 10;
+/** Default for -blockspamfiltermaxavg, maximum average size of an index occurrence in the block spam filter */
+static const unsigned int DEFAULT_BLOCK_SPAM_FILTER_MAX_AVG = 10;
+
 /** "reject" message codes */
 static const unsigned char REJECT_MALFORMED = 0x01;
 static const unsigned char REJECT_INVALID = 0x10;
@@ -602,6 +609,25 @@ struct CBlockTemplate {
     CBlock block;
     std::vector<CAmount> vTxFees;
     std::vector<int64_t> vTxSigOps;
+};
+
+class CNodeBlocks
+{
+private:
+    std::map<int,int> points;
+    size_t maxSize;
+    size_t maxAvg;
+
+    void AddPoint(int nHeight);
+
+public:
+    CNodeBlocks() : maxSize(0), maxAvg(0)
+    {
+        maxSize = GetArg("-blockspamfiltermaxsize", DEFAULT_BLOCK_SPAM_FILTER_MAX_SIZE);
+        maxAvg = GetArg("-blockspamfiltermaxavg", DEFAULT_BLOCK_SPAM_FILTER_MAX_AVG);
+    }
+    bool BlockReceived(int nHeight);
+    bool UpdateState(CValidationState& state);
 };
 
 #endif // BITCOIN_MAIN_H
