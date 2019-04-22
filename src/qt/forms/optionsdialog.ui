@@ -196,6 +196,9 @@
           </item>
           <item>
            <widget class="QCheckBox" name="showCommunityProposalsTab">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="toolTip">
              <string>Show tab in the governance tab listing the Community Proposals</string>
             </property>
