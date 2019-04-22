@@ -2709,8 +2709,8 @@ Please check the address and try again.</translation>
         <translation>using</translation>
     </message>
     <message>
-        <source>Warning: Invalid BITG address</source>
-        <translation>Warning: Invalid BITG address</translation>
+        <source>Warning: Invalid Bitcoin Green address</source>
+        <translation>Warning: Invalid Bitcoin Green address</translation>
     </message>
     <message>
         <source>any available funds (not recommended)</source>

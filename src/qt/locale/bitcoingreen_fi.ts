@@ -1840,7 +1840,7 @@ Please check the address and try again.</source>
         <translation>käyttää</translation>
     </message>
     <message>
-        <source>Warning: Invalid BITG address</source>
+        <source>Warning: Invalid Bitcoin Green address</source>
         <translation>Varoitus: Virheellinen BITG osoite</translation>
     </message>
     <message>

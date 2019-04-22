@@ -2681,7 +2681,7 @@ Por favor compruebe la dirección e inténtelo de nuevo.</translation>
         <translation>usando</translation>
     </message>
     <message>
-        <source>Warning: Invalid BITG address</source>
+        <source>Warning: Invalid Bitcoin Green address</source>
         <translation>Advertencia: Direcciones BITG inválidas</translation>
     </message>
     <message>

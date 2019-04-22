@@ -899,7 +899,7 @@ void SendCoinsDialog::coinControlChangeEdited(const QString& text)
             ui->labelCoinControlChangeLabel->setText("");
         } else if (!addr.IsValid()) // Invalid address
         {
-            ui->labelCoinControlChangeLabel->setText(tr("Warning: Invalid BITG address"));
+            ui->labelCoinControlChangeLabel->setText(tr("Warning: Invalid Bitcoin Green address"));
         } else // Valid address
         {
             CPubKey pubkey;

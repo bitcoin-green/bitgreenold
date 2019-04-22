@@ -917,10 +917,17 @@ bool BackupWallet(const CWallet& wallet, const string& strDest)
                 // Copy wallet.dat
                 filesystem::path pathSrc = GetDataDir() / wallet.strWalletFile;
                 filesystem::path pathDest(strDest);
-                if (filesystem::is_directory(pathDest))
+                if (filesystem::is_directory(pathDest)) {
+                    if(!exists(pathDest)) create_directory(pathDest);
                     pathDest /= wallet.strWalletFile;
+                }
 
                 try {
+                    if (boost::filesystem::equivalent(pathSrc, pathDest)) {
+                        LogPrintf("cannot backup to wallet source file %s\n", pathDest.string());
+                        return false;
+                    }
+
 #if BOOST_VERSION >= 158000
                     filesystem::copy_file(pathSrc, pathDest, filesystem::copy_option::overwrite_if_exists);
 #else

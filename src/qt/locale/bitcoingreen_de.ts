@@ -2712,7 +2712,7 @@ Bitte Adresse überprüfen und nochmals versuchen.</translation>
         <translation>benutzend</translation>
     </message>
     <message>
-        <source>Warning: Invalid BITG address</source>
+        <source>Warning: Invalid Bitcoin Green address</source>
         <translation>Warnung: Ungültige BITG-Adresse</translation>
     </message>
     <message>

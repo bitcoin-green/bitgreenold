@@ -2486,7 +2486,7 @@ Please check the address and try again.</source>
         <translation>Копировать изменение</translation>
     </message>
     <message>
-        <source>Warning: Invalid BITG address</source>
+        <source>Warning: Invalid Bitcoin Green address</source>
         <translation>Предупреждение: неправильный BITG адрес</translation>
     </message>
     <message>
