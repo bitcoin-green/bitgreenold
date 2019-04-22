@@ -150,7 +150,10 @@ void OptionsDialog::setModel(OptionsModel* model)
     connect(ui->digits, SIGNAL(valueChanged()), this, SLOT(showRestartWarning()));
     connect(ui->lang, SIGNAL(valueChanged()), this, SLOT(showRestartWarning()));
     connect(ui->thirdPartyTxUrls, SIGNAL(textChanged(const QString&)), this, SLOT(showRestartWarning()));
+
     connect(ui->showMasternodesTab, SIGNAL(clicked(bool)), this, SLOT(showRestartWarning()));
+    connect(ui->showBudgetProposalsTab, SIGNAL(clicked(bool)), this, SLOT(showRestartWarning()));
+    connect(ui->showCommunityProposalsTab, SIGNAL(clicked(bool)), this, SLOT(showRestartWarning()));
 }
 
 void OptionsDialog::setMapper()
@@ -188,6 +191,10 @@ void OptionsDialog::setMapper()
 
     /* Masternode Tab */
     mapper->addMapping(ui->showMasternodesTab, OptionsModel::ShowMasternodesTab);
+
+    /*  Governance */
+    mapper->addMapping(ui->showBudgetProposalsTab, OptionsModel::ShowBudgetProposalsTab);
+    mapper->addMapping(ui->showCommunityProposalsTab, OptionsModel::ShowCommunityProposalsTab);
 }
 
 void OptionsDialog::enableOkButton()

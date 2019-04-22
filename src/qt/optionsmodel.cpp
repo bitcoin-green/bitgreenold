@@ -82,6 +82,13 @@ void OptionsModel::Init()
     if (!settings.contains("fShowMasternodesTab"))
         settings.setValue("fShowMasternodesTab", masternodeConfig.getCount());
 
+    if (!settings.contains("fShowBudgetProposalsTab"))
+        settings.setValue("fShowBudgetProposalsTab", true);     /*  default: true */
+
+    if (!settings.contains("fShowCommunityProposalsTab"))
+        settings.setValue("fShowCommunityProposalsTab", false); /*  default: false */
+
+
     // These are shared with the core or have a command-line parameter
     // and we want command-line parameters to overwrite the GUI settings.
     //
@@ -202,6 +209,11 @@ QVariant OptionsModel::data(const QModelIndex& index, int role) const
         case ShowMasternodesTab:
             return settings.value("fShowMasternodesTab");
 #endif
+        case ShowBudgetProposalsTab:
+            return settings.value("fShowBudgetProposalsTab");
+        case ShowCommunityProposalsTab:
+            return settings.value("fShowCommunityProposalsTab");
+
         case StakeSplitThreshold:
             if (pwalletMain)
                 return QVariant((int)pwalletMain->nStakeSplitThreshold);
@@ -297,6 +309,18 @@ bool OptionsModel::setData(const QModelIndex& index, const QVariant& value, int 
             }
             break;
 #endif
+        case ShowBudgetProposalsTab:
+            if (settings.value("fShowBudgetProposalsTab") != value) {
+                settings.setValue("fShowBudgetProposalsTab", value);
+                setRestartRequired(true);
+            }
+            break;
+        case ShowCommunityProposalsTab:
+            if (settings.value("fShowCommunityProposalsTab") != value) {
+                settings.setValue("fShowCommunityProposalsTab", value);
+                setRestartRequired(true);
+            }
+            break;
         case StakeSplitThreshold:
             settings.setValue("nStakeSplitThreshold", value.toInt());
             setStakeSplitThreshold(value.toInt());

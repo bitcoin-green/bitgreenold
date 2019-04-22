@@ -48,7 +48,11 @@ public:
         ShowMasternodesTab,  // bool
         Listen,              // bool
         StakeSplitThreshold, // int
-        OptionIDRowCount,
+        ShowBudgetProposalsTab,     // bool
+        ShowCommunityProposalsTab,  // bool
+        /*  Insert new options here (before OptionIDRowCount) */
+
+        OptionIDRowCount
     };
 
     void Init();
