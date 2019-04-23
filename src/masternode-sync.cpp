@@ -66,6 +66,7 @@ void CMasternodeSync::Reset()
     lastMasternodeList = 0;
     lastMasternodeWinner = 0;
     lastBudgetItem = 0;
+    lastCommunityItem = 0;
     mapSeenSyncMNB.clear();
     mapSeenSyncMNW.clear();
     mapSeenSyncBudget.clear();
@@ -433,16 +434,10 @@ void CMasternodeSync::Process()
             }
 
             if (RequestedMasternodeAssets == MASTERNODE_SYNC_COMMUNITYVOTE) {
-
                 // We'll start rejecting votes if we accidentally get set as synced too soon
                 if (lastCommunityItem > 0 && lastCommunityItem < GetTime() - MASTERNODE_SYNC_TIMEOUT * 2 && RequestedMasternodeAttempt >= MASTERNODE_SYNC_THRESHOLD) {
-
                     // Hasn't received a new item in the last five seconds, so we'll move to the
                     GetNextAsset();
-
-                    // Try to activate our masternode if possible
-                    activeMasternode.ManageStatus();
-
                     return;
                 }
 
@@ -451,7 +446,6 @@ void CMasternodeSync::Process()
                     (RequestedMasternodeAttempt >= MASTERNODE_SYNC_THRESHOLD * 3 || GetTime() - nAssetSyncStarted > MASTERNODE_SYNC_TIMEOUT * 5)) {
                     // maybe there is are no community proposals at all, so just finish syncing
                     GetNextAsset();
-                    activeMasternode.ManageStatus();
                     return;
                 }
 

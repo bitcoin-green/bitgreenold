@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2018 The Bitcoin Green developers
+// Copyright (c) 2017-2019 The Bitcoin Green developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -31,7 +31,7 @@ bool IsCommunityCollateralValid(uint256 nTxCollateralHash, uint256 nExpectedHash
     uint256 nBlockHash;
     if (!GetTransaction(nTxCollateralHash, txCollateral, nBlockHash, true)) {
         strError = strprintf("Can't find collateral tx %s", txCollateral.ToString());
-        LogPrint("masternode", "::IsCommunityCollateralValid - %s\n", strError);
+        LogPrint("mncommunityvote", "::IsCommunityCollateralValid - %s\n", strError);
         return false;
     }
 
@@ -45,7 +45,7 @@ bool IsCommunityCollateralValid(uint256 nTxCollateralHash, uint256 nExpectedHash
     for (const CTxOut o : txCollateral.vout) {
         if (!o.scriptPubKey.IsNormalPaymentScript() && !o.scriptPubKey.IsUnspendable()) {
             strError = strprintf("Invalid Script %s", txCollateral.ToString());
-            LogPrint("masternode", "::IsCommunityCollateralValid - %s\n", strError);
+            LogPrint("mncommunityvote", "::IsCommunityCollateralValid - %s\n", strError);
             return false;
         }
         if (o.scriptPubKey == findScript && o.nValue >= COMMUNITY_VOTE_FEE_TX) foundOpReturn = true;
@@ -53,7 +53,7 @@ bool IsCommunityCollateralValid(uint256 nTxCollateralHash, uint256 nExpectedHash
 
     if (!foundOpReturn) {
         strError = strprintf("Couldn't find opReturn %s in %s", nExpectedHash.ToString(), txCollateral.ToString());
-        LogPrint("masternode", "::IsCommunityCollateralValid - %s\n", strError);
+        LogPrint("mncommunityvote", "::IsCommunityCollateralValid - %s\n", strError);
         return false;
     }
 
@@ -82,7 +82,7 @@ bool IsCommunityCollateralValid(uint256 nTxCollateralHash, uint256 nExpectedHash
         return true;
     } else {
         strError = strprintf("Collateral requires at least %d confirmations - %d confirmations", Params().Budget_Fee_Confirmations(), conf);
-        LogPrint("masternode", "::IsCommunityCollateralValid - %s\n", strError);
+        LogPrint("mncommunityvote", "::IsCommunityCollateralValid - %s - %d confirmations\n", strError, conf);
         return false;
     }
 }
@@ -95,14 +95,14 @@ void CCommunityVoteManager::CheckOrphanVotes()
     std::map<uint256, CCommunityVote>::iterator it1 = mapOrphanMasternodeCommunityVotes.begin();
     while (it1 != mapOrphanMasternodeCommunityVotes.end()) {
         if (communityVote.UpdateProposal(((*it1).second), nullptr, strError)) {
-            LogPrint("masternode", "CCommunityVoteManager::CheckOrphanVotes - Proposal/CommunityVote is known, activating and removing orphan vote\n");
+            LogPrint("mncommunityvote", "CCommunityVoteManager::CheckOrphanVotes - Proposal/CommunityVote is known, activating and removing orphan vote\n");
             mapOrphanMasternodeCommunityVotes.erase(it1++);
         } else {
             ++it1;
         }
     }
 
-    LogPrint("masternode", "CCommunityVoteManager::CheckOrphanVotes - Done\n");
+    LogPrint("mncommunityvote", "CCommunityVoteManager::CheckOrphanVotes - Done\n");
 }
 
 //
@@ -143,7 +143,7 @@ bool CCommunityDB::Write(const CCommunityVoteManager& objToSave)
     }
     fileout.fclose();
 
-    LogPrint("masternode", "Written info to communityvote.dat  %dms\n", GetTimeMillis() - nStart);
+    LogPrint("mncommunityvote", "Written info to communityvote.dat  %dms\n", GetTimeMillis() - nStart);
 
     return true;
 }
@@ -219,13 +219,13 @@ CCommunityDB::ReadResult CCommunityDB::Read(CCommunityVoteManager& objToLoad, bo
         return IncorrectFormat;
     }
 
-    LogPrint("masternode", "Loaded info from communityvote.dat  %dms\n", GetTimeMillis() - nStart);
-    LogPrint("masternode", "  %s\n", objToLoad.ToString());
+    LogPrint("mncommunityvote", "Loaded info from communityvote.dat  %dms\n", GetTimeMillis() - nStart);
+    LogPrint("mncommunityvote", "  %s\n", objToLoad.ToString());
     if (!fDryRun) {
-        LogPrint("masternode", "Community vote manager - cleaning....\n");
+        LogPrint("mncommunityvote", "Community vote manager - cleaning....\n");
         objToLoad.CheckAndRemove();
-        LogPrint("masternode", "Community vote manager - result:\n");
-        LogPrint("masternode", "  %s\n", objToLoad.ToString());
+        LogPrint("mncommunityvote", "Community vote manager - result:\n");
+        LogPrint("mncommunityvote", "  %s\n", objToLoad.ToString());
     }
 
     return Ok;
@@ -238,24 +238,24 @@ void DumpCommunityVotes()
     CCommunityDB votedb;
     CCommunityVoteManager tempCommunityVote;
 
-    LogPrint("masternode", "Verifying communityvote.dat format...\n");
+    LogPrint("mncommunityvote", "Verifying communityvote.dat format...\n");
     CCommunityDB::ReadResult readResult = votedb.Read(tempCommunityVote, true);
     // there was an error and it was not an error on file opening => do not proceed
     if (readResult == CCommunityDB::FileError)
-        LogPrint("masternode", "Missing communityvote file - communityvote.dat, will try to recreate\n");
+        LogPrint("mncommunityvote", "Missing communityvote file - communityvote.dat, will try to recreate\n");
     else if (readResult != CCommunityDB::Ok) {
-        LogPrint("masternode", "Error reading communityvote.dat: ");
+        LogPrint("mncommunityvote", "Error reading communityvote.dat: ");
         if (readResult == CCommunityDB::IncorrectFormat)
-            LogPrint("masternode", "magic is ok but data has invalid format, will try to recreate\n");
+            LogPrint("mncommunityvote", "magic is ok but data has invalid format, will try to recreate\n");
         else {
-            LogPrint("masternode", "file format is unknown or invalid, please fix it manually\n");
+            LogPrint("mncommunityvote", "file format is unknown or invalid, please fix it manually\n");
             return;
         }
     }
-    LogPrint("masternode", "Writting info to communityvote.dat...\n");
+    LogPrint("mncommunityvote", "Writting info to communityvote.dat...\n");
     votedb.Write(communityVote);
 
-    LogPrint("masternode", "Community vote dump finished  %dms\n", GetTimeMillis() - nStart);
+    LogPrint("mncommunityvote", "Community vote dump finished  %dms\n", GetTimeMillis() - nStart);
 }
 
 bool CCommunityVoteManager::AddProposal(CCommunityProposal& voteProposal)
@@ -263,7 +263,7 @@ bool CCommunityVoteManager::AddProposal(CCommunityProposal& voteProposal)
     LOCK(cs);
     std::string strError = "";
     if (!voteProposal.IsValid(strError)) {
-        LogPrint("masternode", "CCommunityVoteManager::AddProposal - invalid vote proposal - %s\n", strError);
+        LogPrint("mncommunityvote", "CCommunityVoteManager::AddProposal - invalid vote proposal - %s\n", strError);
         return false;
     }
 
@@ -272,7 +272,7 @@ bool CCommunityVoteManager::AddProposal(CCommunityProposal& voteProposal)
     }
 
     mapProposals.insert(make_pair(voteProposal.GetHash(), voteProposal));
-    LogPrint("masternode", "CCommunityVoteManager::AddProposal - proposal %s added\n", voteProposal.GetName().c_str());
+    LogPrint("mncommunityvote", "CCommunityVoteManager::AddProposal - proposal %s added\n", voteProposal.GetName().c_str());
     return true;
 }
 
@@ -288,17 +288,17 @@ void CCommunityVoteManager::CheckAndRemove()
         CCommunityProposal* pcommunityProposal = &((*it2).second);
         pcommunityProposal->fValid = pcommunityProposal->IsValid(strError);
         if (!strError.empty()) {
-            LogPrint("masternode", "CCommunityVoteManager::CheckAndRemove - Invalid vote proposal - %s\n", strError);
+            LogPrint("mncommunityvote", "CCommunityVoteManager::CheckAndRemove - Invalid vote proposal - %s\n", strError);
             strError = "";
         } else {
-             LogPrint("masternode", "CCommunityVoteManager::CheckAndRemove - Found valid vote proposal: %s %s\n",
+             LogPrint("mncommunityvote", "CCommunityVoteManager::CheckAndRemove - Found valid vote proposal: %s %s\n",
                       pcommunityProposal->strProposalName.c_str(), pcommunityProposal->nFeeTXHash.ToString().c_str());
         }
 
         ++it2;
     }
 
-    LogPrint("masternode", "CCommunityVoteManager::CheckAndRemove - PASSED\n");
+    LogPrint("mncommunityvote", "CCommunityVoteManager::CheckAndRemove - PASSED\n");
 }
 
 CCommunityProposal* CCommunityVoteManager::FindProposal(const std::string& strProposalName)
@@ -368,11 +368,11 @@ void CCommunityVoteManager::NewBlock()
     TRY_LOCK(cs, fVoteNewBlock);
     if (!fVoteNewBlock) return;
 
-    if (masternodeSync.RequestedMasternodeAssets <= MASTERNODE_SYNC_COMMUNITYVOTE) return;
+    if (masternodeSync.RequestedMasternodeAssets <= MASTERNODE_SYNC_LIST) return;
 
     // incremental sync with our peers
     if (masternodeSync.IsSynced()) {
-        LogPrint("masternode", "CCommunityVoteManager::NewBlock - incremental sync started\n");
+        LogPrint("mncommunityvote", "CCommunityVoteManager::NewBlock - incremental sync started\n");
         if (chainActive.Height() % 1440 == rand() % 1440) {
             ClearSeen();
             ResetSync();
@@ -389,7 +389,7 @@ void CCommunityVoteManager::NewBlock()
     CheckAndRemove();
 
     //remove invalid votes once in a while (we have to check the signatures and validity of every vote, somewhat CPU intensive)
-    LogPrint("masternode", "CCommunityVoteManager::NewBlock - askedForSourceProposalOrVote cleanup - size: %d\n", askedForSourceProposalOrVote.size());
+    LogPrint("mncommunityvote", "CCommunityVoteManager::NewBlock - askedForSourceProposalOrVote cleanup - size: %d\n", askedForSourceProposalOrVote.size());
     std::map<uint256, int64_t>::iterator it = askedForSourceProposalOrVote.begin();
     while (it != askedForSourceProposalOrVote.end()) {
         if ((*it).second > GetTime() - (60 * 60 * 24)) {
@@ -399,14 +399,14 @@ void CCommunityVoteManager::NewBlock()
         }
     }
 
-    LogPrint("masternode", "CCommunityVoteManager::NewBlock - mapProposals cleanup - size: %d\n", mapProposals.size());
+    LogPrint("mncommunityvote", "CCommunityVoteManager::NewBlock - mapProposals cleanup - size: %d\n", mapProposals.size());
     std::map<uint256, CCommunityProposal>::iterator it2 = mapProposals.begin();
     while (it2 != mapProposals.end()) {
         (*it2).second.CleanAndRemove(false);
         ++it2;
     }
 
-    LogPrint("masternode", "CCommunityVoteManager::NewBlock - vecCommunityProposals cleanup - size: %d\n", vecCommunityProposals.size());
+    LogPrint("mncommunityvote", "CCommunityVoteManager::NewBlock - vecCommunityProposals cleanup - size: %d\n", vecCommunityProposals.size());
     std::vector<CCommunityProposalBroadcast>::iterator it4 = vecCommunityProposals.begin();
     while (it4 != vecCommunityProposals.end()) {
         std::string strError = "";
@@ -417,7 +417,7 @@ void CCommunityVoteManager::NewBlock()
         }
 
         if (!(*it4).IsValid(strError)) {
-            LogPrint("masternode", "mcprop - invalid community vote proposal - %s\n", strError);
+            LogPrint("mncommunityvote", "mcprop - invalid community vote proposal - %s\n", strError);
             it4 = vecCommunityProposals.erase(it4);
             continue;
         }
@@ -427,11 +427,11 @@ void CCommunityVoteManager::NewBlock()
             (*it4).Relay();
         }
 
-        LogPrint("masternode", "mcprop - new community vote - %s\n", (*it4).GetHash().ToString());
+        LogPrint("mncommunityvote", "mcprop - new community vote - %s\n", (*it4).GetHash().ToString());
         it4 = vecCommunityProposals.erase(it4);
     }
 
-    LogPrint("masternode", "CCommunityVoteManager::NewBlock - PASSED\n");
+    LogPrint("mncommunityvote", "CCommunityVoteManager::NewBlock - PASSED\n");
 }
 
 void CCommunityVoteManager::ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
@@ -449,7 +449,7 @@ void CCommunityVoteManager::ProcessMessage(CNode* pfrom, std::string& strCommand
         if (Params().NetworkID() == CBaseChainParams::MAIN) {
             if (nProp == 0) {
                 if (pfrom->HasFulfilledRequest("mncvs")) {
-                    LogPrint("masternode", "mncvs - peer already asked me for the list\n");
+                    LogPrint("mncommunityvote", "mncvs - peer already asked me for the list\n");
                     Misbehaving(pfrom->GetId(), 20);
                     return;
                 }
@@ -473,7 +473,7 @@ void CCommunityVoteManager::ProcessMessage(CNode* pfrom, std::string& strCommand
         std::string strError = "";
         int nConf = 0;
         if (!IsCommunityCollateralValid(communityProposalBroadcast.nFeeTXHash, communityProposalBroadcast.GetHash(), strError, communityProposalBroadcast.nTime, nConf)) {
-            LogPrint("masternode", "Community Proposal FeeTX is not valid - %s - %s\n", communityProposalBroadcast.nFeeTXHash.ToString(), strError);
+            LogPrint("mncommunityvote", "Community Proposal FeeTX is not valid - %s - %s\n", communityProposalBroadcast.nFeeTXHash.ToString(), strError);
             if (nConf >= 1) vecCommunityProposals.push_back(communityProposalBroadcast);
             return;
         }
@@ -481,7 +481,7 @@ void CCommunityVoteManager::ProcessMessage(CNode* pfrom, std::string& strCommand
         mapSeenMasternodeCommunityProposals.insert(make_pair(communityProposalBroadcast.GetHash(), communityProposalBroadcast));
 
         if (!communityProposalBroadcast.IsValid(strError)) {
-            LogPrint("masternode", "mcprop - invalid community proposal - %s\n", strError);
+            LogPrint("mncommunityvote", "mcprop - invalid community proposal - %s\n", strError);
             return;
         }
 
@@ -491,7 +491,7 @@ void CCommunityVoteManager::ProcessMessage(CNode* pfrom, std::string& strCommand
         }
         masternodeSync.AddedCommunityItem(communityProposalBroadcast.GetHash());
 
-        LogPrint("masternode", "mcprop - new community - %s\n", communityProposalBroadcast.GetHash().ToString());
+        LogPrint("mncommunityvote", "mcprop - new community - %s\n", communityProposalBroadcast.GetHash().ToString());
 
         // We might have active votes for this proposal that are valid now
         CheckOrphanVotes();
@@ -509,16 +509,17 @@ void CCommunityVoteManager::ProcessMessage(CNode* pfrom, std::string& strCommand
 
         CMasternode* pmn = mnodeman.Find(vote.vin);
         if (pmn == nullptr) {
-            LogPrint("masternode", "mcvote - unknown masternode - vin: %s\n", vote.vin.prevout.hash.ToString());
+            LogPrint("mncommunityvote", "mcvote - unknown masternode - vin: %s\n", vote.vin.prevout.hash.ToString());
             mnodeman.AskForMN(pfrom, vote.vin);
             return;
         }
 
         mapSeenMasternodeCommunityVotes.insert(make_pair(vote.GetHash(), vote));
         if (!vote.SignatureValid(true)) {
-            LogPrint("masternode", "mcvote - signature invalid\n");
-            if (masternodeSync.IsSynced())
+            if (masternodeSync.IsSynced()) {
+                LogPrint("mncommunityvote", "CCommunityVoteManager::ProcessMessage() : mcvote - signature invalid\n");
                 Misbehaving(pfrom->GetId(), 20);
+            }
             // it could just be a non-synced masternode
             mnodeman.AskForMN(pfrom, vote.vin);
             return;
@@ -530,7 +531,7 @@ void CCommunityVoteManager::ProcessMessage(CNode* pfrom, std::string& strCommand
             masternodeSync.AddedCommunityItem(vote.GetHash());
         }
 
-        LogPrint("masternode", "mcvote - new vote for community vote %s - %s\n", vote.nProposalHash.ToString(),  vote.GetHash().ToString());
+        LogPrint("mncommunityvote", "mcvote - new vote for community vote %s - %s\n", vote.nProposalHash.ToString(),  vote.GetHash().ToString());
     }
 }
 
@@ -637,7 +638,7 @@ bool CCommunityVoteManager::UpdateProposal(CCommunityVote& vote, CNode* pfrom, s
             //   otherwise we'll think a full sync succeeded when they return a result
             if (!masternodeSync.IsSynced()) return false;
 
-            LogPrint("masternode", "CCommunityVoteManager::UpdateProposal - Unknown proposal %d, asking for source proposal\n", vote.nProposalHash.ToString());
+            LogPrint("mncommunityvote", "CCommunityVoteManager::UpdateProposal - Unknown proposal %d, asking for source proposal\n", vote.nProposalHash.ToString());
             mapOrphanMasternodeCommunityVotes[vote.nProposalHash] = vote;
 
             if (!askedForSourceProposalOrVote.count(vote.nProposalHash)) {
@@ -851,12 +852,12 @@ bool CCommunityVote::Sign(CKey& keyMasternode, CPubKey& pubKeyMasternode)
     std::string strMessage = vin.prevout.ToStringShort() + nProposalHash.ToString() + boost::lexical_cast<std::string>(nVote) + boost::lexical_cast<std::string>(nTime);
 
     if (!masternodeSigner.SignMessage(strMessage, errorMessage, vchSig, keyMasternode)) {
-        LogPrint("masternode", "CCommunityVote::Sign - Error upon calling SignMessage");
+        LogPrint("mncommunityvote", "CCommunityVote::Sign - Error upon calling SignMessage");
         return false;
     }
 
     if (!masternodeSigner.VerifyMessage(pubKeyMasternode, vchSig, strMessage, errorMessage)) {
-        LogPrint("masternode", "CCommunityVote::Sign - Error upon calling VerifyMessage");
+        LogPrint("mncommunityvote", "CCommunityVote::Sign - Error upon calling VerifyMessage");
         return false;
     }
 
@@ -871,14 +872,14 @@ bool CCommunityVote::SignatureValid(bool fSignatureCheck)
     CMasternode* pmn = mnodeman.Find(vin);
 
     if (pmn == nullptr) {
-        LogPrint("masternode", "CCommunityVote::SignatureValid() - Unknown Masternode - %s\n", vin.prevout.hash.ToString());
+        LogPrint("mncommunityvote", "CCommunityVote::SignatureValid() - Unknown Masternode - %s\n", vin.prevout.hash.ToString());
         return false;
     }
 
     if (!fSignatureCheck) return true;
 
     if (!masternodeSigner.VerifyMessage(pmn->pubKeyMasternode, vchSig, strMessage, errorMessage)) {
-        LogPrint("masternode", "CCommunityVote::SignatureValid() - Verify message failed\n");
+        LogPrint("mncommunityvote", "CCommunityVote::SignatureValid() - Verify message failed\n");
         return false;
     }
 

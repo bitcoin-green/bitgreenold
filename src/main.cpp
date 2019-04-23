@@ -4326,6 +4326,12 @@ bool static AlreadyHave(const CInv& inv)
             return true;
         }
         return false;
+    case MSG_COMMUNITY_VOTE:
+        if (communityVote.mapSeenMasternodeCommunityVotes.count(inv.hash)) {
+            masternodeSync.AddedCommunityItem(inv.hash);
+            return true;
+        }
+        return false;
     }
     // Don't know what it is, just say we already got one
     return true;
@@ -4531,6 +4537,16 @@ void static ProcessGetData(CNode* pfrom)
                         ss.reserve(1000);
                         ss << communityVote.mapSeenMasternodeCommunityProposals[inv.hash];
                         pfrom->PushMessage("mcprop", ss);
+                        pushed = true;
+                    }
+                }
+
+                if (!pushed && inv.type == MSG_COMMUNITY_VOTE) {
+                    if (communityVote.mapSeenMasternodeCommunityVotes.count(inv.hash)) {
+                        CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
+                        ss.reserve(1000);
+                        ss << communityVote.mapSeenMasternodeCommunityVotes[inv.hash];
+                        pfrom->PushMessage("mcvote", ss);
                         pushed = true;
                     }
                 }

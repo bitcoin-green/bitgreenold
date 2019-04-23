@@ -148,6 +148,7 @@ UniValue mnsync(const UniValue& params, bool fHelp)
             "  \"lastMasternodeList\": xxxx,        (numeric) Timestamp of last MN list message\n"
             "  \"lastMasternodeWinner\": xxxx,      (numeric) Timestamp of last MN winner message\n"
             "  \"lastBudgetItem\": xxxx,            (numeric) Timestamp of last MN budget message\n"
+            "  \"lastCommunityItem\": xxxx,         (numeric) Timestamp of last MN community vote message\n"
             "  \"lastFailure\": xxxx,           (numeric) Timestamp of last failed sync\n"
             "  \"nCountFailures\": n,           (numeric) Number of failed syncs (total)\n"
             "  \"sumMasternodeList\": n,        (numeric) Number of MN list messages (total)\n"
@@ -178,6 +179,7 @@ UniValue mnsync(const UniValue& params, bool fHelp)
         obj.push_back(Pair("lastMasternodeList", masternodeSync.lastMasternodeList));
         obj.push_back(Pair("lastMasternodeWinner", masternodeSync.lastMasternodeWinner));
         obj.push_back(Pair("lastBudgetItem", masternodeSync.lastBudgetItem));
+        obj.push_back(Pair("lastCommunityItem", masternodeSync.lastCommunityItem));
         obj.push_back(Pair("lastFailure", masternodeSync.lastFailure));
         obj.push_back(Pair("nCountFailures", masternodeSync.nCountFailures));
         obj.push_back(Pair("sumMasternodeList", masternodeSync.sumMasternodeList));
