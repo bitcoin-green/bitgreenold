@@ -4,7 +4,7 @@
 There are many ways to setup a wallet to support start-many. This guide will walk through two of them.
 
 1. [Importing an existing wallet (recommended if you are consolidating wallets).](#option1)
-2. [Sending 1,000 Bitcoin Green to new wallet addresses.](#option2)
+2. [Sending 1,000 BitGreen to new wallet addresses.](#option2)
 
 ## <a name="option1"></a>Option 1. Importing an existing wallet
 
@@ -95,7 +95,7 @@ Issue the following:
 Make note of the hash (which is your collaterla_output) and index.
 
 ### Enter your MasterNode details into your masternode.conf file
-[From the bitcoingreen github repo](https://github.com/bitcoingreen/bitcoingreen/blob/master/doc/masternode_conf.md)
+[From the bitgreen github repo](https://github.com/bitgreen/bitgreen/blob/master/doc/masternode_conf.md)
 
 The new masternode.conf format consists of a space seperated text file. Each line consisting of an alias, IP address followed by port, masternode private key, collateral output transaction id and collateral output index, donation address and donation percentage (the latter two are optional and should be in format "address:percentage").
 
@@ -112,20 +112,20 @@ mn01 127.0.0.1:9333 93HaYBVUCYjEMeeH1Y4sBGLALQZE1Yc1K64xiqgX37tGBDQL8Xg 2bcd3c84
 mn02 127.0.0.2:9333 93WaAb3htPJEV8E9aQcN23Jt97bPex7YvWfgMDTUdWJvzmrMqey aa9f1034d973377a5e733272c3d0eced1de22555ad45d6b24abadff8087948d4 0 7gnwGHt17heGpG9Crfeh4KGpYNFugPhJdh:25
 ```
 
-## What about the bitcoingreen.conf file?
+## What about the bitgreen.conf file?
 
-If you are using a masternode.conf file you no longer need the bitcoingreen.conf file. The exception is if you need custom settings (thanks oblox).
+If you are using a masternode.conf file you no longer need the bitgreen.conf file. The exception is if you need custom settings (thanks oblox).
 
-## Update bitcoingreen.conf on server
+## Update bitgreen.conf on server
 
-If you generated a new masternode private key, you will need to update the remote bitcoingreen.conf files.
+If you generated a new masternode private key, you will need to update the remote bitgreen.conf files.
 
 Shut down the daemon and then edit the file.
 
-```sudo nano .bitcoingreen/bitcoingreen.conf```
+```sudo nano .bitgreen/bitgreen.conf```
 
 ### Edit the masternodeprivkey
-If you generated a new masternode private key, you will need to update the masternodeprivkey value in your remote bitcoingreen.conf file.
+If you generated a new masternode private key, you will need to update the masternodeprivkey value in your remote bitgreen.conf file.
 
 ## Start your MasterNodes
 
@@ -135,9 +135,9 @@ If your remote server is not running, start your remote daemon as you normally w
 
 I usually confirm that remote is on the correct block by issuing:
 
-```bitcoingreend getinfo```
+```bitgreend getinfo```
 
-And compare with the official explorer at http://explorer.savebitcoin.io
+And compare with the official explorer at http://explorer.bitg.org
 
 ### Local
 

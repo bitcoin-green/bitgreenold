@@ -65,15 +65,15 @@ TESTS =
 BENCHMARKS =
 
 if BUILD_BITCOIND
-  bin_PROGRAMS += bitcoingreend
+  bin_PROGRAMS += bitgreend
 endif
 
 if BUILD_BITCOIN_UTILS
-  bin_PROGRAMS += bitcoingreen-cli bitcoingreen-tx
+  bin_PROGRAMS += bitgreen-cli bitgreen-tx
 endif
 
 .PHONY: FORCE check-symbols check-security
-# bitcoingreen core #
+# bitgreen core #
 BITCOIN_CORE_H = \
   activemasternode.h \
   addrman.h \
@@ -176,7 +176,7 @@ obj/build.h: FORCE
 	  "$(abs_top_srcdir)"
 libbitcoin_util_a-clientversion.$(OBJEXT): obj/build.h
 
-# server: shared between bitcoingreend and bitcoingreen-qt
+# server: shared between bitgreend and bitgreen-qt
 libbitcoin_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
 libbitcoin_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_server_a_SOURCES = \
@@ -223,7 +223,7 @@ libbitcoin_zmq_a_SOURCES = \
   zmq/zmqpublishnotifier.cpp
 endif
 
-# wallet: shared between bitcoingreend and bitcoingreen-qt, but only linked
+# wallet: shared between bitgreend and bitgreen-qt, but only linked
 # when wallet enabled
 libbitcoin_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
@@ -285,7 +285,7 @@ crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/sph_skein.h \
   crypto/sph_types.h
 
-# common: shared between bitcoingreend, and bitcoingreen-qt and non-server tools
+# common: shared between bitgreend, and bitgreen-qt and non-server tools
 libbitcoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_common_a_SOURCES = \
@@ -344,7 +344,7 @@ libbitcoin_util_a_SOURCES += compat/glibc_compat.cpp
 AM_LDFLAGS += $(COMPAT_LDFLAGS)
 endif
 
-# cli: shared between bitcoingreen-cli and bitcoingreen-qt
+# cli: shared between bitgreen-cli and bitgreen-qt
 libbitcoin_cli_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_cli_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_cli_a_SOURCES = \
@@ -354,16 +354,16 @@ libbitcoin_cli_a_SOURCES = \
 nodist_libbitcoin_util_a_SOURCES = $(srcdir)/obj/build.h
 #
 
-# bitcoingreend binary #
-bitcoingreend_SOURCES = bitcoingreend.cpp
-bitcoingreend_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-bitcoingreend_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-bitcoingreend_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# bitgreend binary #
+bitgreend_SOURCES = bitgreend.cpp
+bitgreend_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+bitgreend_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+bitgreend_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-bitcoingreend_SOURCES += bitcoingreend-res.rc
+bitgreend_SOURCES += bitgreend-res.rc
 endif
-bitcoingreend_LDADD = \
+bitgreend_LDADD = \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_WALLET) \
   $(LIBBITCOIN_COMMON) \
@@ -376,45 +376,45 @@ bitcoingreend_LDADD = \
   $(LIBMEMENV) \
   $(LIBSECP256K1)
 
-bitcoingreend_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
+bitgreend_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
 
-# bitcoingreen-cli binary #
-bitcoingreen_cli_SOURCES = bitcoingreen-cli.cpp
-bitcoingreen_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
-bitcoingreen_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-bitcoingreen_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# bitgreen-cli binary #
+bitgreen_cli_SOURCES = bitgreen-cli.cpp
+bitgreen_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
+bitgreen_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+bitgreen_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-bitcoingreend_SOURCES += bitcoingreend-res.rc
+bitgreend_SOURCES += bitgreend-res.rc
 endif
 
-bitcoingreen_cli_LDADD = \
+bitgreen_cli_LDADD = \
   $(LIBBITCOIN_CLI) \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CRYPTO)
 
-bitcoingreen_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
+bitgreen_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
 #
 
-# bitcoingreen-tx binary #
-bitcoingreen_tx_SOURCES = bitcoingreen-tx.cpp
-bitcoingreen_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-bitcoingreen_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-bitcoingreen_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# bitgreen-tx binary #
+bitgreen_tx_SOURCES = bitgreen-tx.cpp
+bitgreen_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+bitgreen_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+bitgreen_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-bitcoingreen_tx_SOURCES += bitcoingreen-tx-res.rc
+bitgreen_tx_SOURCES += bitgreen-tx-res.rc
 endif
 
-bitcoingreen_tx_LDADD = \
+bitgreen_tx_LDADD = \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_COMMON) \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CRYPTO) \
   $(LIBSECP256K1)
 
-bitcoingreen_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
+bitgreen_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 #
 
 # bitcoinconsensus library #
@@ -463,12 +463,12 @@ CLEANFILES += obj/build.h
 EXTRA_DIST =
 
 
-config/bitcoingreen-config.h: config/stamp-h1
+config/bitgreen-config.h: config/stamp-h1
 	@$(MAKE) -C $(top_builddir) $(subdir)/$(@)
-config/stamp-h1: $(top_srcdir)/$(subdir)/config/bitcoingreen-config.h.in $(top_builddir)/config.status
+config/stamp-h1: $(top_srcdir)/$(subdir)/config/bitgreen-config.h.in $(top_builddir)/config.status
 	$(AM_V_at)$(MAKE) -C $(top_builddir) $(subdir)/$(@)
-$(top_srcdir)/$(subdir)/config/bitcoingreen-config.h.in:  $(am__configure_deps)
-	$(AM_V_at)$(MAKE) -C $(top_srcdir) $(subdir)/config/bitcoingreen-config.h.in
+$(top_srcdir)/$(subdir)/config/bitgreen-config.h.in:  $(am__configure_deps)
+	$(AM_V_at)$(MAKE) -C $(top_srcdir) $(subdir)/config/bitgreen-config.h.in
 
 clean-local:
 	-$(MAKE) -C secp256k1 clean

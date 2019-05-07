@@ -1,7 +1,7 @@
 Masternode Budget API
 =======================
 
-Bitcoin Green now supports full decentralized budgets that are paid directly from the blockchain via superblocks once per month.
+BitGreen now supports full decentralized budgets that are paid directly from the blockchain via superblocks once per month.
 
 Budgets go through a series of stages before being paid:
 * prepare - create a special transaction that destroys coins in order to make a proposal
@@ -16,7 +16,7 @@ Budgets go through a series of stages before being paid:
 Prepare collateral transaction
 ------------------------
 
-mnbudget prepare \<proposal-name\> \<url\> \<payment_count\> \<block_start\> \<bitcoingreen_address\> \<monthly_payment_bitcoingreen\> [use_ix(true|false)]
+mnbudget prepare \<proposal-name\> \<url\> \<payment_count\> \<block_start\> \<bitgreen_address\> \<monthly_payment_bitgreen\> [use_ix(true|false)]
 
 Example:
 ```
@@ -32,7 +32,7 @@ In this transaction we prepare collateral for "_cool-project_". This proposal wi
 Submit proposal to network
 ------------------------
 
-mnbudget submit \<proposal-name\> \<url\> \<payment_count\> \<block_start\> \<bitcoingreen_address\> \<monthly_payment_bitcoingreen\> \<collateral_hash\>
+mnbudget submit \<proposal-name\> \<url\> \<payment_count\> \<block_start\> \<bitgreen_address\> \<monthly_payment_bitgreen\> \<collateral_hash\>
 
 Example:
 ```
@@ -148,9 +148,9 @@ The following new RPC commands are supported:
 - mnbudget "command"... ( "passphrase" )
  * prepare            - Prepare proposal for network by signing and creating tx
  * submit             - Submit proposal for network
- * vote-many          - Vote on a Bitcoin Green initiative
- * vote-alias         - Vote on a Bitcoin Green initiative
- * vote               - Vote on a Bitcoin Green initiative/budget
+ * vote-many          - Vote on a BitGreen initiative
+ * vote-alias         - Vote on a BitGreen initiative
+ * vote               - Vote on a BitGreen initiative/budget
  * getvotes           - Show current masternode budgets
  * getinfo            - Show current masternode budgets
  * show               - Show all budgets

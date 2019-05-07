@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2017 The PIVX developers
-// Copyright (c) 2017-2018 The Bitcoin Green developers
+// Copyright (c) 2017-2019 The BitGreen Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -48,7 +48,7 @@ using namespace boost;
 using namespace std;
 
 #if defined(NDEBUG)
-#error "Bitcoin Green cannot be compiled without assertions."
+#error "BitGreen cannot be compiled without assertions."
 #endif
 
 /**
@@ -1990,7 +1990,7 @@ static CCheckQueue<CScriptCheck> scriptcheckqueue(128);
 
 void ThreadScriptCheck()
 {
-    RenameThread("bitcoingreen-scriptch");
+    RenameThread("bitgreen-scriptch");
     scriptcheckqueue.Thread();
 }
 

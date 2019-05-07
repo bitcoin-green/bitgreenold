@@ -10,10 +10,10 @@
 
 /**
  * Name of client reported in the 'version' message. Report the same name
- * for both bitcoingreend and bitcoingreen-qt, to make it harder for attackers to
+ * for both bitgreend and bitgreen-qt, to make it harder for attackers to
  * target servers or GUI users specifically.
  */
-const std::string CLIENT_NAME("Bitcoin Green Core");
+const std::string CLIENT_NAME("BitGreen Core");
 
 /**
  * Client version number

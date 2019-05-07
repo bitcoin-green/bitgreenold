@@ -7,12 +7,12 @@ reset-files.bash
 *.tar.gz
 
 *.exe
-src/bitcoingreen
-src/bitcoingreend
-src/bitcoingreen-cli
-src/bitcoingreen-tx
-src/test/test_bitcoingreen
-src/qt/test/test_bitcoingreen-qt
+src/bitgreen
+src/bitgreend
+src/bitgreen-cli
+src/bitgreen-tx
+src/test/test_bitgreen
+src/qt/test/test_bitgreen-qt
 
 # autoreconf
 Makefile.in
@@ -38,8 +38,8 @@ confdefs.h
 conftest.cpp
 conftest.err
 libtool
-src/config/bitcoingreen-config.h
-src/config/bitcoingreen-config.h.in
+src/config/bitgreen-config.h
+src/config/bitgreen-config.h.in
 src/config/stamp-h1
 share/setup.nsi
 share/qt/Info.plist
@@ -64,7 +64,7 @@ src/qt/test/moc*.cpp
 *.pyc
 *.o
 *.o-*
-.bitcoingreen
+.bitgreen
 *.a
 *.pb.cc
 *.pb.h
@@ -83,12 +83,12 @@ src/qt/test/moc*.cpp
 # Compilation and Qt preprocessor part
 *.qm
 Makefile
-bitcoingreen-qt
-BitcoinGreen-Qt.app
+bitgreen-qt
+BitGreen-Qt.app
 
 # Unit-tests
 Makefile.test
-bitcoingreen-qt_test
+bitgreen-qt_test
 src/test/buildenv.py
 
 # Resources cpp
@@ -104,7 +104,7 @@ build
 #lcov
 *.gcno
 /*.info
-test_bitcoingreen.coverage/
+test_bitgreen.coverage/
 total.coverage/
 coverage_percent.txt
 

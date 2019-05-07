@@ -1,21 +1,21 @@
 
 Debian
 ====================
-This directory contains files used to package bitcoingreend/bitcoingreen-qt
-for Debian-based Linux systems. If you compile bitcoingreend/bitcoingreen-qt yourself, there are some useful files here.
+This directory contains files used to package bitgreend/bitgreen-qt
+for Debian-based Linux systems. If you compile bitgreend/bitgreen-qt yourself, there are some useful files here.
 
-## bitcoingreen: URI support ##
+## bitgreen: URI support ##
 
 
-bitcoingreen-qt.desktop  (Gnome / Open Desktop)
+bitgreen-qt.desktop  (Gnome / Open Desktop)
 To install:
 
-	sudo desktop-file-install bitcoingreen-qt.desktop
+	sudo desktop-file-install bitgreen-qt.desktop
 	sudo update-desktop-database
 
 If you build yourself, you will either need to modify the paths in
-the .desktop file or copy or symlink your bitcoingreenqt binary to `/usr/bin`
-and the `../../share/pixmaps/bitcoingreen128.png` to `/usr/share/pixmaps`
+the .desktop file or copy or symlink your bitgreenqt binary to `/usr/bin`
+and the `../../share/pixmaps/bitgreen128.png` to `/usr/share/pixmaps`
 
-bitcoingreen-qt.protocol (KDE)
+bitgreen-qt.protocol (KDE)
 

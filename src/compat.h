@@ -7,7 +7,7 @@
 #define BITCOIN_COMPAT_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/bitcoingreen-config.h"
+#include "config/bitgreen-config.h"
 #endif
 
 #ifdef WIN32

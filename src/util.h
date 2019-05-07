@@ -13,7 +13,7 @@
 #define BITCOIN_UTIL_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/bitcoingreen-config.h"
+#include "config/bitgreen-config.h"
 #endif
 
 #include "compat.h"
@@ -29,7 +29,7 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/thread/exceptions.hpp>
 
-//Bitcoin Green only features
+//BitGreen only features
 
 extern bool fMasterNode;
 extern bool fLiteMode;
@@ -203,7 +203,7 @@ void RenameThread(const char* name);
 template <typename Callable>
 void TraceThread(const char* name, Callable func)
 {
-    std::string s = strprintf("bitcoingreen-%s", name);
+    std::string s = strprintf("bitgreen-%s", name);
     RenameThread(s.c_str());
     try {
         LogPrintf("%s thread start\n", name);
