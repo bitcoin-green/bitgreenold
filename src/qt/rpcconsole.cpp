@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2017 The PIVX developers
-// Copyright (c) 2017-2018 The Bitcoin Green developers
+// Copyright (c) 2017-2019 The BitGreen Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -271,7 +271,7 @@ bool RPCExecutor::commandHasWarning(const std::string& command)
 {
     /*  If command was executed already, return false */
     if(warningHistory.count(command) > 0 && warningHistory.at(command) > 0) {
-        
+
         return false;
     }
 
@@ -585,7 +585,7 @@ void RPCConsole::clear()
         "td.cmd-error { color: red; } "
         "b { color: #006060; } ");
 
-    message(CMD_REPLY, (tr("Welcome to the Bitcoin Green RPC console.") + "<br>" +
+    message(CMD_REPLY, (tr("Welcome to the BitGreen RPC console.") + "<br>" +
                            tr("Use up and down arrows to navigate history, and <b>Ctrl-L</b> to clear screen.") + "<br>" +
                            tr("Type <b>help</b> for an overview of available commands.")),
         true);

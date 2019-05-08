@@ -1,11 +1,11 @@
 Sample configuration files for:
 ```
-SystemD: bitcoingreend.service
-Upstart: bitcoingreend.conf
-OpenRC:  bitcoingreend.openrc
-         bitcoingreend.openrcconf
-CentOS:  bitcoingreend.init
-macOS:    io.savebitcoin.bitcoingreend.plist
+SystemD: bitgreend.service
+Upstart: bitgreend.conf
+OpenRC:  bitgreend.openrc
+         bitgreend.openrcconf
+CentOS:  bitgreend.init
+macOS:    io.savebitcoin.bitgreend.plist
 ```
 have been made available to assist packagers in creating node packages here.
 

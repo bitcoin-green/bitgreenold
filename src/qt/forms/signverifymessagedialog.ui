@@ -58,7 +58,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../bitcoingreen.qrc">
+            <iconset resource="../bitgreen.qrc">
              <normaloff>:/icons/address-book</normaloff>:/icons/address-book</iconset>
            </property>
            <property name="shortcut">
@@ -75,7 +75,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../bitcoingreen.qrc">
+            <iconset resource="../bitgreen.qrc">
              <normaloff>:/icons/editpaste</normaloff>:/icons/editpaste</iconset>
            </property>
            <property name="shortcut">
@@ -125,7 +125,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../bitcoingreen.qrc">
+            <iconset resource="../bitgreen.qrc">
              <normaloff>:/icons/editcopy</normaloff>:/icons/editcopy</iconset>
            </property>
           </widget>
@@ -143,7 +143,7 @@
             <string>Sign &amp;Message</string>
            </property>
            <property name="icon">
-            <iconset resource="../bitcoingreen.qrc">
+            <iconset resource="../bitgreen.qrc">
              <normaloff>:/icons/edit</normaloff>:/icons/edit</iconset>
            </property>
            <property name="autoDefault">
@@ -160,7 +160,7 @@
             <string>Clear &amp;All</string>
            </property>
            <property name="icon">
-            <iconset resource="../bitcoingreen.qrc">
+            <iconset resource="../bitgreen.qrc">
              <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
            </property>
            <property name="autoDefault">
@@ -253,7 +253,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../bitcoingreen.qrc">
+            <iconset resource="../bitgreen.qrc">
              <normaloff>:/icons/address-book</normaloff>:/icons/address-book</iconset>
            </property>
            <property name="shortcut">
@@ -280,7 +280,7 @@
             <string>Verify &amp;Message</string>
            </property>
            <property name="icon">
-            <iconset resource="../bitcoingreen.qrc">
+            <iconset resource="../bitgreen.qrc">
              <normaloff>:/icons/transaction_0</normaloff>:/icons/transaction_0</iconset>
            </property>
            <property name="autoDefault">
@@ -297,7 +297,7 @@
             <string>Clear &amp;All</string>
            </property>
            <property name="icon">
-            <iconset resource="../bitcoingreen.qrc">
+            <iconset resource="../bitgreen.qrc">
              <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
            </property>
            <property name="autoDefault">
@@ -363,7 +363,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../bitcoingreen.qrc"/>
+  <include location="../bitgreen.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2017 The PIVX developers
-// Copyright (c) 2018 The Bitcoin Green developers
+// Copyright (c) 2019 The BitGreen Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -265,11 +265,11 @@ UniValue stop(const UniValue& params, bool fHelp)
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "stop\n"
-            "\nStop Bitcoin Green server.");
+            "\nStop BitGreen server.");
     // Event loop will exit after current HTTP requests have been handled, so
     // this reply will get back to the client.
     StartShutdown();
-    return "Bitcoin Green server stopping";
+    return "BitGreen server stopping";
 }
 
 
@@ -351,40 +351,40 @@ static const CRPCCommand vRPCCommands[] =
         {"hidden", "reconsiderblock", &reconsiderblock, true, true, false},
         {"hidden", "setmocktime", &setmocktime, true, false, false},
 
-        /* Bitcoin Green features */
-        {"bitcoingreen", "masternode", &masternode, true, true, false},
-        {"bitcoingreen", "listmasternodes", &listmasternodes, true, true, false},
-        {"bitcoingreen", "getmasternodecount", &getmasternodecount, true, true, false},
-        {"bitcoingreen", "masternodeconnect", &masternodeconnect, true, true, false},
-        {"bitcoingreen", "masternodecurrent", &masternodecurrent, true, true, false},
-        {"bitcoingreen", "masternodedebug", &masternodedebug, true, true, false},
-        {"bitcoingreen", "startmasternode", &startmasternode, true, true, false},
-        {"bitcoingreen", "createmasternodekey", &createmasternodekey, true, true, false},
-        {"bitcoingreen", "getmasternodeoutputs", &getmasternodeoutputs, true, true, false},
-        {"bitcoingreen", "listmasternodeconf", &listmasternodeconf, true, true, false},
-        {"bitcoingreen", "getmasternodestatus", &getmasternodestatus, true, true, false},
-        {"bitcoingreen", "getmasternodewinners", &getmasternodewinners, true, true, false},
-        {"bitcoingreen", "getmasternodescores", &getmasternodescores, true, true, false},
-        {"bitcoingreen", "masternodebroadcast", &masternodebroadcast, true, true, false},
-        {"bitcoingreen", "mnbudget", &mnbudget, true, true, false},
-        {"bitcoingreen", "preparebudget", &preparebudget, true, true, false},
-        {"bitcoingreen", "submitbudget", &submitbudget, true, true, false},
-        {"bitcoingreen", "mnbudgetvote", &mnbudgetvote, true, true, false},
-        {"bitcoingreen", "getbudgetvotes", &getbudgetvotes, true, true, false},
-        {"bitcoingreen", "getnextsuperblock", &getnextsuperblock, true, true, false},
-        {"bitcoingreen", "getbudgetprojection", &getbudgetprojection, true, true, false},
-        {"bitcoingreen", "getbudgetinfo", &getbudgetinfo, true, true, false},
-        {"bitcoingreen", "mnbudgetrawvote", &mnbudgetrawvote, true, true, false},
-        {"bitcoingreen", "mnfinalbudget", &mnfinalbudget, true, true, false},
-        {"bitcoingreen", "checkbudgets", &checkbudgets, true, true, false},
-        {"bitcoingreen", "mnsync", &mnsync, true, true, false},
-        {"bitcoingreen", "spork", &spork, true, true, false},
-        {"bitcoingreen", "preparecommunityproposal", &preparecommunityproposal, true, true, false},
-        {"bitcoingreen", "submitcommunityproposal", &submitcommunityproposal, true, true, false},
-        {"bitcoingreen", "getcommunityinfo", &getcommunityinfo, true, true, false},
-        {"bitcoingreen", "checkcommunityproposals", &checkcommunityproposals, true, true, false},
-        {"bitcoingreen", "getcommunityproposalvotes", &getcommunityproposalvotes, true, true, false},
-        {"bitcoingreen", "mncommunityvote", &mncommunityvote, true, true, false},
+        /* BitGreen features */
+        {"bitgreen", "masternode", &masternode, true, true, false},
+        {"bitgreen", "listmasternodes", &listmasternodes, true, true, false},
+        {"bitgreen", "getmasternodecount", &getmasternodecount, true, true, false},
+        {"bitgreen", "masternodeconnect", &masternodeconnect, true, true, false},
+        {"bitgreen", "masternodecurrent", &masternodecurrent, true, true, false},
+        {"bitgreen", "masternodedebug", &masternodedebug, true, true, false},
+        {"bitgreen", "startmasternode", &startmasternode, true, true, false},
+        {"bitgreen", "createmasternodekey", &createmasternodekey, true, true, false},
+        {"bitgreen", "getmasternodeoutputs", &getmasternodeoutputs, true, true, false},
+        {"bitgreen", "listmasternodeconf", &listmasternodeconf, true, true, false},
+        {"bitgreen", "getmasternodestatus", &getmasternodestatus, true, true, false},
+        {"bitgreen", "getmasternodewinners", &getmasternodewinners, true, true, false},
+        {"bitgreen", "getmasternodescores", &getmasternodescores, true, true, false},
+        {"bitgreen", "masternodebroadcast", &masternodebroadcast, true, true, false},
+        {"bitgreen", "mnbudget", &mnbudget, true, true, false},
+        {"bitgreen", "preparebudget", &preparebudget, true, true, false},
+        {"bitgreen", "submitbudget", &submitbudget, true, true, false},
+        {"bitgreen", "mnbudgetvote", &mnbudgetvote, true, true, false},
+        {"bitgreen", "getbudgetvotes", &getbudgetvotes, true, true, false},
+        {"bitgreen", "getnextsuperblock", &getnextsuperblock, true, true, false},
+        {"bitgreen", "getbudgetprojection", &getbudgetprojection, true, true, false},
+        {"bitgreen", "getbudgetinfo", &getbudgetinfo, true, true, false},
+        {"bitgreen", "mnbudgetrawvote", &mnbudgetrawvote, true, true, false},
+        {"bitgreen", "mnfinalbudget", &mnfinalbudget, true, true, false},
+        {"bitgreen", "checkbudgets", &checkbudgets, true, true, false},
+        {"bitgreen", "mnsync", &mnsync, true, true, false},
+        {"bitgreen", "spork", &spork, true, true, false},
+        {"bitgreen", "preparecommunityproposal", &preparecommunityproposal, true, true, false},
+        {"bitgreen", "submitcommunityproposal", &submitcommunityproposal, true, true, false},
+        {"bitgreen", "getcommunityinfo", &getcommunityinfo, true, true, false},
+        {"bitgreen", "checkcommunityproposals", &checkcommunityproposals, true, true, false},
+        {"bitgreen", "getcommunityproposalvotes", &getcommunityproposalvotes, true, true, false},
+        {"bitgreen", "mncommunityvote", &mncommunityvote, true, true, false},
 
 #ifdef ENABLE_WALLET
         /* Wallet */
@@ -597,7 +597,7 @@ std::vector<std::string> CRPCTable::listCommands() const
 
 std::string HelpExampleCli(string methodname, string args)
 {
-    return "> bitcoingreen-cli " + methodname + " " + args + "\n";
+    return "> bitgreen-cli " + methodname + " " + args + "\n";
 }
 
 std::string HelpExampleRpc(string methodname, string args)

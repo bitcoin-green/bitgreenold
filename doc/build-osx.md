@@ -1,6 +1,6 @@
 Mac OS X Build Instructions and Notes
 ====================================
-This guide will show you how to build bitcoingreend (headless client) for OSX.
+This guide will show you how to build bitgreend (headless client) for OSX.
 
 Notes
 -----
@@ -40,19 +40,19 @@ Instructions: Homebrew
 
         brew install autoconf automake berkeley-db4 libtool boost miniupnpc openssl pkg-config protobuf qt5 zmq libevent
 
-### Building `bitcoingreend`
+### Building `bitgreend`
 
 1. Clone the github tree to get the source code and go into the directory.
 
-        git clone https://github.com/bitcoingreen/bitcoingreen.git
-        cd bitcoingreen
+        git clone https://github.com/bitgreen/bitgreen.git
+        cd bitgreen
 
 2.  Make the Homebrew OpenSSL headers visible to the configure script  (do ```brew info openssl``` to find out why this is necessary, or if you use Homebrew with installation folders different from the default).
 
         export LDFLAGS+=-L/usr/local/opt/openssl/lib
         export CPPFLAGS+=-I/usr/local/opt/openssl/include
 
-3.  Build bitcoingreend:
+3.  Build bitgreend:
 
         ./autogen.sh
         ./configure --with-gui=qt5
@@ -62,7 +62,7 @@ Instructions: Homebrew
 
         make check
 
-5.  (Optional) You can also install bitcoingreend to your path:
+5.  (Optional) You can also install bitgreend to your path:
 
         make install
 
@@ -74,7 +74,7 @@ Download Qt Creator from http://www.qt.io/download/. Download the "community edi
 1. Make sure you installed everything through homebrew mentioned above
 2. Do a proper ./configure --with-gui=qt5 --enable-debug
 3. In Qt Creator do "New Project" -> Import Project -> Import Existing Project
-4. Enter "bitcoingreen-qt" as project name, enter src/qt as location
+4. Enter "bitgreen-qt" as project name, enter src/qt as location
 5. Leave the file selection as it is
 6. Confirm the "summary page"
 7. In the "Projects" tab select "Manage Kits..."
@@ -84,11 +84,11 @@ Download Qt Creator from http://www.qt.io/download/. Download the "community edi
 
 Creating a release build
 ------------------------
-You can ignore this section if you are building `bitcoingreend` for your own use.
+You can ignore this section if you are building `bitgreend` for your own use.
 
-bitcoingreend/bitcoingreen-cli binaries are not included in the BitcoinGreen-Qt.app bundle.
+bitgreend/bitgreen-cli binaries are not included in the BitGreen-Qt.app bundle.
 
-If you are building `bitcoingreend` or `bitcoingreen-qt` for others, your build machine should be set up
+If you are building `bitgreend` or `bitgreen-qt` for others, your build machine should be set up
 as follows for maximum compatibility:
 
 All dependencies should be compiled with these flags:
@@ -97,30 +97,30 @@ All dependencies should be compiled with these flags:
  -arch x86_64
  -isysroot $(xcode-select --print-path)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk
 
-Once dependencies are compiled, see release-process.md for how the BitcoinGreen-Qt.app
+Once dependencies are compiled, see release-process.md for how the BitGreen-Qt.app
 bundle is packaged and signed to create the .dmg disk image that is distributed.
 
 Running
 -------
 
-It's now available at `./bitcoingreend`, provided that you are still in the `src`
+It's now available at `./bitgreend`, provided that you are still in the `src`
 directory. We have to first create the RPC configuration file, though.
 
-Run `./bitcoingreend` to get the filename where it should be put, or just try these
+Run `./bitgreend` to get the filename where it should be put, or just try these
 commands:
 
-    echo -e "rpcuser=bitcoingreenrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/BitcoinGreen/bitcoingreen.conf"
-    chmod 600 "/Users/${USER}/Library/Application Support/BitcoinGreen/bitcoingreen.conf"
+    echo -e "rpcuser=bitgreenrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/BitGreen/bitgreen.conf"
+    chmod 600 "/Users/${USER}/Library/Application Support/BitGreen/bitgreen.conf"
 
 The next time you run it, it will start downloading the blockchain, but it won't
 output anything while it's doing this. This process may take several hours;
 you can monitor its process by looking at the debug.log file, like this:
 
-    tail -f $HOME/Library/Application\ Support/BitcoinGreen/debug.log
+    tail -f $HOME/Library/Application\ Support/BitGreen/debug.log
 
 Other commands:
 -------
 
-    ./bitcoingreend -daemon # to start the bitcoingreen daemon.
-    ./bitcoingreen-cli --help  # for a list of command-line options.
-    ./bitcoingreen-cli help    # When the daemon is running, to get a list of RPC commands
+    ./bitgreend -daemon # to start the bitgreen daemon.
+    ./bitgreen-cli --help  # for a list of command-line options.
+    ./bitgreen-cli help    # When the daemon is running, to get a list of RPC commands

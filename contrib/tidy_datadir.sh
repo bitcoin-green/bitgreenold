@@ -7,7 +7,7 @@ if [ -d "$1" ]; then
   cd "$1"
 else
   echo "Usage: $0 <datadir>" >&2
-  echo "Removes obsolete Bitcoin Green database files" >&2
+  echo "Removes obsolete BitGreen database files" >&2
   exit 1
 fi
 
@@ -19,22 +19,22 @@ if [ -f wallet.dat -a -f peers.dat -a -f chainstate/CURRENT -a -f blocks/index/C
 
 case $LEVEL in
   0)
-    echo "Error: no Bitcoin Green datadir detected."
+    echo "Error: no BitGreen datadir detected."
     exit 1
     ;;
   1)
-    echo "Detected old Bitcoin Green datadir (before 0.7)."
+    echo "Detected old BitGreen datadir (before 0.7)."
     echo "Nothing to do."
     exit 0
     ;;
   2)
-    echo "Detected Bitcoin Green 0.7 datadir."
+    echo "Detected BitGreen 0.7 datadir."
     ;;
   3)
-    echo "Detected Bitcoin Green pre-0.8 datadir."
+    echo "Detected BitGreen pre-0.8 datadir."
     ;;
   4)
-    echo "Detected Bitcoin Green 0.8 datadir."
+    echo "Detected BitGreen 0.8 datadir."
     ;;
 esac
 

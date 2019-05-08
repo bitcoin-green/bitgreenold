@@ -1,7 +1,7 @@
 Masternode Community Vote API
 =============================
 
-Bitcoin Green now supports full decentralized community vote system.
+BitGreen now supports full decentralized community vote system.
 
 Community Votes go through a series of stages:
 * prepare - create a special transaction that destroys coins in order to make a voting proposal (currently 25 BITG)

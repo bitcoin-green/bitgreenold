@@ -844,12 +844,12 @@ QDialog#HelpMessageDialog QScrollBar:vertical, QDialog#HelpMessageDialog QScroll
 	border:0;
 }
 
-/* About Bitcoin Green Dialog */
-QDialog#AboutDialog QLabel#label, QDialog#AboutDialog QLabel#copyrightLabel, QDialog#AboutDialog QLabel#label_2 { /* About Bitcoin Green Contents */
+/* About BitGreen Dialog */
+QDialog#AboutDialog QLabel#label, QDialog#AboutDialog QLabel#copyrightLabel, QDialog#AboutDialog QLabel#label_2 { /* About BitGreen Contents */
 	margin-left:10px;
 }
 
-QDialog#AboutDialog QLabel#label_2 { /* Margin for About Bitcoin Green text */
+QDialog#AboutDialog QLabel#label_2 { /* Margin for About BitGreen text */
 	margin-right:10px;
 }
 
@@ -876,14 +876,14 @@ QLabel#labelOverviewHeaderLeft {
 
 QLabel#labelProposalListHeaderRight {
 	qproperty-alignment: 'AlignVCenter | AlignRight';
-	background-image: url(':/images/bitcoingreen_logo_horizontal');
+	background-image: url(':/images/bitgreen_logo_horizontal');
 	background-repeat: no-repeat;
 	height: 60px;
 }
 
 QLabel#labelOverviewHeaderRight {
 	qproperty-alignment: 'AlignVCenter | AlignRight';
-	background-image: url(':/images/bitcoingreen_logo_horizontal');
+	background-image: url(':/images/bitgreen_logo_horizontal');
 	background-repeat: no-repeat;
 }
 

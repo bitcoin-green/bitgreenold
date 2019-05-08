@@ -1,36 +1,36 @@
-Bitcoin Green Core
+BitGreen Core
 ==================
 
 Setup
 ---------------------
-[Bitcoin Green Core](http://savebitcoin.io) is the original Bitcoin Green client and it builds the backbone of the network. However, it downloads and stores the entire history of Bitcoin Green transactions; depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more. Thankfully you only have to do this once.
+[BitGreen Core](http://bitg.org) is the original BitGreen client and it builds the backbone of the network. However, it downloads and stores the entire history of BitGreen transactions; depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more. Thankfully you only have to do this once.
 
 Running
 ---------------------
-The following are some helpful notes on how to run Bitcoin Green Core on your native platform.
+The following are some helpful notes on how to run BitGreen Core on your native platform.
 
 ### Unix
 
 Unpack the files into a directory and run:
 
-- `bin/bitcoingreen-qt` (GUI) or
-- `bin/bitcoingreend` (headless)
+- `bin/bitgreen-qt` (GUI) or
+- `bin/bitgreend` (headless)
 
 ### Windows
 
-Unpack the files into a directory, and then run bitcoingreen-qt.exe.
+Unpack the files into a directory, and then run bitgreen-qt.exe.
 
 ### macOS
 
-Drag BitcoinGreen-Qt to your applications folder, and then run BitcoinGreen-Qt.
+Drag BitGreen-Qt to your applications folder, and then run BitGreen-Qt.
 
 ### Need Help?
 
-* Join our Discord server [Discord Server](https://discord.savebitcoin.io)
+* Join our Discord server [Discord Server](https://discord.bitg.org)
 
 Building
 ---------------------
-The following are developer notes on how to build Bitcoin Green Core on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
+The following are developer notes on how to build BitGreen Core on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
 
 - [macOS Build Notes](build-osx.md)
 - [Unix Build Notes](build-unix.md)
@@ -38,7 +38,7 @@ The following are developer notes on how to build Bitcoin Green Core on your nat
 
 Development
 ---------------------
-The Bitcoin Green repo's [root README](https://github.com/bitcoingreen/bitcoingreen/blob/master/README.md) contains relevant information on the development process and automated testing.
+The BitGreen repo's [root README](https://github.com/bitgreen/bitgreen/blob/master/README.md) contains relevant information on the development process and automated testing.
 
 - [Developer Notes](developer-notes.md)
 - [Multiwallet Qt Development](multiwallet-qt.md)

@@ -1,5 +1,5 @@
 ---
-name: "bitcoingreen-linux-1.2"
+name: "bitgreen-linux-1.2"
 enable_cache: true
 suites:
 - "bionic"
@@ -32,8 +32,8 @@ packages:
 - "ca-certificates"
 - "python"
 remotes:
-- "url": "https://github.com/bitcoingreen/bitcoingreen.git"
-  "dir": "bitcoingreen"
+- "url": "https://github.com/bitgreen/bitgreen.git"
+  "dir": "bitgreen"
 files: []
 script: |
 
@@ -121,7 +121,7 @@ script: |
   chmod +x ${WRAP_DIR}/${prog}
   done
 
-  cd bitcoingreen
+  cd bitgreen
   BASEPREFIX=`pwd`/depends
   # Build dependencies for each host
   for i in $HOSTS; do
@@ -143,13 +143,13 @@ script: |
   ./autogen.sh
   CONFIG_SITE=${BASEPREFIX}/`echo "${HOSTS}" | awk '{print $1;}'`/share/config.site ./configure --prefix=/
   make dist
-  SOURCEDIST=`echo bitcoingreen-*.tar.gz`
+  SOURCEDIST=`echo bitgreen-*.tar.gz`
   DISTNAME=`echo ${SOURCEDIST} | sed 's/.tar.*//'`
   # Correct tar file order
   mkdir -p temp
   pushd temp
   tar xf ../$SOURCEDIST
-  find bitcoingreen-* | sort | tar --no-recursion --mode='u+rw,go+r-w,a+X' --owner=0 --group=0 -c -T - | gzip -9n > ../$SOURCEDIST
+  find bitgreen-* | sort | tar --no-recursion --mode='u+rw,go+r-w,a+X' --owner=0 --group=0 -c -T - | gzip -9n > ../$SOURCEDIST
   popd
 
   # Workaround for tarball not building with the bare tag version (prep)

@@ -168,7 +168,7 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources>
-  <include location="../bitcoingreen.qrc"/>
+  <include location="../bitgreen.qrc"/>
  </resources>
  <connections/>
 </ui>

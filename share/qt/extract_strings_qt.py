@@ -10,7 +10,7 @@ import operator
 import os
 import sys
 
-OUT_CPP="qt/bitcoingreenstrings.cpp"
+OUT_CPP="qt/bitgreenstrings.cpp"
 EMPTY=['""']
 
 def parse_po(text):
@@ -74,10 +74,10 @@ f.write("""
 #define UNUSED
 #endif
 """)
-f.write('static const char UNUSED *bitcoingreen_strings[] = {\n')
+f.write('static const char UNUSED *bitgreen_strings[] = {\n')
 messages.sort(key=operator.itemgetter(0))
 for (msgid, msgstr) in messages:
     if msgid != EMPTY:
-        f.write('QT_TRANSLATE_NOOP("bitcoingreen-core", %s),\n' % ('\n'.join(msgid)))
+        f.write('QT_TRANSLATE_NOOP("bitgreen-core", %s),\n' % ('\n'.join(msgid)))
 f.write('};\n')
 f.close()

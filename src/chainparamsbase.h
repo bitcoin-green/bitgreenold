@@ -9,8 +9,8 @@
 #include <vector>
 
 /**
- * CBaseChainParams defines the base parameters (shared between bitcoingreen-cli and bitcoingreend)
- * of a given instance of the Bitcoin Green system.
+ * CBaseChainParams defines the base parameters (shared between bitgreen-cli and bitgreend)
+ * of a given instance of the BitGreen system.
  */
 class CBaseChainParams
 {

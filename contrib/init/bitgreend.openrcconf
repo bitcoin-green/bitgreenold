@@ -1,0 +1,26 @@
+# /etc/conf.d/bitgreend: config file for /etc/init.d/bitgreend
+
+# Config file location
+#BITCOIND_CONFIGFILE="/etc/bitgreen/bitgreen.conf"
+
+# What directory to write pidfile to?  (created and owned by $BITCOIND_USER)
+#BITCOIND_PIDDIR="/var/run/bitgreend"
+
+# What filename to give the pidfile
+#BITCOIND_PIDFILE="${BITCOIND_PIDDIR}/bitgreend.pid"
+
+# Where to write bitgreend data (be mindful that the blockchain is large)
+#BITCOIND_DATADIR="/var/lib/bitgreend"
+
+# User and group to own bitgreend process
+#BITCOIND_USER="bitgreen"
+#BITCOIND_GROUP="bitgreen"
+
+# Path to bitgreend executable
+#BITCOIND_BIN="/usr/bin/bitgreend"
+
+# Nice value to run bitgreend under
+#BITCOIND_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+BITCOIND_OPTS=""
