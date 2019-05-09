@@ -1,12 +1,12 @@
 BitGreen Core version 1.3.0 is now available from:
 
-  <https://github.com/bitgreen/bitgreen/releases>
+  <https://github.com/bitgreen-official/bitgreen/releases>
 
 This is a new minor version release, including various bug fixes and improvements.
 
 Please report bugs using the issue tracker at github:
 
-  <https://github.com/bitgreen/bitgreen/issues>
+  <https://github.com/bitgreen-official/bitgreen/issues>
 
 How to Upgrade
 ==============

@@ -23,8 +23,8 @@ Build-Depends: debhelper,
  libprotobuf-dev, protobuf-compiler
 Standards-Version: 3.9.2
 Homepage: http://www.bitg.org
-Vcs-Git: git://github.com/bitgreen/bitgreen.git
-Vcs-Browser: http://github.com/bitgreen/bitgreen
+Vcs-Git: git://github.com/bitgreen-official/bitgreen.git
+Vcs-Browser: http://github.com/bitgreen-official/bitgreen
 
 Package: bitgreend
 Architecture: any
