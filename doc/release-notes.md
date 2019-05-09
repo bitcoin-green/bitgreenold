@@ -2,14 +2,14 @@
 
 BitGreen Core version *version* is now available from:
 
-  <https://github.com/bitgreen/bitgreen/releases>
+  <https://github.com/bitgreen-official/bitgreen/releases>
 
 This is a new major version release, including various bug fixes and
 performance improvements, as well as updated translations.
 
 Please report bugs using the issue tracker at github:
 
-  <https://github.com/bitgreen/bitgreen/issues>
+  <https://github.com/bitgreen-official/bitgreen/issues>
 
 Mandatory Update
 ==============

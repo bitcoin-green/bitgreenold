@@ -7,7 +7,7 @@ architectures:
 packages:
 - "faketime"
 remotes:
-- "url": "https://github.com/bitgreen/bitgreen-detached-sigs.git"
+- "url": "https://github.com/bitgreen-official/bitgreen-detached-sigs.git"
   "dir": "signature"
 files:
 - "bitgreen-osx-unsigned.tar.gz"

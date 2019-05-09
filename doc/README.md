@@ -38,7 +38,7 @@ The following are developer notes on how to build BitGreen Core on your native p
 
 Development
 ---------------------
-The BitGreen repo's [root README](https://github.com/bitgreen/bitgreen/blob/master/README.md) contains relevant information on the development process and automated testing.
+The BitGreen repo's [root README](https://github.com/bitgreen-official/bitgreen/blob/master/README.md) contains relevant information on the development process and automated testing.
 
 - [Developer Notes](developer-notes.md)
 - [Multiwallet Qt Development](multiwallet-qt.md)

@@ -23,7 +23,7 @@ packages:
 - "python"
 - "rename"
 remotes:
-- "url": "https://github.com/bitgreen/bitgreen.git"
+- "url": "https://github.com/bitgreen-official/bitgreen.git"
   "dir": "bitgreen"
 files: []
 script: |

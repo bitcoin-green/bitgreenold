@@ -44,7 +44,7 @@ Instructions: Homebrew
 
 1. Clone the github tree to get the source code and go into the directory.
 
-        git clone https://github.com/bitgreen/bitgreen.git
+        git clone https://github.com/bitgreen-official/bitgreen.git
         cd bitgreen
 
 2.  Make the Homebrew OpenSSL headers visible to the configure script  (do ```brew info openssl``` to find out why this is necessary, or if you use Homebrew with installation folders different from the default).

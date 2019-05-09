@@ -11,7 +11,7 @@ BitGreen (BITG) is a sustainable cryptocurrency modeled after Satoshi Nakamotoâ€
 
 More information at [bitg.org](http://www.bitg.org)
 
-Please reach out at awareness@bitg.org
+Please reach out at info@bitg.org
 
 ### Coin Specs
 | Block Time                  | 60 Seconds      |
