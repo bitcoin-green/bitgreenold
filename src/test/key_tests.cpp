@@ -10,6 +10,8 @@
 #include "util.h"
 #include "utilstrencodings.h"
 
+#include "test/test_bitgreen.h"
+
 #include <string>
 #include <vector>
 
@@ -58,7 +60,7 @@ void dumpKeyInfo()
 #endif
 
 
-BOOST_AUTO_TEST_SUITE(key_tests)
+BOOST_FIXTURE_TEST_SUITE(key_tests, TestingSetup)
 
 BOOST_AUTO_TEST_CASE(key_test1)
 {

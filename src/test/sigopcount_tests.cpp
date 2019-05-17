@@ -8,6 +8,8 @@
 #include "script/standard.h"
 #include "uint256.h"
 
+#include "test/test_bitgreen.h"
+
 #include <vector>
 
 #include <boost/foreach.hpp>
@@ -23,7 +25,7 @@ Serialize(const CScript& s)
     return sSerialized;
 }
 
-BOOST_AUTO_TEST_SUITE(sigopcount_tests)
+BOOST_FIXTURE_TEST_SUITE(sigopcount_tests, TestingSetup)
 
 BOOST_AUTO_TEST_CASE(GetSigOpCount)
 {

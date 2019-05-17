@@ -6,8 +6,7 @@
 // Unit tests for denial-of-service detection/prevention code
 //
 
-
-
+#include "chainparams.h"
 #include "keystore.h"
 #include "main.h"
 #include "net.h"
@@ -16,11 +15,12 @@
 #include "serialize.h"
 #include "util.h"
 
+#include "test/test_bitgreen.h"
+
 #include <stdint.h>
 
 #include <boost/assign/list_of.hpp> // for 'map_list_of()'
 #include <boost/date_time/posix_time/posix_time_types.hpp>
-#include <boost/foreach.hpp>
 #include <boost/test/unit_test.hpp>
 
 // Tests this internal-to-main.cpp method:
@@ -41,7 +41,7 @@ CService ip(uint32_t i)
     return CService(CNetAddr(s), Params().GetDefaultPort());
 }
 
-BOOST_AUTO_TEST_SUITE(DoS_tests)
+BOOST_FIXTURE_TEST_SUITE(DoS_tests, TestingSetup)
 
 BOOST_AUTO_TEST_CASE(DoS_banning)
 {
@@ -109,6 +109,7 @@ BOOST_AUTO_TEST_CASE(DoS_bantime)
 CTransaction RandomOrphan()
 {
     std::map<uint256, COrphanTx>::iterator it;
+    LOCK(cs_main);
     it = mapOrphanTransactions.lower_bound(GetRandHash());
     if (it == mapOrphanTransactions.end())
         it = mapOrphanTransactions.begin();
@@ -120,7 +121,7 @@ BOOST_AUTO_TEST_CASE(DoS_mapOrphans)
     CKey key;
     key.MakeNewKey(true);
     CBasicKeyStore keystore;
-    keystore.AddKey(key);
+    BOOST_CHECK(keystore.AddKey(key));
 
     // 50 orphan transactions:
     for (int i = 0; i < 50; i++)
@@ -149,7 +150,7 @@ BOOST_AUTO_TEST_CASE(DoS_mapOrphans)
         tx.vout.resize(1);
         tx.vout[0].nValue = 1*CENT;
         tx.vout[0].scriptPubKey = GetScriptForDestination(key.GetPubKey().GetID());
-        SignSignature(keystore, txPrev, tx, 0);
+        BOOST_CHECK(SignSignature(keystore, txPrev, tx, 0));
 
         AddOrphanTx(tx, i);
     }
@@ -169,7 +170,7 @@ BOOST_AUTO_TEST_CASE(DoS_mapOrphans)
             tx.vin[j].prevout.n = j;
             tx.vin[j].prevout.hash = txPrev.GetHash();
         }
-        SignSignature(keystore, txPrev, tx, 0);
+        BOOST_CHECK(SignSignature(keystore, txPrev, tx, 0));
         // Re-use same signature for other inputs
         // (they don't have to be valid for this test)
         for (unsigned int j = 1; j < tx.vin.size(); j++)

@@ -13,6 +13,8 @@
 #include "wallet_ismine.h"
 #endif
 
+#include "test/test_bitgreen.h"
+
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
@@ -47,7 +49,7 @@ Verify(const CScript& scriptSig, const CScript& scriptPubKey, bool fStrict, Scri
 }
 
 
-BOOST_AUTO_TEST_SUITE(script_P2SH_tests)
+BOOST_FIXTURE_TEST_SUITE(script_P2SH_tests, TestingSetup)
 
 BOOST_AUTO_TEST_CASE(sign)
 {
