@@ -93,7 +93,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     BOOST_FOREACH (const CTransaction& tx, block.vtx) {
         if (txDetails) {
             UniValue objTx(UniValue::VOBJ);
-            TxToUniv(tx, uint256(0), objTx);
+            TxToUniv(tx, uint256(), objTx);
             txs.push_back(objTx);
         } else
             txs.push_back(tx.GetHash().GetHex());
