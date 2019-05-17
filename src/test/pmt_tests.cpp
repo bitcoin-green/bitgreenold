@@ -2,6 +2,7 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include "arith_uint256.h"
 #include "merkleblock.h"
 #include "serialize.h"
 #include "streams.h"
@@ -21,8 +22,7 @@ public:
     void Damage() {
         unsigned int n = rand() % vHash.size();
         int bit = rand() % 256;
-        uint256 &hash = vHash[n];
-        hash ^= ((uint256)1 << bit);
+        *(vHash[n].begin() + (bit>>3)) ^= 1<<(bit&7);
     }
 };
 

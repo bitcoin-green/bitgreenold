@@ -103,7 +103,7 @@ public:
         pchMessageStart[3] = 0xae;
         vAlertPubKey = ParseHex("04d2df519f53e2eaa4a7d7ff3347a360520c2f4b8f07d0241b5b6ba5ce8e3d6ecba5443696473a387adff27aa6bb72b952ff23026e088cff9f47cbb387ed52c326");
         nDefaultPort = 9333;
-        bnProofOfWorkLimit = ~uint256(0) >> 1;
+        bnProofOfWorkLimit = ~arith_uint256(0) >> 1;
         nSubsidyHalvingInterval = 1050000;
         nMaxReorganizationDepth = 100;
         nEnforceBlockUpgradeMajority = 750;
@@ -295,7 +295,7 @@ public:
         nMinerThreads = 1;
         nTargetTimespan = 24 * 60 * 60; // BitGreen: 1 day
         nTargetSpacing = 1 * 60;        // BitGreen: 1 minute
-        bnProofOfWorkLimit = ~uint256(0) >> 1;
+        bnProofOfWorkLimit = ~arith_uint256(0) >> 1;
         nLastPOWBlock = 250;
         nMaturity = 10;
         genesis.nTime = 1516926684;

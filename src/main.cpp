@@ -10,6 +10,7 @@
 
 #include "addrman.h"
 #include "alert.h"
+#include "arith_uint256.h"
 #include "chainparams.h"
 #include "checkpoints.h"
 #include "checkqueue.h"
@@ -4755,7 +4756,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
                     if (hashSalt.IsNull())
                         hashSalt = GetRandHash();
                     uint64_t hashAddr = addr.GetHash();
-                    uint256 hashRand = hashSalt ^ (hashAddr << 32) ^ ((GetTime() + hashAddr) / (24 * 60 * 60));
+                    uint256 hashRand = ArithToUint256(UintToArith256(hashSalt) ^ (hashAddr << 32) ^ ((GetTime() + hashAddr) / (24 * 60 * 60)));
                     hashRand = Hash(BEGIN(hashRand), END(hashRand));
                     multimap<uint256, CNode*> mapMix;
                     BOOST_FOREACH (CNode* pnode, vNodes) {
@@ -4763,7 +4764,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
                             continue;
                         unsigned int nPointer;
                         memcpy(&nPointer, &pnode, sizeof(nPointer));
-                        uint256 hashKey = hashRand ^ nPointer;
+                        uint256 hashKey = ArithToUint256(UintToArith256(hashRand) ^ nPointer);
                         hashKey = Hash(BEGIN(hashKey), END(hashKey));
                         mapMix.insert(make_pair(hashKey, pnode));
                     }
@@ -5624,9 +5625,9 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
                     static uint256 hashSalt;
                     if (hashSalt.IsNull())
                         hashSalt = GetRandHash();
-                    uint256 hashRand = inv.hash ^ hashSalt;
+                    uint256 hashRand = ArithToUint256(UintToArith256(inv.hash) ^ hashSalt);
                     hashRand = Hash(BEGIN(hashRand), END(hashRand));
-                    bool fTrickleWait = ((hashRand & 3) != 0);
+                    bool fTrickleWait = ((UintToArith256(hashRand) & 3) != 0);
 
                     if (fTrickleWait) {
                         vInvWait.push_back(inv);
