@@ -15,6 +15,7 @@
 #include "addrman.h"
 #include "chainparams.h"
 #include "clientversion.h"
+#include "main.h"
 #include "miner.h"
 #include "primitives/transaction.h"
 #include "scheduler.h"

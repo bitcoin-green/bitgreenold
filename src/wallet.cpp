@@ -12,6 +12,7 @@
 #include "checkpoints.h"
 #include "coincontrol.h"
 #include "kernel.h"
+#include "main.h"
 #include "masternode-budget.h"
 #include "masternode-payments.h"
 #include "masternode-vote.h"
@@ -1239,6 +1240,32 @@ bool CWalletTx::InMempool() const
         return true;
     }
     return false;
+}
+
+bool CWalletTx::IsTrusted() const
+{
+    // Quick answer in most cases
+    if (!IsFinalTx(*this))
+        return false;
+    int nDepth = GetDepthInMainChain();
+    if (nDepth >= 1)
+        return true;
+    if (nDepth < 0)
+        return false;
+    if (!bSpendZeroConfChange || !IsFromMe(ISMINE_ALL)) // using wtx's cached debit
+        return false;
+
+    // Trusted if all inputs are from us and are in the mempool:
+    for (const CTxIn& txin : vin) {
+        // Transactions not sent by us: not trusted
+        const CWalletTx* parent = pwallet->GetWalletTx(txin.prevout.hash);
+        if (parent == nullptr)
+            return false;
+        const CTxOut& parentOut = parent->vout[txin.prevout.n];
+        if (pwallet->IsMine(parentOut) != ISMINE_SPENDABLE)
+            return false;
+    }
+    return true;
 }
 
 void CWalletTx::RelayWalletTransaction(std::string strCommand)

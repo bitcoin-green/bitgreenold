@@ -6,6 +6,7 @@
 
 #include "activemasternode.h"
 #include "addrman.h"
+#include "main.h"
 #include "masternode.h"
 #include "masternodeconfig.h"
 #include "masternodeman.h"

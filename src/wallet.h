@@ -15,11 +15,12 @@
 #include "kernel.h"
 #include "key.h"
 #include "keystore.h"
-#include "main.h"
 #include "primitives/block.h"
 #include "primitives/transaction.h"
+#include "tinyformat.h"
 #include "ui_interface.h"
 #include "util.h"
+#include "utilstrencodings.h"
 #include "validationinterface.h"
 #include "wallet_ismine.h"
 #include "walletdb.h"
@@ -56,10 +57,12 @@ static const CAmount nHighTransactionMaxFeeWarning = 100 * nHighTransactionFeeWa
 static const unsigned int MAX_FREE_TRANSACTION_CREATE_SIZE = 1000;
 
 class CAccountingEntry;
+class CBlockIndex;
 class CCoinControl;
 class COutput;
 class CReserveKey;
 class CScript;
+class CTxMemPool;
 class CWalletTx;
 
 /** (client) version numbers for particular wallet features */
@@ -869,31 +872,7 @@ public:
 
     bool InMempool() const;
 
-    bool IsTrusted() const
-    {
-        // Quick answer in most cases
-        if (!IsFinalTx(*this))
-            return false;
-        int nDepth = GetDepthInMainChain();
-        if (nDepth >= 1)
-            return true;
-        if (nDepth < 0)
-            return false;
-        if (!bSpendZeroConfChange || !IsFromMe(ISMINE_ALL)) // using wtx's cached debit
-            return false;
-
-        // Trusted if all inputs are from us and are in the mempool:
-        BOOST_FOREACH (const CTxIn& txin, vin) {
-            // Transactions not sent by us: not trusted
-            const CWalletTx* parent = pwallet->GetWalletTx(txin.prevout.hash);
-            if (parent == nullptr)
-                return false;
-            const CTxOut& parentOut = parent->vout[txin.prevout.n];
-            if (pwallet->IsMine(parentOut) != ISMINE_SPENDABLE)
-                return false;
-        }
-        return true;
-    }
+    bool IsTrusted() const;
 
     bool WriteToDisk();
 

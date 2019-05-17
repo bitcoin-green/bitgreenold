@@ -9,7 +9,6 @@
 
 #include "base58.h"
 #include "key.h"
-#include "main.h"
 #include "net.h"
 #include "sync.h"
 #include "timedata.h"
@@ -256,17 +255,7 @@ public:
         return activeState == MASTERNODE_ENABLED;
     }
 
-    int GetMasternodeInputAge()
-    {
-        if (chainActive.Tip() == nullptr) return 0;
-
-        if (cacheInputAge == 0) {
-            cacheInputAge = GetInputAge(vin);
-            cacheInputAgeBlock = chainActive.Tip()->nHeight;
-        }
-
-        return cacheInputAge + (chainActive.Tip()->nHeight - cacheInputAgeBlock);
-    }
+    int GetMasternodeInputAge();
 
     std::string GetStatus();
 

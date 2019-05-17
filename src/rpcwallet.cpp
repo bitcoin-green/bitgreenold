@@ -10,6 +10,7 @@
 #include "base58.h"
 #include "core_io.h"
 #include "init.h"
+#include "main.h"
 #include "net.h"
 #include "netbase.h"
 #include "rpcserver.h"
