@@ -292,7 +292,7 @@ bool CActiveMasternode::GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secr
     // Find the vin
     if (!strTxHash.empty()) {
         // Let's find it
-        uint256 txHash(strTxHash);
+        uint256 txHash = uint256S(strTxHash);
         int outputIndex;
         try {
             outputIndex = std::stoi(strOutputIndex.c_str());
