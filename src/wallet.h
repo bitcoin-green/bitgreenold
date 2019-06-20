@@ -166,7 +166,6 @@ private:
 public:
     bool MintableCoins();
     bool SelectStakeCoins(std::set<std::pair<const CWalletTx*, unsigned int> >& setCoins, CAmount nTargetAmount) const;
-    int CountInputsWithAmount(CAmount nInputAmount);
 
     /*
      * Main wallet lock.
