@@ -43,7 +43,7 @@ private:
 
 public:
     mutable CCriticalSection cs_db;
-    DbEnv *dbenv;
+    DbEnv *dbenv = nullptr;
     std::map<std::string, int> mapFileUseCount;
     std::map<std::string, Db*> mapDb;
 
