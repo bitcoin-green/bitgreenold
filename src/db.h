@@ -43,12 +43,14 @@ private:
 
 public:
     mutable CCriticalSection cs_db;
-    DbEnv dbenv;
+    DbEnv *dbenv = nullptr;
     std::map<std::string, int> mapFileUseCount;
     std::map<std::string, Db*> mapDb;
 
     CDBEnv();
     ~CDBEnv();
+    void Reset();
+
     void MakeMock();
     bool IsMock() { return fMockDb; }
 
@@ -83,7 +85,7 @@ public:
     DbTxn* TxnBegin(int flags = DB_TXN_WRITE_NOSYNC)
     {
         DbTxn* ptxn = nullptr;
-        int ret = dbenv.txn_begin(nullptr, &ptxn, flags);
+        int ret = dbenv->txn_begin(nullptr, &ptxn, flags);
         if (!ptxn || ret != 0)
             return nullptr;
         return ptxn;

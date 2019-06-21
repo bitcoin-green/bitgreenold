@@ -7,6 +7,7 @@
 #ifndef BITCOIN_CHAIN_H
 #define BITCOIN_CHAIN_H
 
+#include "arith_uint256.h"
 #include "pow.h"
 #include "primitives/block.h"
 #include "tinyformat.h"
@@ -135,7 +136,7 @@ public:
     unsigned int nUndoPos;
 
     //! (memory only) Total amount of work (expected number of hashes) in the chain up to and including this block
-    uint256 nChainWork;
+    arith_uint256 nChainWork;
 
     //! Number of transactions in this block.
     //! Note: in a potential headers-first mode, this number cannot be relied upon
@@ -185,7 +186,7 @@ public:
         nFile = 0;
         nDataPos = 0;
         nUndoPos = 0;
-        nChainWork = 0;
+        nChainWork = arith_uint256();
         nTx = 0;
         nChainTx = 0;
         nStatus = 0;
@@ -345,7 +346,7 @@ public:
 
     /**
      * Returns true if there are nRequired or more blocks of minVersion or above
-     * in the last Params().ToCheckBlockUpgradeMajority() blocks, starting at pstart 
+     * in the last Params().ToCheckBlockUpgradeMajority() blocks, starting at pstart
      * and going backwards.
      */
     static bool IsSuperMajority(int minVersion, const CBlockIndex* pstart, unsigned int nRequired);
@@ -402,7 +403,7 @@ public:
         hashNext = uint256();
     }
 
-    explicit CDiskBlockIndex(CBlockIndex* pindex) : CBlockIndex(*pindex)
+    explicit CDiskBlockIndex(const CBlockIndex* pindex) : CBlockIndex(*pindex)
     {
         hashPrev = (pprev ? pprev->GetBlockHash() : uint256());
     }

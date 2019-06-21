@@ -133,7 +133,7 @@ UniValue getrawtransaction(const UniValue& params, bool fHelp)
         fVerbose = params[1].isNum() ? (params[1].get_int() != 0) : params[1].get_bool();
 
     CTransaction tx;
-    uint256 hashBlock = 0;
+    uint256 hashBlock;
     if (!GetTransaction(hash, tx, hashBlock, true))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "No information available about transaction");
 
@@ -401,7 +401,7 @@ UniValue decoderawtransaction(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "TX decode failed");
 
     UniValue result(UniValue::VOBJ);
-    TxToUniv(tx, 0, result);
+    TxToUniv(tx, uint256(), result);
 
     return result;
 }

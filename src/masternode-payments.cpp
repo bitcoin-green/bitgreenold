@@ -6,6 +6,7 @@
 #include "activemasternode.h"
 #include "masternode-payments.h"
 #include "addrman.h"
+#include "main.h"
 #include "masternode-budget.h"
 #include "masternode-sync.h"
 #include "masternodeman.h"

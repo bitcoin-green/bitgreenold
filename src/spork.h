@@ -8,7 +8,6 @@
 
 #include "base58.h"
 #include "key.h"
-#include "main.h"
 #include "net.h"
 #include "sync.h"
 #include "util.h"

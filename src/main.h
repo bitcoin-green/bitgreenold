@@ -122,7 +122,7 @@ static const unsigned char REJECT_INSUFFICIENTFEE = 0x42;
 static const unsigned char REJECT_CHECKPOINT = 0x43;
 
 struct BlockHasher {
-    size_t operator()(const uint256& hash) const { return hash.GetLow64(); }
+    size_t operator()(const uint256& hash) const { return hash.GetCheapHash(); }
 };
 
 extern CScript COINBASE_FLAGS;
@@ -156,7 +156,6 @@ extern int64_t nReserveBalance;
 
 extern std::map<uint256, int64_t> mapRejectedBlocks;
 extern std::map<unsigned int, unsigned int> mapHashedBlocks;
-extern std::set<std::pair<COutPoint, unsigned int> > setStakeSeen;
 
 /** Best header we've seen so far (used for getheaders queries' starting points). */
 extern CBlockIndex* pindexBestHeader;
@@ -246,7 +245,6 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransact
 
 int GetInputAge(CTxIn& vin);
 int GetInputAgeIX(uint256 nTXHash, CTxIn& vin);
-bool GetCoinAge(const CTransaction& tx, unsigned int nTxTime, uint64_t& nCoinAge);
 int GetIXConfirmations(uint256 nTXHash);
 
 struct CNodeStateStats {
@@ -286,7 +284,6 @@ struct CDiskTxPos : public CDiskBlockPos {
 
 
 CAmount GetMinRelayFee(const CTransaction& tx, unsigned int nBytes, bool fAllowFree);
-bool MoneyRange(CAmount nValueOut);
 
 /**
  * Check transaction inputs, and make sure any

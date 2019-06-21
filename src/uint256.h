@@ -43,21 +43,6 @@ public:
             pn[i] = b.pn[i];
     }
 
-
-    bool IsNull() const
-    {
-        for (int i = 0; i < WIDTH; i++)
-            if (pn[i] != 0)
-                return false;
-        return true;
-    }
-
-    void SetNull()
-    {
-        memset(pn, 0, sizeof(pn));
-    }
-
-
     base_uint& operator=(const base_uint& b)
     {
         for (int i = 0; i < WIDTH; i++)
@@ -312,8 +297,25 @@ public:
         s.read((char*)pn, sizeof(pn));
     }
 
-    friend class uint160;
-    friend class uint256;
+    // Temporary for migration to opaque uint160/256
+    uint64_t GetCheapHash() const
+    {
+        return GetLow64();
+    }
+
+    void SetNull()
+    {
+        memset(pn, 0, sizeof(pn));
+    }
+
+    bool IsNull() const
+    {
+        for (int i = 0; i < WIDTH; i++)
+            if (pn[i] != 0)
+                return false;
+        return true;
+    }
+
     friend class uint512;
 };
 

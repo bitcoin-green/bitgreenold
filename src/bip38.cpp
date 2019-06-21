@@ -84,7 +84,7 @@ void ComputeSeedBPass(CPubKey passpoint, std::string strAddressHash, std::string
 {
     // Derive decryption key for seedb using scrypt with passpoint, addresshash, and ownerentropy
     string salt = ReverseEndianString(strAddressHash + strOwnerSalt);
-    uint256 s2(salt);
+    uint256 s2 = uint256S(salt);
     scrypt_hash(BEGIN(passpoint), HexStr(passpoint).size() / 2, BEGIN(s2), salt.size() / 2, BEGIN(seedBPass), 1024, 1, 1, 64);
 }
 

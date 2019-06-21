@@ -10,13 +10,15 @@
 #define HAVE_WORKING_BOOST_SLEEP_FOR
 #endif
 
+#include "test/test_bitgreen.h"
+
 #include <boost/bind.hpp>
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
 #include <boost/thread.hpp>
 #include <boost/test/unit_test.hpp>
 
-BOOST_AUTO_TEST_SUITE(scheduler_tests)
+BOOST_FIXTURE_TEST_SUITE(scheduler_tests, TestingSetup)
 
 static void microTask(CScheduler& s, boost::mutex& mutex, int& counter, int delta, boost::chrono::system_clock::time_point rescheduleTime)
 {

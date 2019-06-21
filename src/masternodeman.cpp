@@ -5,7 +5,9 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "masternodeman.h"
+
 #include "activemasternode.h"
+#include "main.h"
 #include "masternode-payments.h"
 #include "masternode-helpers.h"
 #include "addrman.h"

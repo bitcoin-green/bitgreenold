@@ -7,9 +7,11 @@
 #include "primitives/transaction.h"
 #include "main.h"
 
+#include "test/test_bitgreen.h"
+
 #include <boost/test/unit_test.hpp>
 
-BOOST_AUTO_TEST_SUITE(main_tests)
+BOOST_FIXTURE_TEST_SUITE(main_tests, TestingSetup)
 
 CAmount nMoneySupplyPoWEnd = 500000 * COIN;
 

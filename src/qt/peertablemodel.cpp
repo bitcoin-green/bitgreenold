@@ -10,6 +10,7 @@
 #include "guiconstants.h"
 #include "guiutil.h"
 
+#include "main.h"
 #include "net.h"
 #include "sync.h"
 

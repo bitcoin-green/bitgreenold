@@ -7,7 +7,6 @@
 #ifndef MASTERNODEHELPERS_H
 #define MASTERNODEHELPERS_H
 
-#include "main.h"
 #include "sync.h"
 #include "base58.h"
 
