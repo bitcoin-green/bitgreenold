@@ -15,11 +15,12 @@
 #include "kernel.h"
 #include "key.h"
 #include "keystore.h"
-#include "main.h"
 #include "primitives/block.h"
 #include "primitives/transaction.h"
+#include "tinyformat.h"
 #include "ui_interface.h"
 #include "util.h"
+#include "utilstrencodings.h"
 #include "validationinterface.h"
 #include "wallet_ismine.h"
 #include "walletdb.h"
@@ -56,10 +57,12 @@ static const CAmount nHighTransactionMaxFeeWarning = 100 * nHighTransactionFeeWa
 static const unsigned int MAX_FREE_TRANSACTION_CREATE_SIZE = 1000;
 
 class CAccountingEntry;
+class CBlockIndex;
 class CCoinControl;
 class COutput;
 class CReserveKey;
 class CScript;
+class CTxMemPool;
 class CWalletTx;
 
 /** (client) version numbers for particular wallet features */
@@ -163,7 +166,6 @@ private:
 public:
     bool MintableCoins();
     bool SelectStakeCoins(std::set<std::pair<const CWalletTx*, unsigned int> >& setCoins, CAmount nTargetAmount) const;
-    int CountInputsWithAmount(CAmount nInputAmount);
 
     /*
      * Main wallet lock.
@@ -309,7 +311,6 @@ public:
     void UnlockCoin(const COutPoint& output);
     void UnlockAllCoins();
     void ListLockedCoins(std::vector<COutPoint>& vOutpts);
-    CAmount GetTotalValue(std::vector<CTxIn> vCoins);
 
     //  keystore implementation
     // Generate a new key
@@ -343,8 +344,6 @@ public:
     bool EraseDestData(const CTxDestination& dest, const std::string& key);
     //! Adds a destination data tuple to the store, without saving it to disk
     bool LoadDestData(const CTxDestination& dest, const std::string& key, const std::string& value);
-    //! Look up a destination data tuple in the store, return true if found false otherwise
-    bool GetDestData(const CTxDestination& dest, const std::string& key, std::string* value) const;
 
     //! Adds a watch-only address to the store, and saves it to disk.
     bool AddWatchOnly(const CScript& dest);
@@ -401,7 +400,6 @@ public:
     bool CreateTransaction(CScript scriptPubKey, const CAmount& nValue, CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet, std::string& strFailReason, const CCoinControl* coinControl = nullptr, AvailableCoinsType coin_type = ALL_COINS, bool useIX = false, CAmount nFeePay = 0);
     bool CommitTransaction(CWalletTx& wtxNew, CReserveKey& reservekey, std::string strCommand = "tx");
     bool AddAccountingEntry(const CAccountingEntry&, CWalletDB & pwalletdb);
-    bool ConvertList(std::vector<CTxIn> vCoins, std::vector<int64_t>& vecAmounts);
     bool CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int64_t nSearchInterval, CAmount nFees, CMutableTransaction& txNew, unsigned int& nTxNewTime);
     bool MultiSend();
     void AutoCombineDust();
@@ -637,7 +635,7 @@ public:
 
     void Init()
     {
-        hashBlock = 0;
+        hashBlock = uint256();
         nIndex = -1;
         fMerkleVerified = false;
     }
@@ -869,31 +867,7 @@ public:
 
     bool InMempool() const;
 
-    bool IsTrusted() const
-    {
-        // Quick answer in most cases
-        if (!IsFinalTx(*this))
-            return false;
-        int nDepth = GetDepthInMainChain();
-        if (nDepth >= 1)
-            return true;
-        if (nDepth < 0)
-            return false;
-        if (!bSpendZeroConfChange || !IsFromMe(ISMINE_ALL)) // using wtx's cached debit
-            return false;
-
-        // Trusted if all inputs are from us and are in the mempool:
-        BOOST_FOREACH (const CTxIn& txin, vin) {
-            // Transactions not sent by us: not trusted
-            const CWalletTx* parent = pwallet->GetWalletTx(txin.prevout.hash);
-            if (parent == nullptr)
-                return false;
-            const CTxOut& parentOut = parent->vout[txin.prevout.n];
-            if (pwallet->IsMine(parentOut) != ISMINE_SPENDABLE)
-                return false;
-        }
-        return true;
-    }
+    bool IsTrusted() const;
 
     bool WriteToDisk();
 

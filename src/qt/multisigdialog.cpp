@@ -16,6 +16,7 @@
 #include "coins.h"
 #include "keystore.h"
 #include "init.h"
+#include "main.h"
 #include "wallet.h"
 #include "script/sign.h"
 #include "script/interpreter.h"

@@ -12,6 +12,7 @@
 #include "checkpoints.h"
 #include "coincontrol.h"
 #include "kernel.h"
+#include "main.h"
 #include "masternode-budget.h"
 #include "masternode-payments.h"
 #include "masternode-vote.h"
@@ -663,7 +664,7 @@ bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet)
         bool fUpdated = false;
         if (!fInsertedNew) {
             // Merge
-            if (wtxIn.hashBlock != 0 && wtxIn.hashBlock != wtx.hashBlock) {
+            if (!wtxIn.hashBlock.IsNull() && wtxIn.hashBlock != wtx.hashBlock) {
                 wtx.hashBlock = wtxIn.hashBlock;
                 fUpdated = true;
             }
@@ -823,7 +824,7 @@ int CWalletTx::GetRequestCount() const
         LOCK(pwallet->cs_wallet);
         if (IsCoinBase()) {
             // Generated block
-            if (hashBlock != 0) {
+            if (!hashBlock.IsNull()) {
                 map<uint256, int>::const_iterator mi = pwallet->mapRequestCount.find(hashBlock);
                 if (mi != pwallet->mapRequestCount.end())
                     nRequests = (*mi).second;
@@ -835,7 +836,7 @@ int CWalletTx::GetRequestCount() const
                 nRequests = (*mi).second;
 
                 // How about the block it's in?
-                if (nRequests == 0 && hashBlock != 0) {
+                if (nRequests == 0 && !hashBlock.IsNull()) {
                     map<uint256, int>::const_iterator mi = pwallet->mapRequestCount.find(hashBlock);
                     if (mi != pwallet->mapRequestCount.end())
                         nRequests = (*mi).second;
@@ -1239,6 +1240,32 @@ bool CWalletTx::InMempool() const
         return true;
     }
     return false;
+}
+
+bool CWalletTx::IsTrusted() const
+{
+    // Quick answer in most cases
+    if (!IsFinalTx(*this))
+        return false;
+    int nDepth = GetDepthInMainChain();
+    if (nDepth >= 1)
+        return true;
+    if (nDepth < 0)
+        return false;
+    if (!bSpendZeroConfChange || !IsFromMe(ISMINE_ALL)) // using wtx's cached debit
+        return false;
+
+    // Trusted if all inputs are from us and are in the mempool:
+    for (const CTxIn& txin : vin) {
+        // Transactions not sent by us: not trusted
+        const CWalletTx* parent = pwallet->GetWalletTx(txin.prevout.hash);
+        if (parent == nullptr)
+            return false;
+        const CTxOut& parentOut = parent->vout[txin.prevout.n];
+        if (pwallet->IsMine(parentOut) != ISMINE_SPENDABLE)
+            return false;
+    }
+    return true;
 }
 
 void CWalletTx::RelayWalletTransaction(std::string strCommand)
@@ -1742,32 +1769,6 @@ struct CompareByPriority {
     }
 };
 
-int CWallet::CountInputsWithAmount(CAmount nInputAmount)
-{
-    CAmount nTotal = 0;
-    {
-        LOCK(cs_wallet);
-        for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
-            const CWalletTx* pcoin = &(*it).second;
-            if (pcoin->IsTrusted()) {
-                int nDepth = pcoin->GetDepthInMainChain(false);
-
-                for (unsigned int i = 0; i < pcoin->vout.size(); i++) {
-                    COutput out = COutput(pcoin, i, nDepth, true);
-                    CTxIn vin = CTxIn(out.tx->GetHash(), out.i);
-
-                    if (out.tx->vout[out.i].nValue != nInputAmount) continue;
-                    if (IsSpent(out.tx->GetHash(), i) || IsMine(pcoin->vout[i]) != ISMINE_SPENDABLE) continue;
-
-                    nTotal++;
-                }
-            }
-        }
-    }
-
-    return nTotal;
-}
-
 bool CWallet::GetBudgetSystemCollateralTX(CTransaction& tx, uint256 hash, bool useIX)
 {
     CWalletTx wtx;
@@ -1831,21 +1832,6 @@ bool CWallet::GetCommunityVoteSystemCollateralTX(CWalletTx& tx, uint256 hash, bo
         return false;
     }
 
-    return true;
-}
-
-bool CWallet::ConvertList(std::vector<CTxIn> vCoins, std::vector<CAmount>& vecAmounts)
-{
-    BOOST_FOREACH (CTxIn i, vCoins) {
-        if (mapWallet.count(i.prevout.hash)) {
-            CWalletTx& wtx = mapWallet[i.prevout.hash];
-            if (i.prevout.n < wtx.vout.size()) {
-                vecAmounts.push_back(wtx.vout[i.prevout.n].nValue);
-            }
-        } else {
-            LogPrintf("ConvertList -- Couldn't find transaction\n");
-        }
-    }
     return true;
 }
 
@@ -2348,23 +2334,6 @@ CAmount CWallet::GetMinimumFee(unsigned int nTxBytes, unsigned int nConfirmTarge
     if (nFeeNeeded > maxTxFee)
         nFeeNeeded = maxTxFee;
     return nFeeNeeded;
-}
-
-CAmount CWallet::GetTotalValue(std::vector<CTxIn> vCoins)
-{
-    CAmount nTotalValue = 0;
-    CWalletTx wtx;
-    BOOST_FOREACH (CTxIn i, vCoins) {
-        if (mapWallet.count(i.prevout.hash)) {
-            CWalletTx& wtx = mapWallet[i.prevout.hash];
-            if (i.prevout.n < wtx.vout.size()) {
-                nTotalValue += wtx.vout[i.prevout.n].nValue;
-            }
-        } else {
-            LogPrintf("GetTotalValue -- Couldn't find transaction\n");
-        }
-    }
-    return nTotalValue;
 }
 
 DBErrors CWallet::LoadWallet(bool& fFirstRunRet)
@@ -2932,7 +2901,7 @@ void CWallet::GetKeyBirthTimes(std::map<CKeyID, int64_t>& mapKeyBirth) const
 unsigned int CWallet::ComputeTimeSmart(const CWalletTx& wtx) const
 {
     unsigned int nTimeSmart = wtx.nTimeReceived;
-    if (wtx.hashBlock != 0) {
+    if (!wtx.hashBlock.IsNull()) {
         if (mapBlockIndex.count(wtx.hashBlock)) {
             int64_t latestNow = wtx.nTimeReceived;
             int64_t latestEntry = 0;
@@ -2995,20 +2964,6 @@ bool CWallet::LoadDestData(const CTxDestination& dest, const std::string& key, c
 {
     mapAddressBook[dest].destdata.insert(std::make_pair(key, value));
     return true;
-}
-
-bool CWallet::GetDestData(const CTxDestination& dest, const std::string& key, std::string* value) const
-{
-    std::map<CTxDestination, CAddressBookData>::const_iterator i = mapAddressBook.find(dest);
-    if (i != mapAddressBook.end()) {
-        CAddressBookData::StringMap::const_iterator j = i->second.destdata.find(key);
-        if (j != i->second.destdata.end()) {
-            if (value)
-                *value = j->second;
-            return true;
-        }
-    }
-    return false;
 }
 
 void CWallet::AutoCombineDust()
@@ -3271,7 +3226,7 @@ int CMerkleTx::SetMerkleBranch(const CBlock& block)
 
 int CMerkleTx::GetDepthInMainChainINTERNAL(const CBlockIndex*& pindexRet) const
 {
-    if (hashBlock == 0 || nIndex == -1)
+    if (hashBlock.IsNull() || nIndex == -1)
         return 0;
     AssertLockHeld(cs_main);
 

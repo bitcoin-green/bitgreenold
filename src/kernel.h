@@ -5,8 +5,8 @@
 #ifndef BITCOIN_KERNEL_H
 #define BITCOIN_KERNEL_H
 
-#include "main.h"
-
+#include "chain.h"
+#include "streams.h"
 
 // MODIFIER_INTERVAL: time to elapse before new modifier is computed
 static const unsigned int MODIFIER_INTERVAL = 60;

@@ -10,6 +10,7 @@
 
 #include "addressbookpage.h"
 #include "guiutil.h"
+#include "main.h"
 #include "walletmodel.h"
 
 #include "base58.h"

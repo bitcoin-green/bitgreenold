@@ -10,6 +10,7 @@
 #include "base58.h"
 #include "core_io.h"
 #include "init.h"
+#include "main.h"
 #include "net.h"
 #include "netbase.h"
 #include "rpcserver.h"
@@ -1578,7 +1579,7 @@ UniValue listsinceblock(const UniValue& params, bool fHelp)
     }
 
     CBlockIndex* pblockLast = chainActive[chainActive.Height() + 1 - target_confirms];
-    uint256 lastblock = pblockLast ? pblockLast->GetBlockHash() : 0;
+    uint256 lastblock = pblockLast ? pblockLast->GetBlockHash() : uint256();
 
     UniValue ret(UniValue::VOBJ);
     ret.push_back(Pair("transactions", transactions));

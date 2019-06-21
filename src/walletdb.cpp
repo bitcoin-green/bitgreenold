@@ -9,6 +9,7 @@
 #include "walletdb.h"
 
 #include "base58.h"
+#include "main.h"
 #include "protocol.h"
 #include "serialize.h"
 #include "sync.h"
@@ -506,7 +507,7 @@ bool ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue, CW
             }
             CKey key;
             CPrivKey pkey;
-            uint256 hash = 0;
+            uint256 hash;
 
             if (strType == "key") {
                 wss.nKeys++;
@@ -529,7 +530,7 @@ bool ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue, CW
 
             bool fSkipCheck = false;
 
-            if (hash != 0) {
+            if (!hash.IsNull()) {
                 // hash pubkey/privkey to accelerate wallet load
                 std::vector<unsigned char> vchKey;
                 vchKey.reserve(vchPubKey.size() + pkey.size());
@@ -963,7 +964,7 @@ bool CWalletDB::Recover(CDBEnv& dbenv, std::string filename, bool fOnlyKeys)
     int64_t now = GetTime();
     std::string newFilename = strprintf("wallet.%d.bak", now);
 
-    int result = dbenv.dbenv.dbrename(nullptr, filename.c_str(), nullptr,
+    int result = dbenv.dbenv->dbrename(nullptr, filename.c_str(), nullptr,
         newFilename.c_str(), DB_AUTO_COMMIT);
     if (result == 0)
         LogPrintf("Renamed %s to %s\n", filename, newFilename);
@@ -981,7 +982,7 @@ bool CWalletDB::Recover(CDBEnv& dbenv, std::string filename, bool fOnlyKeys)
     LogPrintf("Salvage(aggressive) found %u records\n", salvagedData.size());
 
     bool fSuccess = allOK;
-    boost::scoped_ptr<Db> pdbCopy(new Db(&dbenv.dbenv, 0));
+    boost::scoped_ptr<Db> pdbCopy(new Db(dbenv.dbenv, 0));
     int ret = pdbCopy->open(nullptr, // Txn pointer
         filename.c_str(),         // Filename
         "main",                   // Logical db name

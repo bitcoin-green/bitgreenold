@@ -15,6 +15,7 @@
 #include "addrman.h"
 #include "chainparams.h"
 #include "clientversion.h"
+#include "main.h"
 #include "miner.h"
 #include "primitives/transaction.h"
 #include "scheduler.h"
@@ -2042,7 +2043,7 @@ CNode::CNode(SOCKET hSocketIn, CAddress addrIn, std::string addrNameIn, bool fIn
     nRefCount = 0;
     nSendSize = 0;
     nSendOffset = 0;
-    hashContinue = 0;
+    hashContinue = uint256();
     nStartingHeight = -1;
     fGetAddr = false;
     fRelayTxes = false;

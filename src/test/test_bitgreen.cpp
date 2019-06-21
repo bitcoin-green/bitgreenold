@@ -6,6 +6,8 @@
 
 #define BOOST_TEST_MODULE BitGreen Test Suite
 
+#include "test_bitgreen.h"
+
 #include "main.h"
 #include "random.h"
 #include "txdb.h"
@@ -26,61 +28,57 @@ CWallet* pwalletMain;
 extern bool fPrintToConsole;
 extern void noui_connect();
 
-struct TestingSetup {
-    CCoinsViewDB *pcoinsdbview;
-    boost::filesystem::path pathTemp;
-    boost::thread_group threadGroup;
-    ECCVerifyHandle globalVerifyHandle;
-
-    TestingSetup() {
-        ECC_Start();
-        SetupEnvironment();
-        fPrintToDebugLog = false; // don't want to write to debug.log file
-        fCheckBlockIndex = true;
-        SelectParams(CBaseChainParams::UNITTEST);
-        noui_connect();
+TestingSetup::TestingSetup()
+{
+    ECC_Start();
+    SetupEnvironment();
+    fPrintToDebugLog = false; // don't want to write to debug.log file
+    fCheckBlockIndex = true;
+    SelectParams(CBaseChainParams::UNITTEST);
+    noui_connect();
 #ifdef ENABLE_WALLET
-        bitdb.MakeMock();
+    bitdb.MakeMock();
 #endif
-        pathTemp = GetTempPath() / strprintf("test_bitgreen_%lu_%i", (unsigned long)GetTime(), (int)(GetRand(100000)));
-        boost::filesystem::create_directories(pathTemp);
-        mapArgs["-datadir"] = pathTemp.string();
-        pblocktree = new CBlockTreeDB(1 << 20, true);
-        pcoinsdbview = new CCoinsViewDB(1 << 23, true);
-        pcoinsTip = new CCoinsViewCache(pcoinsdbview);
-        InitBlockIndex();
+    ClearDatadirCache();
+    pathTemp = GetTempPath() / strprintf("test_bitgreen_%lu_%i", (unsigned long)GetTime(), (int)(GetRand(100000)));
+    boost::filesystem::create_directories(pathTemp);
+    mapArgs["-datadir"] = pathTemp.string();
+    pblocktree = new CBlockTreeDB(1 << 20, true);
+    pcoinsdbview = new CCoinsViewDB(1 << 23, true);
+    pcoinsTip = new CCoinsViewCache(pcoinsdbview);
+    InitBlockIndex();
 #ifdef ENABLE_WALLET
-        bool fFirstRun;
-        pwalletMain = new CWallet("wallet.dat");
-        pwalletMain->LoadWallet(fFirstRun);
-        RegisterValidationInterface(pwalletMain);
+    bool fFirstRun;
+    pwalletMain = new CWallet("wallet.dat");
+    pwalletMain->LoadWallet(fFirstRun);
+    RegisterValidationInterface(pwalletMain);
 #endif
-        nScriptCheckThreads = 3;
-        for (int i=0; i < nScriptCheckThreads-1; i++)
+    nScriptCheckThreads = 3;
+    for (int i=0; i < nScriptCheckThreads-1; i++)
             threadGroup.create_thread(&ThreadScriptCheck);
-        RegisterNodeSignals(GetNodeSignals());
-    }
-    ~TestingSetup()
-    {
-        threadGroup.interrupt_all();
-        threadGroup.join_all();
-        UnregisterNodeSignals(GetNodeSignals());
+    RegisterNodeSignals(GetNodeSignals());
+}
+TestingSetup::~TestingSetup()
+{
+    UnregisterNodeSignals(GetNodeSignals());
+    threadGroup.interrupt_all();
+    threadGroup.join_all();
 #ifdef ENABLE_WALLET
-        delete pwalletMain;
-        pwalletMain = nullptr;
+    UnregisterValidationInterface(pwalletMain);
+    delete pwalletMain;
+    pwalletMain = nullptr;
 #endif
-        delete pcoinsTip;
-        delete pcoinsdbview;
-        delete pblocktree;
+    UnloadBlockIndex();
+    delete pcoinsTip;
+    delete pcoinsdbview;
+    delete pblocktree;
 #ifdef ENABLE_WALLET
-        bitdb.Flush(true);
+    bitdb.Flush(true);
+    bitdb.Reset();
 #endif
-        boost::filesystem::remove_all(pathTemp);
-        ECC_Stop();
-    }
-};
-
-BOOST_GLOBAL_FIXTURE(TestingSetup);
+    boost::filesystem::remove_all(pathTemp);
+    ECC_Stop();
+}
 
 void Shutdown(void* parg)
 {

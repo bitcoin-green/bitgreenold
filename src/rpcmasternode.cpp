@@ -482,7 +482,7 @@ UniValue startmasternode (const UniValue& params, bool fHelp)
             int nIndex;
             if(!mne.castOutputIndex(nIndex))
                 continue;
-            CTxIn vin = CTxIn(uint256(mne.getTxHash()), uint32_t(nIndex));
+            CTxIn vin = CTxIn(uint256S(mne.getTxHash()), uint32_t(nIndex));
             CMasternode* pmn = mnodeman.Find(vin);
             CMasternodeBroadcast mnb;
 
@@ -662,7 +662,7 @@ UniValue listmasternodeconf (const UniValue& params, bool fHelp)
         int nIndex;
         if(!mne.castOutputIndex(nIndex))
             continue;
-        CTxIn vin = CTxIn(uint256(mne.getTxHash()), uint32_t(nIndex));
+        CTxIn vin = CTxIn(uint256S(mne.getTxHash()), uint32_t(nIndex));
         CMasternode* pmn = mnodeman.Find(vin);
 
         std::string strStatus = pmn ? pmn->Status() : "MISSING";

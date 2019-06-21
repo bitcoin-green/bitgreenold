@@ -60,7 +60,6 @@ static Checkpoints::MapCheckpoints mapCheckpoints =
     (428959, uint256("0xeacbd88678e8520fc90cd54757ebfe2382e7160f52e34c4c8ad8ad414f59c098"))
     (674274, uint256("0x84351f1c1767f382715465b3ff2343d2644485171c29639701f33fee513db67f"));
 
-
 static const Checkpoints::CCheckpointData data = {
     &mapCheckpoints,
     1557739466, // * UNIX timestamp of last checkpoint block
@@ -70,7 +69,7 @@ static const Checkpoints::CCheckpointData data = {
 };
 
 static Checkpoints::MapCheckpoints mapCheckpointsTestnet =
-    boost::assign::map_list_of(0, uint256("0x001"));
+    boost::assign::map_list_of(0, uint256S("0x001"));
 
 static const Checkpoints::CCheckpointData dataTestnet = {
     &mapCheckpointsTestnet,
@@ -79,7 +78,7 @@ static const Checkpoints::CCheckpointData dataTestnet = {
     250};
 
 static Checkpoints::MapCheckpoints mapCheckpointsRegtest =
-    boost::assign::map_list_of(0, uint256("0x001"));
+    boost::assign::map_list_of(0, uint256S("0x001"));
 static const Checkpoints::CCheckpointData dataRegtest = {
     &mapCheckpointsRegtest,
     1454124731,
@@ -104,7 +103,7 @@ public:
         pchMessageStart[3] = 0xae;
         vAlertPubKey = ParseHex("04d2df519f53e2eaa4a7d7ff3347a360520c2f4b8f07d0241b5b6ba5ce8e3d6ecba5443696473a387adff27aa6bb72b952ff23026e088cff9f47cbb387ed52c326");
         nDefaultPort = 9333;
-        bnProofOfWorkLimit = ~uint256(0) >> 1;
+        bnProofOfWorkLimit = ~arith_uint256(0) >> 1;
         nSubsidyHalvingInterval = 1050000;
         nMaxReorganizationDepth = 100;
         nEnforceBlockUpgradeMajority = 750;
@@ -115,7 +114,6 @@ public:
         nTargetSpacing = 2 * 60;  // BitGreen: 2 minutes
         nMaturity = 10;
         nMasternodeCountDrift = 20;
-        nMaxMoneyOut = 21000000 * COIN;
 
         /** Height or Time Based Activations **/
         nLastPOWBlock = 200;
@@ -146,7 +144,7 @@ public:
         txNew.vout[0].nValue = 0 * COIN;
         txNew.vout[0].scriptPubKey = CScript() << ParseHex("04e5a8143f86ad8ac63791fbbdb8e0b91a8da88c8c693a95f6c2c13c063ea790f7960b8025a9047a7bc671d5cfe707a2dd2e13b86182e1064a0eea7bf863636363") << OP_CHECKSIG;
         genesis.vtx.push_back(txNew);
-        genesis.hashPrevBlock = 0;
+        genesis.hashPrevBlock.SetNull();
         genesis.hashMerkleRoot = genesis.BuildMerkleTree();
         genesis.nVersion = 1;
         genesis.nTime = 1516926684;
@@ -154,8 +152,8 @@ public:
         genesis.nNonce = 21256609;
 
         hashGenesisBlock = genesis.GetHash();
-        assert(hashGenesisBlock == uint256("0x000008467c3a9c587533dea06ad9380cded3ed32f9742a6c0c1aebc21bf2bc9b"));
-        assert(genesis.hashMerkleRoot == uint256("0x07cbcacfc822fba6bbeb05312258fa43b96a68fc310af8dfcec604591763f7cf"));
+        assert(hashGenesisBlock == uint256S("0x000008467c3a9c587533dea06ad9380cded3ed32f9742a6c0c1aebc21bf2bc9b"));
+        assert(genesis.hashMerkleRoot == uint256S("0x07cbcacfc822fba6bbeb05312258fa43b96a68fc310af8dfcec604591763f7cf"));
 
         // DNS Seeding
         vSeeds.push_back(CDNSSeedData("seed1.bitg.org", "seed1.bitg.org"));
@@ -228,14 +226,13 @@ public:
         nMaturity = 15;
         nMasternodeCountDrift = 4;
         nModifierUpdateBlock = 1;
-        nMaxMoneyOut = 21000000 * COIN;
 
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
         genesis.nTime = 1534570200;
         genesis.nNonce = 21148656;
 
         hashGenesisBlock = genesis.GetHash();
-        assert(hashGenesisBlock == uint256("0x000000938f4f20c6ccb3fea36539ade5af73d0bb45c55af64c7f7f1bfa5f3381"));
+        assert(hashGenesisBlock == uint256S("0x000000938f4f20c6ccb3fea36539ade5af73d0bb45c55af64c7f7f1bfa5f3381"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
@@ -298,7 +295,7 @@ public:
         nMinerThreads = 1;
         nTargetTimespan = 24 * 60 * 60; // BitGreen: 1 day
         nTargetSpacing = 1 * 60;        // BitGreen: 1 minute
-        bnProofOfWorkLimit = ~uint256(0) >> 1;
+        bnProofOfWorkLimit = ~arith_uint256(0) >> 1;
         nLastPOWBlock = 250;
         nMaturity = 10;
         genesis.nTime = 1516926684;
@@ -307,7 +304,7 @@ public:
 
         hashGenesisBlock = genesis.GetHash();
         nDefaultPort = 29333;
-        assert(hashGenesisBlock == uint256("0x229874aa8a92df3347600978e226ba57bc994b9fa291ea50519afafca2d50ed3"));
+        assert(hashGenesisBlock == uint256S("0x229874aa8a92df3347600978e226ba57bc994b9fa291ea50519afafca2d50ed3"));
 
         vFixedSeeds.clear(); //! Regtest mode doesn't have any fixed seeds.
         vSeeds.clear();      //! Regtest mode doesn't have any DNS seeds.

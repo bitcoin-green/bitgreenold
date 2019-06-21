@@ -7,7 +7,6 @@
 #define MASTERNODE_PAYMENTS_H
 
 #include "key.h"
-#include "main.h"
 #include "masternode.h"
 #include "clientversion.h"
 

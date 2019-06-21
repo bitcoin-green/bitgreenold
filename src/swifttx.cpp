@@ -7,6 +7,7 @@
 #include "activemasternode.h"
 #include "base58.h"
 #include "key.h"
+#include "main.h"
 #include "masternodeman.h"
 #include "masternode-helpers.h"
 #include "masternodeconfig.h"

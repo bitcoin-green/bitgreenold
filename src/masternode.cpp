@@ -6,6 +6,7 @@
 
 #include "masternode.h"
 #include "addrman.h"
+#include "main.h"
 #include "masternodeman.h"
 #include "masternode-payments.h"
 #include "masternode-helpers.h"
@@ -238,6 +239,18 @@ void CMasternode::Check(bool forceCheck)
     }
 
     activeState = MASTERNODE_ENABLED; // OK
+}
+
+int CMasternode::GetMasternodeInputAge()
+{
+    if (chainActive.Tip() == nullptr) return 0;
+
+    if (cacheInputAge == 0) {
+        cacheInputAge = GetInputAge(vin);
+        cacheInputAgeBlock = chainActive.Tip()->nHeight;
+    }
+
+    return cacheInputAge + (chainActive.Tip()->nHeight - cacheInputAgeBlock);
 }
 
 int64_t CMasternode::SecondsSincePayment()

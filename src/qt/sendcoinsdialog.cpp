@@ -15,6 +15,7 @@
 #include "coincontroldialog.h"
 #include "guiutil.h"
 #include "optionsmodel.h"
+#include "main.h"
 #include "sendcoinsentry.h"
 #include "walletmodel.h"
 
