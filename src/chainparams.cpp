@@ -112,7 +112,7 @@ public:
         nMinerThreads = 0;
         nTargetTimespan = 1 * 60; // BitGreen: 1 day
         nTargetSpacing = 2 * 60;  // BitGreen: 2 minutes
-        nStakingMinInput = 1000 * COIN;
+        nStakingMinInput = 200 * COIN;
         nMaturity = 10;
         nMasternodeCountDrift = 20;
 
