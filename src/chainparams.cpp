@@ -112,6 +112,7 @@ public:
         nMinerThreads = 0;
         nTargetTimespan = 1 * 60; // BitGreen: 1 day
         nTargetSpacing = 2 * 60;  // BitGreen: 2 minutes
+        nStakingMinInput = 1000 * COIN;
         nMaturity = 10;
         nMasternodeCountDrift = 20;
 
@@ -222,6 +223,7 @@ public:
         nMinerThreads = 0;
         nTargetTimespan = 1 * 60; // BitGreen: 1 day
         nTargetSpacing = 2 * 60;  // BitGreen: 1 minute
+        nStakingMinInput = 0;
         nLastPOWBlock = 200;
         nMaturity = 15;
         nMasternodeCountDrift = 4;
@@ -295,6 +297,7 @@ public:
         nMinerThreads = 1;
         nTargetTimespan = 24 * 60 * 60; // BitGreen: 1 day
         nTargetSpacing = 1 * 60;        // BitGreen: 1 minute
+        nStakingMinInput = 0;
         bnProofOfWorkLimit = ~arith_uint256(0) >> 1;
         nLastPOWBlock = 250;
         nMaturity = 10;
