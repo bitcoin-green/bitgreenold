@@ -1728,7 +1728,7 @@ bool CScriptCheck::operator()()
 
 bool ValidOutPoint(const COutPoint out, int nHeight)
 {
-    bool isInvalid = ActiveProtocol() >= MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT && invalid_out::ContainsOutPoint(out);
+    bool isInvalid = nHeight >= SOFT_FORK_VERSION_132 && invalid_out::ContainsOutPoint(out);
     return !isInvalid;
 }
 
@@ -3011,7 +3011,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
                 return state.DoS(100, error("CheckBlock() : more than one coinstake"));
 
         // Additional PoS checks.
-        if (ActiveProtocol() >= MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT) {
+        if (block.nTime > SOFT_FORK_VERSION_132_TIME) {
             // Check for minimum input value.
             CScript payee = block.vtx[1].vout[1].scriptPubKey;
             CAmount totalMinted = 0;
