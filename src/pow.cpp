@@ -55,6 +55,10 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         arith_uint256 bnNew;
         bnNew.SetCompact(pindexLast->nBits);
 
+        // Update PoS target spacing to 2 minutes
+        if (pindexLast->nHeight >= SOFT_FORK_VERSION_132)
+            nTargetSpacing = 120;
+
         int64_t nInterval = nTargetTimespan / nTargetSpacing;
         bnNew *= ((nInterval - 1) * nTargetSpacing + nActualSpacing + nActualSpacing);
         bnNew /= ((nInterval + 1) * nTargetSpacing);

@@ -19,6 +19,7 @@
 #include "compat/sanity.h"
 #include "httpserver.h"
 #include "httprpc.h"
+#include "invalid.h"
 #include "key.h"
 #include "main.h"
 #include "masternode-budget.h"
@@ -1410,6 +1411,9 @@ bool AppInit2()
                     strLoadError = _("You need to rebuild the database using -reindex to change -txindex");
                     break;
                 }
+
+                // Populate list of invalid outpoints
+                invalid_out::LoadOutpoints();
 
                 uiInterface.InitMessage(_("Verifying blocks..."));
 

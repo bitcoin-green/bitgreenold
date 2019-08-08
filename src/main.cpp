@@ -15,6 +15,7 @@
 #include "checkpoints.h"
 #include "checkqueue.h"
 #include "init.h"
+#include "invalid.h"
 #include "kernel.h"
 #include "masternode-budget.h"
 #include "masternode-payments.h"
@@ -75,7 +76,8 @@ bool fCheckBlockIndex = false;
 unsigned int nCoinCacheSize = 5000;
 bool fAlerts = DEFAULT_ALERTS;
 
-unsigned int nStakeMinAge = 60 * 60;
+unsigned int nStakeMinAge = 60 * 60; // 1 hour
+unsigned int nNewStakeMinAge = 60 * 60 * 24; // 24 hours
 int64_t nReserveBalance = 0;
 
 /** Fees smaller than this (in ubitg) are considered zero fee (for relaying and mining)
@@ -1049,6 +1051,12 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
                         *pfMissingInputs = true;
                     return false;
                 }
+
+                //Check for invalid inputs
+                if (!ValidOutPoint(txin.prevout, chainActive.Height())) {
+                    return state.Invalid(error("%s : tried to spend invalid input %s in tx %s", __func__, txin.prevout.ToString(),
+                                                tx.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-inputs");
+                }
             }
 
             // are the actual inputs available?
@@ -1233,6 +1241,12 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransact
                     if (pfMissingInputs)
                         *pfMissingInputs = true;
                     return false;
+                }
+
+                // check for invalid inputs
+                if (!ValidOutPoint(txin.prevout, chainActive.Height())) {
+                    return state.Invalid(error("%s : tried to spend invalid input %s in tx %s", __func__, txin.prevout.ToString(),
+                                                tx.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-inputs");
                 }
             }
 
@@ -1514,14 +1528,10 @@ int64_t GetBlockValue(int nHeight)
         nSubsidy = 30 * COIN;
     else if (nHeight > 25000 && nHeight <= 100000)
         nSubsidy = 20 * COIN;
-    else if (nHeight > 100000 && nHeight <= 1050000)
+    else if (nHeight > 100000 && nHeight <= SOFT_FORK_VERSION_132)
         nSubsidy = 10 * COIN;
-    else if (nHeight > 1050000 && nHeight <= 2100000)
-        nSubsidy = 5 * COIN;
-    else if (nHeight > 2100000 && nHeight <= 3150000)
-        nSubsidy = 2.5 * COIN;
     else
-        nSubsidy = 1.25 * COIN;
+        nSubsidy = 1 * COIN;
 
     // Check if we reached the coin max supply.
     int64_t nMoneySupply = chainActive.Tip()->nMoneySupply;
@@ -1714,6 +1724,12 @@ bool CScriptCheck::operator()()
         return ::error("CScriptCheck(): %s:%d VerifySignature failed: %s", ptxTo->GetHash().ToString(), nIn, ScriptErrorString(error));
     }
     return true;
+}
+
+bool ValidOutPoint(const COutPoint out, int nHeight)
+{
+    bool isInvalid = nHeight >= SOFT_FORK_VERSION_132 && invalid_out::ContainsOutPoint(out);
+    return !isInvalid;
 }
 
 bool CheckInputs(const CTransaction& tx, CValidationState& state, const CCoinsViewCache& inputs, bool fScriptChecks, unsigned int flags, bool cacheStore, std::vector<CScriptCheck>* pvChecks)
@@ -2023,6 +2039,14 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
             if (!view.HaveInputs(tx))
                 return state.DoS(100, error("ConnectBlock() : inputs missing/spent"),
                     REJECT_INVALID, "bad-txns-inputs-missingorspent");
+
+            // Check that the inputs are not marked as invalid
+            for (CTxIn in : tx.vin) {
+                if (!ValidOutPoint(in.prevout, pindex->nHeight)) {
+                    return state.DoS(100, error("%s : tried to spend invalid input %s in tx %s", __func__, in.prevout.ToString(),
+                                  tx.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-inputs");
+                }
+            }
 
             // Add in sigops done by pay-to-script-hash inputs;
             // this is to prevent a "rogue miner" from creating
@@ -2985,6 +3009,38 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
         for (unsigned int i = 2; i < block.vtx.size(); i++)
             if (block.vtx[i].IsCoinStake())
                 return state.DoS(100, error("CheckBlock() : more than one coinstake"));
+
+        // Additional PoS checks.
+        if (block.nTime > SOFT_FORK_VERSION_132_TIME) {
+            // Check for minimum input value.
+            CScript payee = block.vtx[1].vout[1].scriptPubKey;
+            CAmount totalMinted = 0;
+            for (const auto vout : block.vtx[1].vout) {
+                if (vout.scriptPubKey == payee)
+                    totalMinted += vout.nValue;
+            }
+
+            if (totalMinted < Params().StakingMinInput())
+                 return state.DoS(100, error("CheckBlock() : stake under minimum stake input"));
+
+            // Check for coin age.
+            // first try to get the previous transaction in database.
+            CTransaction txPrev;
+            uint256 hashBlockPrev;
+            if (!GetTransaction(block.vtx[1].vin[0].prevout.hash, txPrev, hashBlockPrev, true))
+                return state.DoS(100, error("CheckBlock() : failed to find stake transaction"));
+
+            // then get the previous block in mapBlockIndex.
+            CBlockIndex* pindex = NULL;
+            BlockMap::iterator it = mapBlockIndex.find(hashBlockPrev);
+            if (it == mapBlockIndex.end())
+                return state.DoS(100, error("CheckBlock() : failed to find previous stake block hash"));
+            pindex = it->second;
+
+            // finally checks if the previous block time + nNewStakeMinAge is greater than block time.
+            if (pindex->GetBlockHeader().nTime + nNewStakeMinAge > block.GetBlockTime())
+                return state.DoS(100, error("CheckBlock() : stake under min. stake age"));
+        }
     }
 
     // ----------- swiftTX transaction scanning -----------
@@ -5318,9 +5374,8 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 //       it was the one which was commented out
 int ActiveProtocol()
 {
-    // SPORK_14 is used for 70914 (v1.3.0+)
-    // if (IsSporkActive(SPORK_14_NEW_PROTOCOL_ENFORCEMENT))
-    //     return MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT;
+    if (chainActive.Tip()->nHeight >= SOFT_FORK_VERSION_132)
+        return MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT;
 
     return MIN_PEER_PROTO_VERSION;
 }

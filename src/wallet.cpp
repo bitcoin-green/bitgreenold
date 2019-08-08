@@ -1601,12 +1601,21 @@ bool CWallet::SelectStakeCoins(std::set<std::pair<const CWalletTx*, unsigned int
             continue;
 
         //check for min age
+        if (ActiveProtocol() >= MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT)
+            nStakeMinAge = nNewStakeMinAge;
+
         if (GetAdjustedTime() - out.tx->GetTxTime() < nStakeMinAge)
             continue;
 
         //check that it is matured
         if (out.nDepth < (out.tx->IsCoinStake() ? Params().COINBASE_MATURITY() : 10))
             continue;
+
+        // check min input
+        if (ActiveProtocol() >= MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT) {
+            if (out.tx->vout[out.i].nValue < Params().StakingMinInput())
+                continue;
+        }
 
         //add to our stake set
         setCoins.insert(make_pair(out.tx, out.i));
@@ -1626,6 +1635,9 @@ bool CWallet::MintableCoins()
 
     vector<COutput> vCoins;
     AvailableCoins(vCoins, true);
+
+    if (ActiveProtocol() >= MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT)
+        nStakeMinAge = nNewStakeMinAge;
 
     for (const COutput& out : vCoins) {
         //check for min age

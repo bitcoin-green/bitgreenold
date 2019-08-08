@@ -74,6 +74,7 @@ src/qt/test/moc*.cpp
 *.dmg
 
 *.json.h
+!invalid_outpoints.json.h
 *.raw.h
 
 #libtool object files
